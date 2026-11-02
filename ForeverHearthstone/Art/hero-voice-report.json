@@ -1,0 +1,2535 @@
+{
+  "heroes": {
+    "HERO_01": {
+      "death": "VO_HERO_01_Death_17",
+      "greetings": "VO_HERO_01_Greetings_01",
+      "well_played": "VO_HERO_01_Well Played_02",
+      "oops": "VO_HERO_01_Oops_03",
+      "threaten": "VO_HERO_01_Threaten_04",
+      "thanks": "VO_HERO_01_Thanks_05",
+      "sorry": "VO_HERO_01_Sorry_06",
+      "concede": "VO_HERO_01_Concede_07",
+      "start": "VO_HERO_01_Start_09",
+      "time": "VO_HERO_01_Time_11",
+      "thinking1": "VO_HERO_01_Thinking1_12",
+      "thinking2": "VO_HERO_01_Thinking2_13",
+      "thinking3": "VO_HERO_01_Thinking3_14",
+      "low_cards": "VO_HERO_01_LowCards_18",
+      "no_cards": "VO_HERO_01_NoCards_19",
+      "need_weapon": "VO_HERO_01_ERROR01_20",
+      "mana": "VO_HERO_01_ERROR02_21",
+      "minion_attacked": "VO_HERO_01_ERROR03_22",
+      "hero_attacked": "VO_HERO_01_ERROR04_23",
+      "summon_sick": "VO_HERO_01_ERROR05_24",
+      "full_hand": "VO_HERO_01_ERROR06_25",
+      "full_board": "VO_HERO_01_ERROR07_26",
+      "stealth": "VO_HERO_01_ERROR08_27",
+      "cant_play": "VO_HERO_01_ERROR09_28",
+      "target": "VO_HERO_01_ERROR10_29",
+      "taunt": "VO_HERO_01_ERROR11_20",
+      "generic": "VO_HERO_01_ERROR12_31",
+      "picked": "VO_HERO_01_Picked_08",
+      "mirror_start": "VO_HERO_01_MIRROR_START_02",
+      "wow": "VO_HERO_01_WOW_11",
+      "mirror_greetings": "VO_HERO_01_MIRROR_GREETINGS_01"
+    },
+    "HERO_02": {
+      "death": "VO_Hero_02_Death_17",
+      "greetings": "VO_Hero_02_Greetings_01",
+      "well_played": "VO_Hero_02_Well Played_02",
+      "oops": "VO_Hero_02_Oops_03_ALT",
+      "threaten": "VO_Hero_02_Threaten_04",
+      "thanks": "VO_Hero_02_Thanks_05",
+      "sorry": "VO_Hero_02_Sorry_06",
+      "concede": "VO_Hero_02_Concede_07",
+      "start": "VO_Hero_02_Start_09",
+      "time": "VO_Hero_02_Time_11",
+      "thinking1": "VO_Hero_02_Thinking1_12",
+      "thinking2": "VO_Hero_02_Thinking2_13",
+      "thinking3": "VO_Hero_02_Thinking3_14",
+      "low_cards": "VO_Hero_02_LowCards_18",
+      "no_cards": "VO_Hero_02_NoCards_19",
+      "need_weapon": "VO_Hero_02_ERROR01_20",
+      "mana": "VO_Hero_02_ERROR02_21",
+      "minion_attacked": "VO_Hero_02_ERROR03_22",
+      "hero_attacked": "VO_Hero_02_ERROR04_23",
+      "summon_sick": "VO_Hero_02_ERROR05_24",
+      "full_hand": "VO_Hero_02_ERROR06_25",
+      "full_board": "VO_Hero_02_ERROR07_26",
+      "stealth": "VO_Hero_02_ERROR08_27",
+      "cant_play": "VO_Hero_02_ERROR09_28",
+      "target": "VO_Hero_02_ERROR010_29",
+      "taunt": "VO_HERO_02_ERROR11_21",
+      "generic": "VO_Hero_02_ERROR12_31",
+      "picked": "VO_Hero_02_Picked_08",
+      "mirror_start": "VO_HERO_02_MIRROR_START_ALT_03",
+      "wow": "VO_HERO_02_WOW_12_ALT",
+      "mirror_greetings": "VO_HERO_02_MIRROR_GREETINGS_01"
+    },
+    "HERO_03": {
+      "death": "VO_HERO_03_Death_17",
+      "greetings": "VO_HERO_03_Greetings_01",
+      "well_played": "VO_HERO_03_Well Played_02",
+      "oops": "VO_HERO_03_Oops_03",
+      "threaten": "VO_HERO_03_Threaten_04",
+      "thanks": "VO_HERO_03_Thanks_05",
+      "sorry": "VO_HERO_03_Sorry_06",
+      "concede": "VO_HERO_03_Concede_07",
+      "start": "VO_HERO_03_Start_09",
+      "time": "VO_HERO_03_Time_11",
+      "thinking1": "VO_HERO_03_Thinking1_12",
+      "thinking2": "VO_HERO_03_Thinking2_13",
+      "thinking3": "VO_HERO_03_Thinking3_14",
+      "low_cards": "VO_HERO_03_LowCards_18",
+      "no_cards": "VO_HERO_03_NoCards_19",
+      "need_weapon": "VO_HERO_03_ERROR01_20",
+      "mana": "VO_HERO_03_ERROR02_21",
+      "minion_attacked": "VO_HERO_03_ERROR03_22",
+      "hero_attacked": "VO_HERO_03_ERROR04_23",
+      "summon_sick": "VO_HERO_03_ERROR05_24",
+      "full_hand": "VO_HERO_03_ERROR06_25",
+      "full_board": "VO_HERO_03_ERROR07_26",
+      "stealth": "VO_HERO_03_ERROR08_27",
+      "cant_play": "VO_HERO_03_ERROR09_28",
+      "target": "VO_HERO_03_ERROR10_29",
+      "taunt": "VO_HERO_03_ERROR11_20",
+      "generic": "VO_HERO_03_ERROR12_31",
+      "picked": "VO_HERO_03_Picked_08",
+      "mirror_start": "VO_HERO_03_MIRROR_START_02",
+      "wow": "VO_HERO_03_WOW_11",
+      "mirror_greetings": "VO_HERO_03_MIRROR_GREETINGS_01"
+    },
+    "HERO_04": {
+      "death": "VO_HERO_04_Death_17",
+      "greetings": "VO_HERO_04_Greetings_01",
+      "well_played": "VO_HERO_04_WellPlayed_02",
+      "oops": "VO_HERO_04_Oops_03",
+      "threaten": "VO_HERO_04_Threaten_04",
+      "thanks": "VO_HERO_04_Thanks_05",
+      "sorry": "VO_HERO_04_Sorry_06",
+      "concede": "VO_HERO_04_Concede_07",
+      "start": "VO_HERO_04_Start_09",
+      "time": "VO_HERO_04_Time_11",
+      "thinking1": "VO_HERO_04_Thinking1_12",
+      "thinking2": "VO_HERO_04_Thinking2_13",
+      "thinking3": "VO_HERO_04_Thinking3_14",
+      "low_cards": "VO_HERO_04_LowCards_18",
+      "no_cards": "VO_HERO_04_NoCards_19",
+      "need_weapon": "VO_HERO_04_ERROR01_20",
+      "mana": "VO_HERO_04_ERROR02_21",
+      "minion_attacked": "VO_HERO_04_ERROR03_22",
+      "hero_attacked": "VO_HERO_04_ERROR04_23",
+      "summon_sick": "VO_HERO_04_ERROR05_24",
+      "full_hand": "VO_HERO_04_ERROR06_25",
+      "full_board": "VO_HERO_04_ERROR07_26",
+      "stealth": "VO_HERO_04_ERROR08_27",
+      "cant_play": "VO_HERO_04_ERROR09_28",
+      "target": "VO_HERO_04_ERROR10_29",
+      "taunt": "VO_HERO_04_ERROR11_20",
+      "generic": "VO_HERO_04_ERROR12_31",
+      "picked": "VO_HERO_04_Picked_08",
+      "mirror_start": "VO_HERO_04_MIRROR_START_01",
+      "wow": "VO_HERO_04_WOW_06",
+      "mirror_greetings": "VO_HERO_04_MIRROR_GREETINGS_02"
+    },
+    "HERO_05": {
+      "death": "VO_HERO_05_Death_17",
+      "greetings": "VO_HERO_05_Greetings_01",
+      "well_played": "VO_HERO_05_Well Played_02",
+      "oops": "VO_HERO_05_Oops_03",
+      "threaten": "VO_HERO_05_Threaten_04",
+      "thanks": "VO_HERO_05_Thanks_05",
+      "sorry": "VO_HERO_05_Sorry_06",
+      "concede": "VO_HERO_05_Concede_07",
+      "start": "VO_HERO_05_Start_09",
+      "time": "VO_HERO_05_Time_11",
+      "thinking1": "VO_HERO_05_Thinking1_12",
+      "thinking2": "VO_HERO_05_Thinking2_13",
+      "thinking3": "VO_HERO_05_Thinking3_14",
+      "low_cards": "VO_HERO_05_LowCards_19",
+      "no_cards": "VO_HERO_05_NoCards_20",
+      "need_weapon": "VO_HERO_05_ERROR01_21",
+      "mana": "VO_HERO_05_ERROR02_22",
+      "minion_attacked": "VO_HERO_05_ERROR03_23",
+      "hero_attacked": "VO_HERO_05_ERROR04_24",
+      "summon_sick": "VO_HERO_05_ERROR05_25",
+      "full_hand": "VO_HERO_05_ERROR06_26",
+      "full_board": "VO_HERO_05_ERROR07_27",
+      "stealth": "VO_HERO_05_ERROR08_28",
+      "cant_play": "VO_HERO_05_ERROR09_29",
+      "target": "VO_HERO_05_ERROR10_30",
+      "taunt": "VO_HERO_05_ERROR11_20",
+      "generic": "VO_HERO_05_ERROR12_32",
+      "picked": "VO_HERO_05_Picked_08",
+      "mirror_start": "VO_HERO_05_MIRROR_START_01",
+      "wow": "VO_HERO_05_WOW_06",
+      "mirror_greetings": "VO_HERO_05_MIRROR_GREETINGS_02"
+    },
+    "HERO_06": {
+      "death": "VO_HERO_06_Death_17",
+      "greetings": "VO_HERO_06_Greetings_01",
+      "well_played": "VO_HERO_06_Well Played_02",
+      "oops": "VO_HERO_06_Oops_03",
+      "threaten": "VO_HERO_06_Threaten_04",
+      "thanks": "VO_HERO_06_Thanks_05",
+      "sorry": "VO_HERO_06_Sorry_06",
+      "concede": "VO_HERO_06_Concede_07",
+      "start": "VO_HERO_06_Start_09",
+      "time": "VO_HERO_06_Time_11",
+      "thinking1": "VO_HERO_06_Thinking1_12",
+      "thinking2": "VO_HERO_06_Thinking2_13",
+      "thinking3": "VO_HERO_06_Thinking3_14",
+      "low_cards": "VO_HERO_06_LowCards_18",
+      "no_cards": "VO_HERO_06_NoCards_19",
+      "need_weapon": "VO_HERO_06_ERROR01_20",
+      "mana": "VO_HERO_06_ERROR02_21",
+      "minion_attacked": "VO_HERO_06_ERROR03_22",
+      "hero_attacked": "VO_HERO_06_ERROR04_23",
+      "summon_sick": "VO_HERO_06_ERROR05_24",
+      "full_hand": "VO_HERO_06_ERROR06_25",
+      "full_board": "VO_HERO_06_ERROR07_26",
+      "stealth": "VO_HERO_06_ERROR08_27",
+      "cant_play": "VO_HERO_06_ERROR09_28",
+      "target": "VO_HERO_06_ERROR10_29",
+      "taunt": "VO_HERO_06_ERROR11_20",
+      "generic": "VO_HERO_06_ERROR12_31",
+      "picked": "VO_HERO_06_Picked_08",
+      "mirror_start": "VO_HERO_06_MIRROR_START_01",
+      "wow": "VO_HERO_06_WOW_06",
+      "mirror_greetings": "VO_HERO_06_MIRROR_GREETINGS_02"
+    },
+    "HERO_07": {
+      "death": "VO_HERO_07_Death_17",
+      "greetings": "VO_HERO_07_Greetings_01",
+      "well_played": "VO_HERO_07_Well Played_02",
+      "oops": "VO_HERO_07_Oops_03",
+      "threaten": "VO_HERO_07_Threaten_04",
+      "thanks": "VO_HERO_07_Thanks_05",
+      "sorry": "VO_HERO_07_Sorry_06",
+      "concede": "VO_HERO_07_Concede_07",
+      "start": "VO_HERO_07_Start_09",
+      "time": "VO_HERO_07_Time_11",
+      "thinking1": "VO_HERO_07_Thinking1_12",
+      "thinking2": "VO_HERO_07_Thinking2_13",
+      "thinking3": "VO_HERO_07_Thinking3_14",
+      "low_cards": "VO_HERO_07_LowCards_18",
+      "no_cards": "VO_HERO_07_NoCards_19",
+      "need_weapon": "VO_HERO_07_ERROR01_20",
+      "mana": "VO_HERO_07_ERROR02_21",
+      "minion_attacked": "VO_HERO_07_ERROR03_22",
+      "hero_attacked": "VO_HERO_07_ERROR04_23",
+      "summon_sick": "VO_HERO_07_ERROR05_24",
+      "full_hand": "VO_HERO_07_ERROR06_25",
+      "full_board": "VO_HERO_07_ERROR07_26",
+      "stealth": "VO_HERO_07_ERROR08_27",
+      "cant_play": "VO_HERO_07_ERROR09_28",
+      "target": "VO_HERO_07_ERROR10_29",
+      "taunt": "VO_HERO_07_ERROR11_20",
+      "generic": "VO_HERO_07_ERROR12_31",
+      "picked": "VO_HERO_07_Picked_08",
+      "mirror_start": "VO_HERO_07_MIRROR_START_01",
+      "wow": "VO_HERO_07_WOW_06",
+      "mirror_greetings": "VO_HERO_07_MIRROR_GREETINGS_02"
+    },
+    "HERO_08": {
+      "death": "VO_HERO_08_Death_72",
+      "greetings": "VO_HERO_08_Greetings_56",
+      "well_played": "VO_HERO_08_Well Played_57",
+      "oops": "VO_HERO_08_Oops_58",
+      "threaten": "VO_HERO_08_Threaten_59",
+      "thanks": "VO_HERO_08_Thanks_60",
+      "sorry": "VO_HERO_08_Sorry_61",
+      "concede": "VO_HERO_08_Concede_62",
+      "start": "VO_HERO_08_Start_64",
+      "time": "VO_HERO_08_Time_66",
+      "thinking1": "VO_HERO_08_Thinking1_67",
+      "thinking2": "VO_HERO_08_Thinking2_68",
+      "thinking3": "VO_HERO_08_Thinking3_69",
+      "low_cards": "VO_HERO_08_LowCards_73",
+      "no_cards": "VO_HERO_08_NoCards_74",
+      "need_weapon": "VO_HERO_08_ERROR01_75",
+      "mana": "VO_HERO_08_ERROR02_76",
+      "minion_attacked": "VO_HERO_08_ERROR03_77",
+      "hero_attacked": "VO_HERO_08_ERROR04_78",
+      "summon_sick": "VO_HERO_08_ERROR05_79",
+      "full_hand": "VO_HERO_08_ERROR06_80",
+      "full_board": "VO_HERO_08_ERROR07_81",
+      "stealth": "VO_HERO_08_ERROR08_82",
+      "cant_play": "VO_HERO_08_ERROR09_83",
+      "target": "VO_HERO_08_ERROR10_84",
+      "taunt": "VO_HERO_08_ERROR11_20",
+      "generic": "VO_HERO_08_ERROR12_86",
+      "picked": "VO_HERO_08_Picked_63",
+      "mirror_start": "VO_HERO_08_MIRROR_START_01",
+      "wow": "VO_HERO_08_WOW_06",
+      "mirror_greetings": "VO_HERO_08_MIRROR_GREETINGS_02"
+    },
+    "HERO_09": {
+      "death": "VO_HERO_09_Death_17",
+      "greetings": "VO_HERO_09_Greetings_01",
+      "well_played": "VO_HERO_09_Well_Played_02",
+      "oops": "VO_HERO_09_Oops_03",
+      "threaten": "VO_HERO_09_Threaten_04",
+      "thanks": "VO_HERO_09_Thanks_05",
+      "sorry": "VO_HERO_09_Sorry_06",
+      "concede": "VO_HERO_09_Concede_07",
+      "start": "VO_HERO_09_Start_09",
+      "time": "VO_HERO_09_Time_11",
+      "thinking1": "VO_HERO_09_Thinking1_12",
+      "thinking2": "VO_HERO_09_Thinking2_13",
+      "thinking3": "VO_HERO_09_Thinking3_14",
+      "low_cards": "VO_HERO_09_LowCards_18",
+      "no_cards": "VO_HERO_09_NoCards_19",
+      "need_weapon": "VO_HERO_09_ERROR01_20",
+      "mana": "VO_HERO_09_ERROR02_21",
+      "minion_attacked": "VO_HERO_09_ERROR03_22",
+      "hero_attacked": "VO_HERO_09_ERROR04_23",
+      "summon_sick": "VO_HERO_09_ERROR05_24",
+      "full_hand": "VO_HERO_09_ERROR06_25",
+      "full_board": "VO_HERO_09_ERROR07_26",
+      "stealth": "VO_HERO_09_ERROR08_27",
+      "cant_play": "VO_HERO_09_ERROR09_28",
+      "target": "VO_HERO_09_ERROR10_29",
+      "taunt": "VO_HERO_09_ERROR11_20",
+      "generic": "VO_HERO_09_ERROR12_31",
+      "picked": "VO_HERO_09_Picked_08",
+      "mirror_start": "VO_HERO_09_MIRROR_START_01",
+      "wow": "VO_HERO_09_WOW_06",
+      "mirror_greetings": "VO_HERO_09_MIRROR_GREETINGS_02_ALT"
+    }
+  },
+  "audio": {
+    "VO_HERO_01_Concede_07": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_01_Concede_07.wav",
+      "file": "VO_HERO_01_Concede_07.wav",
+      "sha256": "9deee8abdf47e40a694995bc6b3a4eca0e4da0c315e0ef0f24e28c946b027f59",
+      "bytes": 207074,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_01_Death_17": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_01_Death_17.wav",
+      "file": "VO_HERO_01_Death_17.wav",
+      "sha256": "f43441fce3e52f51e24b3ee292b6766d5da773e5e17571217eb1143929004d39",
+      "bytes": 232450,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_01_ERROR01_20": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_01_ERROR01_20.wav",
+      "file": "VO_HERO_01_ERROR01_20.wav",
+      "sha256": "345e235b3e00dbde1e6f23394227393b9ad5f13aa4c9c5adc24565e6aac2495d",
+      "bytes": 146924,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_01_ERROR02_21": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_01_ERROR02_21.wav",
+      "file": "VO_HERO_01_ERROR02_21.wav",
+      "sha256": "9a782e1ba6e56285d3bdf932a271311233ddce6ab2ab3ada53894240dd1b29b4",
+      "bytes": 185942,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_01_ERROR03_22": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_01_ERROR03_22.wav",
+      "file": "VO_HERO_01_ERROR03_22.wav",
+      "sha256": "0624b1c6fb859613c02591c92a6067e6222870ae4577fb9f7f733728ed9e15e0",
+      "bytes": 235440,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_01_ERROR04_23": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_01_ERROR04_23.wav",
+      "file": "VO_HERO_01_ERROR04_23.wav",
+      "sha256": "9a35d4f809480cc50dab156be59be3eae8c9169411b77c341516dd9040295f61",
+      "bytes": 178578,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_01_ERROR05_24": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_01_ERROR05_24.wav",
+      "file": "VO_HERO_01_ERROR05_24.wav",
+      "sha256": "9f379ac98aa44bd5b40ce4ee7deb824711dd6f6f34c9a1baabb2f6179681feda",
+      "bytes": 272652,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_01_ERROR06_25": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_01_ERROR06_25.wav",
+      "file": "VO_HERO_01_ERROR06_25.wav",
+      "sha256": "d7f53cd9037f9e46c143bae0220dbb1a68115adfed9c12c37c7d930f0e325f1a",
+      "bytes": 200486,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_01_ERROR07_26": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_01_ERROR07_26.wav",
+      "file": "VO_HERO_01_ERROR07_26.wav",
+      "sha256": "a65399fab9fcd943459fd05ef6d7bb18e0a2d23f5d2bd372692157b9c431cc20",
+      "bytes": 234798,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_01_ERROR08_27": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_01_ERROR08_27.wav",
+      "file": "VO_HERO_01_ERROR08_27.wav",
+      "sha256": "8aa3625f51fdc37d65c69c72c1cfbb1c6d15f225ecec01f3f50fb8ecc3451dbc",
+      "bytes": 274740,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_01_ERROR09_28": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_01_ERROR09_28.wav",
+      "file": "VO_HERO_01_ERROR09_28.wav",
+      "sha256": "0cfc305d9f6399dd8a3117356e9a075984670a2492c364f4d7e1f1dff2d649c4",
+      "bytes": 156762,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_01_ERROR10_29": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_01_ERROR10_29.wav",
+      "file": "VO_HERO_01_ERROR10_29.wav",
+      "sha256": "b4620e8edaa0d27dc7af85c355e68ed8ed3031991fd4d4c0635cfd7fda10a467",
+      "bytes": 205434,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_01_ERROR11_20": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_01_ERROR11_20.wav",
+      "file": "VO_HERO_01_ERROR11_20.wav",
+      "sha256": "85477ca0b44ba9d83ed78824980a8ecea85f8e46dbfbf3391c0919aa22c63b50",
+      "bytes": 237976,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_01_ERROR12_31": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_01_ERROR12_31.wav",
+      "file": "VO_HERO_01_ERROR12_31.wav",
+      "sha256": "21544bb5f3f1fa6af466a6b24f3f561a1177e45bb1eeb496adf78d1b0de6da79",
+      "bytes": 172034,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_01_Greetings_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_01_Greetings_01.wav",
+      "file": "VO_HERO_01_Greetings_01.wav",
+      "sha256": "138e59474e7c75681ff5aa1c59a1caa4feb97e47cee98d0ce8ea719922e33c17",
+      "bytes": 239242,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_01_LowCards_18": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_01_LowCards_18.wav",
+      "file": "VO_HERO_01_LowCards_18.wav",
+      "sha256": "3aac58cb182a331fbfc129ec394304ccb9d72eb2c66588b0c9b32edbb4679aea",
+      "bytes": 205388,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_01_MIRROR_GREETINGS_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_01_MIRROR_GREETINGS_01.wav",
+      "file": "VO_HERO_01_MIRROR_GREETINGS_01.wav",
+      "sha256": "fcda26d483e974b4aa7a4a8a8e96d80701d16cba22afaddb0facba4822778d7b",
+      "bytes": 198450,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_01_MIRROR_START_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_01_MIRROR_START_02.wav",
+      "file": "VO_HERO_01_MIRROR_START_02.wav",
+      "sha256": "d0792ddae002436e7364bc5adb4f4c443b4f9315119326b8bb8f0bde90fb48c5",
+      "bytes": 234160,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_01_NoCards_19": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_01_NoCards_19.wav",
+      "file": "VO_HERO_01_NoCards_19.wav",
+      "sha256": "b52c81fbeb5efe72d0e9aeb344c214dcb043e2fca2c73323732fc60303257bc9",
+      "bytes": 157484,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_01_Oops_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_01_Oops_03.wav",
+      "file": "VO_HERO_01_Oops_03.wav",
+      "sha256": "139f11036ce0786a2e70692ecf2c4760985a8c1facaf3467007d58c4ce50a66d",
+      "bytes": 213352,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_01_Picked_08": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_01_Picked_08.wav",
+      "file": "VO_HERO_01_Picked_08.wav",
+      "sha256": "f10b1f8b64684e8d48a049d59eca32747dfda7334a91318e43b675fa54d9d2b9",
+      "bytes": 257082,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_01_Sorry_06": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_01_Sorry_06.wav",
+      "file": "VO_HERO_01_Sorry_06.wav",
+      "sha256": "7444cae2ee534db37a587c7a468932ce44703fc857dee019fc3f07625aba0484",
+      "bytes": 196164,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_01_Start_09": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_01_Start_09.wav",
+      "file": "VO_HERO_01_Start_09.wav",
+      "sha256": "de09f2de10aaf8384268f2537fa78248e78cf85dc12680783fb989874c3b5791",
+      "bytes": 228466,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_01_Thanks_05": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_01_Thanks_05.wav",
+      "file": "VO_HERO_01_Thanks_05.wav",
+      "sha256": "ff4afa0c5a5423e53b0a489f9227f33843cd3e10ca03bbe3641c3558db9525c1",
+      "bytes": 242174,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_01_Thinking1_12": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_01_Thinking1_12.wav",
+      "file": "VO_HERO_01_Thinking1_12.wav",
+      "sha256": "100ad263861042d26f1922d2a98c5c5f06b1b48b1adf08a6ef328539e70a26d3",
+      "bytes": 197236,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_01_Thinking2_13": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_01_Thinking2_13.wav",
+      "file": "VO_HERO_01_Thinking2_13.wav",
+      "sha256": "8289126ba2e7844dacee92dc7f1070bbfee9c10ad4f305dac4fa96e500de09e1",
+      "bytes": 247590,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_01_Thinking3_14": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_01_Thinking3_14.wav",
+      "file": "VO_HERO_01_Thinking3_14.wav",
+      "sha256": "cd7d5ce3ce933d416e45262110f57d5edb443cfe6f114f33fbdb38059f4a1bf3",
+      "bytes": 197612,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_01_Threaten_04": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_01_Threaten_04.wav",
+      "file": "VO_HERO_01_Threaten_04.wav",
+      "sha256": "673d63dcf4d6889ce6a92958fa5ac31e7cf71da788123456bf8054d605dc460a",
+      "bytes": 199036,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_01_Time_11": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_01_Time_11.wav",
+      "file": "VO_HERO_01_Time_11.wav",
+      "sha256": "64a34db0aa06bf27be0c12d0323f0d801fb740df4955915bc30006b5bc384a92",
+      "bytes": 248402,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_01_WOW_11": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_01_WOW_11.wav",
+      "file": "VO_HERO_01_WOW_11.wav",
+      "sha256": "1735b8c70a161d4c4aed27112ad05a9160b54b7fe152a8a29925135bb0decd6d",
+      "bytes": 146574,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_01_Well Played_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_01_Well%20Played_02.wav",
+      "file": "VO_HERO_01_Well_Played_02.wav",
+      "sha256": "6b1e1efec73270901a0c82f91f8439a1de79e82af59e48b5f7d3d3adacfac890",
+      "bytes": 170824,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_02_ERROR11_21": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_02_ERROR11_21.wav",
+      "file": "VO_HERO_02_ERROR11_21.wav",
+      "sha256": "71efc3f37056451260ea9ff3e71dba7d8978c3a0e0c2181b50b9d66efe963c9a",
+      "bytes": 205242,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_02_MIRROR_GREETINGS_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_02_MIRROR_GREETINGS_01.wav",
+      "file": "VO_HERO_02_MIRROR_GREETINGS_01.wav",
+      "sha256": "2057d12eb82feb79e317d1f3a616bf15bc511bbf6ecf2b93d72326221c8517b4",
+      "bytes": 123914,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_02_MIRROR_START_ALT_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_02_MIRROR_START_ALT_03.wav",
+      "file": "VO_HERO_02_MIRROR_START_ALT_03.wav",
+      "sha256": "ba88d211da21fc6e96ad055e0b8a92063f8ec9ce9cd546c0c04eb478ff7a9957",
+      "bytes": 164402,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_02_WOW_12_ALT": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_02_WOW_12_ALT.wav",
+      "file": "VO_HERO_02_WOW_12_ALT.wav",
+      "sha256": "4612b3d77bc351834f1f52f93f530baf297d3eb44d69dfd5e8ac27f46d6ca70f",
+      "bytes": 123884,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_03_Concede_07": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_03_Concede_07.wav",
+      "file": "VO_HERO_03_Concede_07.wav",
+      "sha256": "c4704e00988d083d4d99e10cc4cd0cf1d67d8dba3f7d368fb34fd4c779dd3301",
+      "bytes": 115502,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_03_Death_17": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_03_Death_17.wav",
+      "file": "VO_HERO_03_Death_17.wav",
+      "sha256": "44261889737c742ec368f1dce774d0875e6e0b57f9f32af12e11570ae333d014",
+      "bytes": 239634,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_03_ERROR01_20": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_03_ERROR01_20.wav",
+      "file": "VO_HERO_03_ERROR01_20.wav",
+      "sha256": "dfe9697ce486f81827648d27edb838f34ce3ad5a6b4612b7f098ccb4cf267a38",
+      "bytes": 128562,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_03_ERROR02_21": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_03_ERROR02_21.wav",
+      "file": "VO_HERO_03_ERROR02_21.wav",
+      "sha256": "09969bf5f7f890648c202a261087c79dab77b7a5d56efa1f5a3f153554affe97",
+      "bytes": 152796,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_03_ERROR03_22": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_03_ERROR03_22.wav",
+      "file": "VO_HERO_03_ERROR03_22.wav",
+      "sha256": "3e16a28755f0b610373e5f4e4eea0efc9795575e367b6680acbf7b2ab6da9df5",
+      "bytes": 194984,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_03_ERROR04_23": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_03_ERROR04_23.wav",
+      "file": "VO_HERO_03_ERROR04_23.wav",
+      "sha256": "a6f25c75ec46d5625a7a1e872ba429a239fadb743f9f7af4941e095ccc90b5be",
+      "bytes": 141484,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_03_ERROR05_24": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_03_ERROR05_24.wav",
+      "file": "VO_HERO_03_ERROR05_24.wav",
+      "sha256": "e19402a60fd150ec7c92dec26408b2a9f43fb05b0beb6be76de8a19e0cba12c3",
+      "bytes": 208876,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_03_ERROR06_25": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_03_ERROR06_25.wav",
+      "file": "VO_HERO_03_ERROR06_25.wav",
+      "sha256": "73b9bd392735ee84353a8d18ecb3f9d1d9a765c601940bef6cd560998fcb2e8c",
+      "bytes": 169064,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_03_ERROR07_26": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_03_ERROR07_26.wav",
+      "file": "VO_HERO_03_ERROR07_26.wav",
+      "sha256": "a9dd7f7208774e9263299c6faa458799fa20a434585ed75e98e50b0191423d93",
+      "bytes": 178174,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_03_ERROR08_27": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_03_ERROR08_27.wav",
+      "file": "VO_HERO_03_ERROR08_27.wav",
+      "sha256": "9113b79e0b5e067c067d90958688c15a28f3df0d374496d53f1ec4a03e52f2d5",
+      "bytes": 238294,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_03_ERROR09_28": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_03_ERROR09_28.wav",
+      "file": "VO_HERO_03_ERROR09_28.wav",
+      "sha256": "8bf4da4ca5cd0b82efced498380360e3e1e8f8bcdf6c5220c43e245a0d58b39a",
+      "bytes": 144524,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_03_ERROR10_29": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_03_ERROR10_29.wav",
+      "file": "VO_HERO_03_ERROR10_29.wav",
+      "sha256": "bbfede7ee789d905a6dee341261509461423b2dee05f68602253b21992de681c",
+      "bytes": 187352,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_03_ERROR11_20": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_03_ERROR11_20.wav",
+      "file": "VO_HERO_03_ERROR11_20.wav",
+      "sha256": "0ea0d8528a6da1b23857765ddcf59cd20fa035f0cf3266b8b3ddf985cdc745fd",
+      "bytes": 206730,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_03_ERROR12_31": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_03_ERROR12_31.wav",
+      "file": "VO_HERO_03_ERROR12_31.wav",
+      "sha256": "791230454eb9b004674334f1cd855eda1dab321fb903ffd4945b20ca833384f2",
+      "bytes": 129494,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_03_Greetings_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_03_Greetings_01.wav",
+      "file": "VO_HERO_03_Greetings_01.wav",
+      "sha256": "a2f39a957f6216c2ad3a9bd43102507a4ca3279953f7199fc4aea77f7664d356",
+      "bytes": 156222,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_03_LowCards_18": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_03_LowCards_18.wav",
+      "file": "VO_HERO_03_LowCards_18.wav",
+      "sha256": "afbfae0af37986401222b1fb672cb3c807c43170f38eadadb4a44d8fb8d7df4d",
+      "bytes": 173936,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_03_MIRROR_GREETINGS_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_03_MIRROR_GREETINGS_01.wav",
+      "file": "VO_HERO_03_MIRROR_GREETINGS_01.wav",
+      "sha256": "6078e40b3deb05ad10779fb33d773f795f0d9564aa785490527e44399ba703bc",
+      "bytes": 203324,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_03_MIRROR_START_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_03_MIRROR_START_02.wav",
+      "file": "VO_HERO_03_MIRROR_START_02.wav",
+      "sha256": "1fec487df19184afd7066f5dfd74f62002455d8abe178f754846a00e78e99324",
+      "bytes": 243538,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_03_NoCards_19": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_03_NoCards_19.wav",
+      "file": "VO_HERO_03_NoCards_19.wav",
+      "sha256": "0e01712ad160b074133f6d71709663cbf2fb857c826adc58e009c3c801f3277a",
+      "bytes": 138320,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_03_Oops_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_03_Oops_03.wav",
+      "file": "VO_HERO_03_Oops_03.wav",
+      "sha256": "96b4d961d956d668dcfd4edfbb168965850f7e7a7f9a770cefda22b658fd96c3",
+      "bytes": 172348,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_03_Picked_08": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_03_Picked_08.wav",
+      "file": "VO_HERO_03_Picked_08.wav",
+      "sha256": "aedf277b2e17e654f09295cab87946904746a756084b25bac6a636a5fe160389",
+      "bytes": 178914,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_03_Sorry_06": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_03_Sorry_06.wav",
+      "file": "VO_HERO_03_Sorry_06.wav",
+      "sha256": "576db43b9883af8a2eeb8d50b4a58bd4a0e6f4b3f5dce76dbb8d3b6479c112d9",
+      "bytes": 139812,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_03_Start_09": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_03_Start_09.wav",
+      "file": "VO_HERO_03_Start_09.wav",
+      "sha256": "74bad873a718f0ab8fda4f838dc2d0159e22024ee8e27333d4c16831f57a1746",
+      "bytes": 257356,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_03_Thanks_05": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_03_Thanks_05.wav",
+      "file": "VO_HERO_03_Thanks_05.wav",
+      "sha256": "a604b77c50434859ce9c3c5c11b7adeb58cf14c80a37e7f178c469587e37cbb8",
+      "bytes": 104694,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_03_Thinking1_12": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_03_Thinking1_12.wav",
+      "file": "VO_HERO_03_Thinking1_12.wav",
+      "sha256": "9a86c1b38cd405882416e81199aa000b0634cf90e44e899c0bb1a649d3336dea",
+      "bytes": 122714,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_03_Thinking2_13": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_03_Thinking2_13.wav",
+      "file": "VO_HERO_03_Thinking2_13.wav",
+      "sha256": "81b10f2b8242c790d7ca57a000c84b70cf60e77a7c236d42cc6aa3156f39c2bb",
+      "bytes": 156182,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_03_Thinking3_14": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_03_Thinking3_14.wav",
+      "file": "VO_HERO_03_Thinking3_14.wav",
+      "sha256": "6b1ce1bf00210d0f417b60bc031fec4a9855a51b62fe96ec985febb095d8f89a",
+      "bytes": 223404,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_03_Threaten_04": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_03_Threaten_04.wav",
+      "file": "VO_HERO_03_Threaten_04.wav",
+      "sha256": "65c3da9a7aa0d644a7641b2b5ed381d00cbb6964dc886becf07a5b36eff0ada3",
+      "bytes": 197108,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_03_Time_11": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_03_Time_11.wav",
+      "file": "VO_HERO_03_Time_11.wav",
+      "sha256": "3132d8712a73c94ea95ff309f297e1de3d364fc356fed70f9dc387f767c245be",
+      "bytes": 147258,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_03_WOW_11": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_03_WOW_11.wav",
+      "file": "VO_HERO_03_WOW_11.wav",
+      "sha256": "523a856b1fc372565beeaaebb67989f3b61b861a090877499ced603d0e5cea87",
+      "bytes": 106454,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_03_Well Played_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_03_Well%20Played_02.wav",
+      "file": "VO_HERO_03_Well_Played_02.wav",
+      "sha256": "db5397cf566e196344bc36c1777b74f65090867c98de58120f5195b3adbe3854",
+      "bytes": 111528,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_04_Concede_07": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_04_Concede_07.wav",
+      "file": "VO_HERO_04_Concede_07.wav",
+      "sha256": "03ba4a6d834abf39254cf28e41eeb16458a67bdb6404c0f4973d35871ffd0284",
+      "bytes": 172338,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_04_Death_17": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_04_Death_17.wav",
+      "file": "VO_HERO_04_Death_17.wav",
+      "sha256": "a2033518f5e3e53f33c1e8abb4ed0f397b4e16e63a96885ac1debb5095eb1936",
+      "bytes": 292644,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_04_ERROR01_20": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_04_ERROR01_20.wav",
+      "file": "VO_HERO_04_ERROR01_20.wav",
+      "sha256": "b6761f6dcb27381752062ccff40516cacc295f5307bd902d5b2a765b84dfe469",
+      "bytes": 104706,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_04_ERROR02_21": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_04_ERROR02_21.wav",
+      "file": "VO_HERO_04_ERROR02_21.wav",
+      "sha256": "f2408867c14c37ef260b88c579d10b6567076bb848bcd98359a02d545a4f1445",
+      "bytes": 149520,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_04_ERROR03_22": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_04_ERROR03_22.wav",
+      "file": "VO_HERO_04_ERROR03_22.wav",
+      "sha256": "125b23cb8473b72d0a89bbe4acf8beff9c642460dc7aa00c0f74ad0ed0e31d6f",
+      "bytes": 196918,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_04_ERROR04_23": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_04_ERROR04_23.wav",
+      "file": "VO_HERO_04_ERROR04_23.wav",
+      "sha256": "1a52438cd53ca505db0eb4faa0bef4b9a9c72d22899b9ff245dd36fda61f7b90",
+      "bytes": 150180,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_04_ERROR05_24": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_04_ERROR05_24.wav",
+      "file": "VO_HERO_04_ERROR05_24.wav",
+      "sha256": "e812ba07dd57b4035e43f490ca3f0c6319c60671ea521def528e9272f798071b",
+      "bytes": 213328,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_04_ERROR06_25": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_04_ERROR06_25.wav",
+      "file": "VO_HERO_04_ERROR06_25.wav",
+      "sha256": "a34f894a73a9486b1bf1b3a2684e40ecb1c25de53bd99b00f2bd36c9c051da66",
+      "bytes": 159620,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_04_ERROR07_26": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_04_ERROR07_26.wav",
+      "file": "VO_HERO_04_ERROR07_26.wav",
+      "sha256": "13199908d42aa6401dd164e0ce30c225cc1843a772db0ae8202da6610fa7f5fa",
+      "bytes": 171310,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_04_ERROR08_27": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_04_ERROR08_27.wav",
+      "file": "VO_HERO_04_ERROR08_27.wav",
+      "sha256": "c4d876c405811efa1daeab53b19899a2041392badf94daa8a7663a42b82128b6",
+      "bytes": 224226,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_04_ERROR09_28": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_04_ERROR09_28.wav",
+      "file": "VO_HERO_04_ERROR09_28.wav",
+      "sha256": "98957ae01b76e3b5bc883e4bc9b9375ab7765d96945afe4d4c35cb8f91359c70",
+      "bytes": 111386,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_04_ERROR10_29": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_04_ERROR10_29.wav",
+      "file": "VO_HERO_04_ERROR10_29.wav",
+      "sha256": "3ea9a195d44162451a4d000930f587536ee215a29212ecde59e8796906d839c7",
+      "bytes": 170152,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_04_ERROR11_20": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_04_ERROR11_20.wav",
+      "file": "VO_HERO_04_ERROR11_20.wav",
+      "sha256": "7dbfc8f8b014a54988f0360a4167960379a15ff62dbe810f81f07acf58b18669",
+      "bytes": 214994,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_04_ERROR12_31": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_04_ERROR12_31.wav",
+      "file": "VO_HERO_04_ERROR12_31.wav",
+      "sha256": "7d0b2294d298b7bc99c22e107c7aa50a2da518b85a398ef26a66fc5cb3457c1d",
+      "bytes": 108940,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_04_Greetings_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_04_Greetings_01.wav",
+      "file": "VO_HERO_04_Greetings_01.wav",
+      "sha256": "b9b0c7892bc46fa7e2087d0e0a18be8680154c8bb2d98081355e9b21b204660c",
+      "bytes": 104730,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_04_LowCards_18": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_04_LowCards_18.wav",
+      "file": "VO_HERO_04_LowCards_18.wav",
+      "sha256": "fe4f7a31a496795e94736e5dc2245cc6ebb8c5862a2d30dbbc671c7322745511",
+      "bytes": 164356,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_04_MIRROR_GREETINGS_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_04_MIRROR_GREETINGS_02.wav",
+      "file": "VO_HERO_04_MIRROR_GREETINGS_02.wav",
+      "sha256": "b1653e71ea1bf08d8b55eef2b41a1a568dab22fe246795ec314cd4b80defe2b1",
+      "bytes": 267752,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_04_MIRROR_START_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_04_MIRROR_START_01.wav",
+      "file": "VO_HERO_04_MIRROR_START_01.wav",
+      "sha256": "5b700d0f912d6d6c6403b37b644ff57318bde5488b4b484636bac7be600be34c",
+      "bytes": 182956,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_04_NoCards_19": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_04_NoCards_19.wav",
+      "file": "VO_HERO_04_NoCards_19.wav",
+      "sha256": "5c81bd948550cabb6c2bb39875bde91fa02982e8cca8456ab9a4d2e159c979e9",
+      "bytes": 124902,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_04_Oops_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_04_Oops_03.wav",
+      "file": "VO_HERO_04_Oops_03.wav",
+      "sha256": "82aeffb7f1afd46a1cf08afa7b8a761b1a3791cb1c81199138e3344ab8143b21",
+      "bytes": 157102,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_04_Picked_08": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_04_Picked_08.wav",
+      "file": "VO_HERO_04_Picked_08.wav",
+      "sha256": "3f6818d5d521c48df7238b88f6946f4f2fa4743e265e83d79dc0def18959a129",
+      "bytes": 123654,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_04_Sorry_06": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_04_Sorry_06.wav",
+      "file": "VO_HERO_04_Sorry_06.wav",
+      "sha256": "1ce24ce370300b11847464e8e715a569ed4d6d9fc3f2e2f8a1c447f5c9f8fa27",
+      "bytes": 102286,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_04_Start_09": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_04_Start_09.wav",
+      "file": "VO_HERO_04_Start_09.wav",
+      "sha256": "e8c75a05a1d347d63a81f504133aee9eaba8dab45b8e5d2640b9418e29fb00d4",
+      "bytes": 207400,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_04_Thanks_05": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_04_Thanks_05.wav",
+      "file": "VO_HERO_04_Thanks_05.wav",
+      "sha256": "ddde4bd019a9cd004936b36bc639194498fbc44eeb53f056f0198c8bbe8abc34",
+      "bytes": 69844,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_04_Thinking1_12": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_04_Thinking1_12.wav",
+      "file": "VO_HERO_04_Thinking1_12.wav",
+      "sha256": "821af17ed228f7b949c62a872d68b645dab3150d34b84d0c3dd1ba63dfcdc1be",
+      "bytes": 110530,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_04_Thinking2_13": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_04_Thinking2_13.wav",
+      "file": "VO_HERO_04_Thinking2_13.wav",
+      "sha256": "8e6c0c3f8f38f510fc2e4e46d0faeefae7c52373979ce037b9b36510890271ad",
+      "bytes": 164494,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_04_Thinking3_14": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_04_Thinking3_14.wav",
+      "file": "VO_HERO_04_Thinking3_14.wav",
+      "sha256": "0b00df8d86a5b1b8426145c68f3c47f3f20dded13926da8bc5f9f81da63a5d62",
+      "bytes": 206524,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_04_Threaten_04": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_04_Threaten_04.wav",
+      "file": "VO_HERO_04_Threaten_04.wav",
+      "sha256": "bb140d21ca276217e10c1421db20c32665cbf5a8ecc955c50f93b8345b95daa9",
+      "bytes": 257260,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_04_Time_11": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_04_Time_11.wav",
+      "file": "VO_HERO_04_Time_11.wav",
+      "sha256": "571a524a7eb37b7d37c6f8e1f2db43dceb2a432fc9184c6e28ce51132dbed4fd",
+      "bytes": 132550,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_04_WOW_06": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_04_WOW_06.wav",
+      "file": "VO_HERO_04_WOW_06.wav",
+      "sha256": "8e2a0f5e09240f502220bf3a487439b5b8a4a579ebd4403cfb4b9677870c77fd",
+      "bytes": 180102,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_04_WellPlayed_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_04_WellPlayed_02.wav",
+      "file": "VO_HERO_04_WellPlayed_02.wav",
+      "sha256": "4b68f0f2640c2a7b775b3c5761eea06a4bb06061a0dcb89d052ee110d11fb9af",
+      "bytes": 103612,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_05_Concede_07": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_05_Concede_07.wav",
+      "file": "VO_HERO_05_Concede_07.wav",
+      "sha256": "0e281e15045869222cbe999a787ec9b48544c905d28b8fd0d64e12651fc56c94",
+      "bytes": 272422,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_05_Death_17": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_05_Death_17.wav",
+      "file": "VO_HERO_05_Death_17.wav",
+      "sha256": "9720e2788363f39258af0899ad3ed0d3ad590a7591bf9044ff99731be59182e0",
+      "bytes": 505908,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_05_ERROR01_21": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_05_ERROR01_21.wav",
+      "file": "VO_HERO_05_ERROR01_21.wav",
+      "sha256": "328fb6b646a8a28d471a808db2a8790be3105aefe15a2c52c1a9c34836581836",
+      "bytes": 104600,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_05_ERROR02_22": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_05_ERROR02_22.wav",
+      "file": "VO_HERO_05_ERROR02_22.wav",
+      "sha256": "e5902089b377ed1d122a17d8cb4fc71be546b56ce1462f2c14d9b6ae9870663e",
+      "bytes": 140388,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_05_ERROR03_23": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_05_ERROR03_23.wav",
+      "file": "VO_HERO_05_ERROR03_23.wav",
+      "sha256": "03edad1faf192b3b02ccc363c3c5c090ef36964e05bb7bf026568a7c9ed95c5b",
+      "bytes": 202302,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_05_ERROR04_24": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_05_ERROR04_24.wav",
+      "file": "VO_HERO_05_ERROR04_24.wav",
+      "sha256": "cc0e7ac60605aa98b5959ea6a40305ca4f89e4f2365031bc626ddd2c933b2a7c",
+      "bytes": 126350,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_05_ERROR05_25": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_05_ERROR05_25.wav",
+      "file": "VO_HERO_05_ERROR05_25.wav",
+      "sha256": "e058693d047c77b3b73dda23f3dd6be95b1ef8ba074c96345e428e6a06101ca8",
+      "bytes": 216246,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_05_ERROR06_26": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_05_ERROR06_26.wav",
+      "file": "VO_HERO_05_ERROR06_26.wav",
+      "sha256": "ebfef2812b92b929535d22a0f74c24ea727a0e6b76558befc568978d9c5a8ad0",
+      "bytes": 165484,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_05_ERROR07_27": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_05_ERROR07_27.wav",
+      "file": "VO_HERO_05_ERROR07_27.wav",
+      "sha256": "0aac7f6079192de6378fd246ab2425a9b88512ae124c4bb64f1f16c49ecd4ffe",
+      "bytes": 167156,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_05_ERROR08_28": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_05_ERROR08_28.wav",
+      "file": "VO_HERO_05_ERROR08_28.wav",
+      "sha256": "4ce5259ad25557a1c49353aa269c4c1fdd5fc399157387299d5a173813fa00f9",
+      "bytes": 231428,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_05_ERROR09_29": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_05_ERROR09_29.wav",
+      "file": "VO_HERO_05_ERROR09_29.wav",
+      "sha256": "c4f3986780a2161d580cf2ef2e6c1ae7de0f4fb82bb7edcf11a40ef41a1a44df",
+      "bytes": 124750,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_05_ERROR10_30": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_05_ERROR10_30.wav",
+      "file": "VO_HERO_05_ERROR10_30.wav",
+      "sha256": "879391ef9e68d4b4df5c9c95fc2ea1492cb142ca5c3002f68b9a627d745273e9",
+      "bytes": 153212,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_05_ERROR11_20": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_05_ERROR11_20.wav",
+      "file": "VO_HERO_05_ERROR11_20.wav",
+      "sha256": "2275ed4c933d3408c129cbc2b64f73708875b22a7b713704e3af7f10007d6cdc",
+      "bytes": 248626,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_05_ERROR12_32": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_05_ERROR12_32.wav",
+      "file": "VO_HERO_05_ERROR12_32.wav",
+      "sha256": "c2c33304d5939c9696432053fb7f22b4c2a2cafa5b75ee273606c4381033b3f3",
+      "bytes": 121394,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_05_Greetings_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_05_Greetings_01.wav",
+      "file": "VO_HERO_05_Greetings_01.wav",
+      "sha256": "7d61faf82a9132b6a0e5ff62abdb9c16d848eee4e14b0634576089af1e113fdc",
+      "bytes": 167996,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_05_LowCards_19": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_05_LowCards_19.wav",
+      "file": "VO_HERO_05_LowCards_19.wav",
+      "sha256": "c40a6ac80569a48c6196d1fd40c0b2eb1fc7bf73136be73a700dcde53bbec0e7",
+      "bytes": 199504,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_05_MIRROR_GREETINGS_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_05_MIRROR_GREETINGS_02.wav",
+      "file": "VO_HERO_05_MIRROR_GREETINGS_02.wav",
+      "sha256": "82d2715ef8f7da34958b533b7bf335dddb46b86e3fd9b4db252daae8bcc592e4",
+      "bytes": 89294,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_05_MIRROR_START_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_05_MIRROR_START_01.wav",
+      "file": "VO_HERO_05_MIRROR_START_01.wav",
+      "sha256": "7e32c80e8e80f806bc95066b199dcceff0f7655c06a324082ea58710d1f8eb92",
+      "bytes": 155586,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_05_NoCards_20": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_05_NoCards_20.wav",
+      "file": "VO_HERO_05_NoCards_20.wav",
+      "sha256": "fd95e8ff2224ef963dad3f2cdc38f9febe66cabfc928b28a10bb875c2201d5f0",
+      "bytes": 145904,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_05_Oops_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_05_Oops_03.wav",
+      "file": "VO_HERO_05_Oops_03.wav",
+      "sha256": "bf0a5f25a3f97b5f0559d42776f1bfada01940defd32fbaed0686c5de28283b0",
+      "bytes": 215004,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_05_Picked_08": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_05_Picked_08.wav",
+      "file": "VO_HERO_05_Picked_08.wav",
+      "sha256": "981b7486328f178eba078c1cb0532540076d6d956d7bbd932c2b9f08712e93bc",
+      "bytes": 262574,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_05_Sorry_06": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_05_Sorry_06.wav",
+      "file": "VO_HERO_05_Sorry_06.wav",
+      "sha256": "c09d0a135df96c95a8fbeb54f43e9b334f9172f9aa6f8c5053349fcdc0e12fc8",
+      "bytes": 185156,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_05_Start_09": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_05_Start_09.wav",
+      "file": "VO_HERO_05_Start_09.wav",
+      "sha256": "ae8882a954777bf0bd52bc9fea7dbfce9344d9da6e0e27af5d4f0fd7d027f10f",
+      "bytes": 205134,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_05_Thanks_05": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_05_Thanks_05.wav",
+      "file": "VO_HERO_05_Thanks_05.wav",
+      "sha256": "17684fbcb872945bc7aa5c68862e524b1a65b0a7f5322a9d01ce173e55a4b581",
+      "bytes": 85156,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_05_Thinking1_12": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_05_Thinking1_12.wav",
+      "file": "VO_HERO_05_Thinking1_12.wav",
+      "sha256": "faacb024fc79bb72f3a075eae7566d7eeecd52614dc9611d1a5f1cadee5bbbf1",
+      "bytes": 134788,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_05_Thinking2_13": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_05_Thinking2_13.wav",
+      "file": "VO_HERO_05_Thinking2_13.wav",
+      "sha256": "4bbb9e6235772924ed785b7b0049f9ebe2e38c56757e1cfef83432e57d9599df",
+      "bytes": 176396,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_05_Thinking3_14": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_05_Thinking3_14.wav",
+      "file": "VO_HERO_05_Thinking3_14.wav",
+      "sha256": "e627bbef0bd506cc33c86d6d6d6a5c83fdf1a5e940b4e6036815b225e677072b",
+      "bytes": 165904,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_05_Threaten_04": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_05_Threaten_04.wav",
+      "file": "VO_HERO_05_Threaten_04.wav",
+      "sha256": "97441d73ab8ded7fcf0c18053a786fb58600d506227a3236c1d849a9f7020379",
+      "bytes": 201376,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_05_Time_11": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_05_Time_11.wav",
+      "file": "VO_HERO_05_Time_11.wav",
+      "sha256": "5933c91685230a7ba7fc2e5f834279c4de5bc46c2f5e3135e31ca309205d7ecf",
+      "bytes": 138062,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_05_WOW_06": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_05_WOW_06.wav",
+      "file": "VO_HERO_05_WOW_06.wav",
+      "sha256": "a934d6f199830dc8efed8ed84b942d1a29e92cddc53cca6cc8e4ad635632c6da",
+      "bytes": 164502,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_05_Well Played_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_05_Well%20Played_02.wav",
+      "file": "VO_HERO_05_Well_Played_02.wav",
+      "sha256": "e6db9618c94d81e876fd0ac9010d889ed7e9d2dacc889a960537b13ada998011",
+      "bytes": 147456,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_06_Concede_07": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_06_Concede_07.wav",
+      "file": "VO_HERO_06_Concede_07.wav",
+      "sha256": "def721a1568e3148a498a2c620ea534bc5ea21f49de6ef7516bb44cff5dea5b5",
+      "bytes": 193556,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_06_Death_17": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_06_Death_17.wav",
+      "file": "VO_HERO_06_Death_17.wav",
+      "sha256": "52826d8118a43762d79fcbd3fc1a0f7d214d1fc28485b3f0c6aa2c2f1c6e6b2b",
+      "bytes": 217864,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_06_ERROR01_20": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_06_ERROR01_20.wav",
+      "file": "VO_HERO_06_ERROR01_20.wav",
+      "sha256": "2a08cff3b095bba0ad33622def2992ce6b2897207ea2f5106be5d7d798fea062",
+      "bytes": 177512,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_06_ERROR02_21": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_06_ERROR02_21.wav",
+      "file": "VO_HERO_06_ERROR02_21.wav",
+      "sha256": "d2306190c73a8e15ef773fc5b6079d076cfbcd26cb1c623e3138ce777168e137",
+      "bytes": 179338,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_06_ERROR03_22": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_06_ERROR03_22.wav",
+      "file": "VO_HERO_06_ERROR03_22.wav",
+      "sha256": "e533b471007333298ca935dd925bebdc682f0456b28277ea28e8efa459064092",
+      "bytes": 229648,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_06_ERROR04_23": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_06_ERROR04_23.wav",
+      "file": "VO_HERO_06_ERROR04_23.wav",
+      "sha256": "a70da1ba914db7a1f7119ec9574da64cb82644addf1a7443b21e981504773563",
+      "bytes": 174096,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_06_ERROR05_24": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_06_ERROR05_24.wav",
+      "file": "VO_HERO_06_ERROR05_24.wav",
+      "sha256": "1a000eb7e913ca20ed8ae9ef076a08051a81ece9852959785324aa492d9b85ee",
+      "bytes": 244052,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_06_ERROR06_25": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_06_ERROR06_25.wav",
+      "file": "VO_HERO_06_ERROR06_25.wav",
+      "sha256": "4e0b32230209c30d3af346a42882c62d318851a32746747271b90aba3136b9c4",
+      "bytes": 226504,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_06_ERROR07_26": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_06_ERROR07_26.wav",
+      "file": "VO_HERO_06_ERROR07_26.wav",
+      "sha256": "fd12273c0ed029c3ef3409cd369cd083ec301fb31aa40e31af1595257ea1cd87",
+      "bytes": 191712,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_06_ERROR08_27": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_06_ERROR08_27.wav",
+      "file": "VO_HERO_06_ERROR08_27.wav",
+      "sha256": "5921886ae5ccb8682b5997d1cb18f1c30f5ba6cdbab216e4f27d291c4c80091a",
+      "bytes": 239904,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_06_ERROR09_28": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_06_ERROR09_28.wav",
+      "file": "VO_HERO_06_ERROR09_28.wav",
+      "sha256": "ce3e07108f38dd15b6086976932c74927c02e7eaf610bc785987497d0497e236",
+      "bytes": 143510,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_06_ERROR10_29": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_06_ERROR10_29.wav",
+      "file": "VO_HERO_06_ERROR10_29.wav",
+      "sha256": "2bc232fa349a5b6c28c0cf40991a7b92ceefa2e068d11028c6e5362a1297ee2a",
+      "bytes": 168634,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_06_ERROR11_20": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_06_ERROR11_20.wav",
+      "file": "VO_HERO_06_ERROR11_20.wav",
+      "sha256": "8a8d5af6d447bebec8694ad7a0ba106c1d0aa0d2ebe984a7e6ab4a86edc34e13",
+      "bytes": 230252,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_06_ERROR12_31": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_06_ERROR12_31.wav",
+      "file": "VO_HERO_06_ERROR12_31.wav",
+      "sha256": "47c6b940ea6a2d6581a54130fcc483de95f29b93e77216e57c7dce1492a88e56",
+      "bytes": 133126,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_06_Greetings_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_06_Greetings_01.wav",
+      "file": "VO_HERO_06_Greetings_01.wav",
+      "sha256": "41feb31245d59018834ad535e193b16b0596537b89aacfe00519f427464bf25b",
+      "bytes": 133690,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_06_LowCards_18": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_06_LowCards_18.wav",
+      "file": "VO_HERO_06_LowCards_18.wav",
+      "sha256": "a4981bd301532ad281ab9b34f43feb74727272d7216788989842b9c31acc41fa",
+      "bytes": 200956,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_06_MIRROR_GREETINGS_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_06_MIRROR_GREETINGS_02.wav",
+      "file": "VO_HERO_06_MIRROR_GREETINGS_02.wav",
+      "sha256": "860f6b31c09752717effd1e12f3d0158b6cc96498d82fc19f44cb27454f9833b",
+      "bytes": 169588,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_06_MIRROR_START_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_06_MIRROR_START_01.wav",
+      "file": "VO_HERO_06_MIRROR_START_01.wav",
+      "sha256": "217de99aee2969cbd487b332041f38b4cbf5c764368e8f7e7773da1feea4fc98",
+      "bytes": 274032,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_06_NoCards_19": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_06_NoCards_19.wav",
+      "file": "VO_HERO_06_NoCards_19.wav",
+      "sha256": "bc383dd47da51a3cf526f6bb02ebb741794ec9980a86f86b13509ebeefca69b8",
+      "bytes": 198332,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_06_Oops_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_06_Oops_03.wav",
+      "file": "VO_HERO_06_Oops_03.wav",
+      "sha256": "1f3d06e0cbc0b23a535afe59815579d092562b39546ebf09090e8116d19d3c64",
+      "bytes": 187902,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_06_Picked_08": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_06_Picked_08.wav",
+      "file": "VO_HERO_06_Picked_08.wav",
+      "sha256": "991af9abb912e43eb6449948b89b92db8f8d0e7acdb0e6a8da93a7194716bb50",
+      "bytes": 183238,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_06_Sorry_06": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_06_Sorry_06.wav",
+      "file": "VO_HERO_06_Sorry_06.wav",
+      "sha256": "e890ebd3d68fb842d65ae6e1cf36cf4b76885ba0b145d1b0413b82e01dc70e76",
+      "bytes": 147024,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_06_Start_09": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_06_Start_09.wav",
+      "file": "VO_HERO_06_Start_09.wav",
+      "sha256": "f1b2dddb3d72dd1e7e2462d60c7a8eff3f2d7ca3763e607eaa4073107b6bc219",
+      "bytes": 215222,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_06_Thanks_05": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_06_Thanks_05.wav",
+      "file": "VO_HERO_06_Thanks_05.wav",
+      "sha256": "e5c6e8de93857c0ad5ec5f81bf8b1fe7c0fa5f3fd86bc67ac62ec4cc87ddb6e4",
+      "bytes": 170444,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_06_Thinking1_12": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_06_Thinking1_12.wav",
+      "file": "VO_HERO_06_Thinking1_12.wav",
+      "sha256": "b79cdabfd67c9f455c37dbd4ce366e863b91fbfb4cb00ba17b9a69eab00c5a96",
+      "bytes": 133522,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_06_Thinking2_13": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_06_Thinking2_13.wav",
+      "file": "VO_HERO_06_Thinking2_13.wav",
+      "sha256": "b81eebc947ef7962c82eb2178f230ff612aadacefc15cfce62c84883af2c259a",
+      "bytes": 245576,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_06_Thinking3_14": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_06_Thinking3_14.wav",
+      "file": "VO_HERO_06_Thinking3_14.wav",
+      "sha256": "2d98c45608f4988894a403bbe18425bb33c2d61017af1226c4fc909d186b6e48",
+      "bytes": 168196,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_06_Threaten_04": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_06_Threaten_04.wav",
+      "file": "VO_HERO_06_Threaten_04.wav",
+      "sha256": "6e7153d17c05851498fa1ed89454c03dd5b1711c0d7a90ff2f6aeedb4aeedbc7",
+      "bytes": 294524,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_06_Time_11": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_06_Time_11.wav",
+      "file": "VO_HERO_06_Time_11.wav",
+      "sha256": "f98c79b5585601f51ceedd8b76c1a671b6efdcea2d971bb60fbccf8b6ce99425",
+      "bytes": 169376,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_06_WOW_06": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_06_WOW_06.wav",
+      "file": "VO_HERO_06_WOW_06.wav",
+      "sha256": "69aef476083fb22717511c2b31c508e284453c02c31ff72a7acbfc6d270e02d3",
+      "bytes": 184408,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_06_Well Played_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_06_Well%20Played_02.wav",
+      "file": "VO_HERO_06_Well_Played_02.wav",
+      "sha256": "045cb3c4552ee0473166e7b92d06edfbb1e8c53f06ce8940c5331e76a7ece3a6",
+      "bytes": 165244,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_07_Concede_07": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_07_Concede_07.wav",
+      "file": "VO_HERO_07_Concede_07.wav",
+      "sha256": "0996f58fbf96cbf38f7805c07be1ae7c18842862d83dafda99fc42825f1eb738",
+      "bytes": 315852,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_07_Death_17": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_07_Death_17.wav",
+      "file": "VO_HERO_07_Death_17.wav",
+      "sha256": "a6b3472179a470a695b53a079dcb80fbaee0674c443334b4fdf7e4a27279e8cf",
+      "bytes": 468024,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_07_ERROR01_20": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_07_ERROR01_20.wav",
+      "file": "VO_HERO_07_ERROR01_20.wav",
+      "sha256": "8bb289d2c9bf6dc5d95cc117d79396f14b2ff8c7e2970e3913f5c06a1733ffc9",
+      "bytes": 204280,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_07_ERROR02_21": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_07_ERROR02_21.wav",
+      "file": "VO_HERO_07_ERROR02_21.wav",
+      "sha256": "477ad47b077a499db011a55c6300e782cc2510f7a5b66dad429405bc8949b3bf",
+      "bytes": 204106,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_07_ERROR03_22": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_07_ERROR03_22.wav",
+      "file": "VO_HERO_07_ERROR03_22.wav",
+      "sha256": "3bfa2020cacac246aaa87b4db9a3bebdaa32aeff8b79240610bb8db77bcc1c04",
+      "bytes": 276356,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_07_ERROR04_23": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_07_ERROR04_23.wav",
+      "file": "VO_HERO_07_ERROR04_23.wav",
+      "sha256": "b91c89a167c3f58be45d07dd221f3d5541a8dd83e092ecdc1eb495f608a3f03b",
+      "bytes": 183286,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_07_ERROR05_24": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_07_ERROR05_24.wav",
+      "file": "VO_HERO_07_ERROR05_24.wav",
+      "sha256": "c1b6e0cb15606d14d4d1da516f3e57bfd948cffad87e20e6ce6bb5f32a8919de",
+      "bytes": 336740,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_07_ERROR06_25": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_07_ERROR06_25.wav",
+      "file": "VO_HERO_07_ERROR06_25.wav",
+      "sha256": "0d8afc70aceabdda43716ef66dd59c964727b8435ca832670df31a014d310895",
+      "bytes": 244312,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_07_ERROR07_26": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_07_ERROR07_26.wav",
+      "file": "VO_HERO_07_ERROR07_26.wav",
+      "sha256": "6a603b9204c0d184b99524e65b87698523bab9ab57d5e79e0af9ecf5f1442806",
+      "bytes": 288588,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_07_ERROR08_27": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_07_ERROR08_27.wav",
+      "file": "VO_HERO_07_ERROR08_27.wav",
+      "sha256": "54928b820af87dac6b60b4b888bc0bdae925296652073c47ebb7317d681a78ee",
+      "bytes": 332862,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_07_ERROR09_28": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_07_ERROR09_28.wav",
+      "file": "VO_HERO_07_ERROR09_28.wav",
+      "sha256": "46fd68cc7a986e88dc40c223d826553ee789a67e7fba5b1217f3b34d81eae701",
+      "bytes": 197384,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_07_ERROR10_29": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_07_ERROR10_29.wav",
+      "file": "VO_HERO_07_ERROR10_29.wav",
+      "sha256": "904a64db28117306c5e5c47d4be756194234083346f7fba64995f5a9fcb6afc6",
+      "bytes": 275948,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_07_ERROR11_20": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_07_ERROR11_20.wav",
+      "file": "VO_HERO_07_ERROR11_20.wav",
+      "sha256": "25d3d6895a11cd0f2983b3fbfc6f48ffbda6c4c187be787ef566e77e9344de09",
+      "bytes": 312044,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_07_ERROR12_31": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_07_ERROR12_31.wav",
+      "file": "VO_HERO_07_ERROR12_31.wav",
+      "sha256": "efca276455af64f36228275cc8cb034388091fba9ab30feae1c40da89e3e529f",
+      "bytes": 192430,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_07_Greetings_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_07_Greetings_01.wav",
+      "file": "VO_HERO_07_Greetings_01.wav",
+      "sha256": "221d35ef44b8dbe8dbf473151aff7e3c0a5599396d021b7479596d5747f62900",
+      "bytes": 216154,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_07_LowCards_18": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_07_LowCards_18.wav",
+      "file": "VO_HERO_07_LowCards_18.wav",
+      "sha256": "e48e65c21f394dfe9a265f7017cce0881977d097de9762255f4250766abcc1c9",
+      "bytes": 236312,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_07_MIRROR_GREETINGS_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_07_MIRROR_GREETINGS_02.wav",
+      "file": "VO_HERO_07_MIRROR_GREETINGS_02.wav",
+      "sha256": "6dffcb7e0b9313b96b9a404f4aafb4490bf14b99ce93e13675ae10df90cda353",
+      "bytes": 220204,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_07_MIRROR_START_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_07_MIRROR_START_01.wav",
+      "file": "VO_HERO_07_MIRROR_START_01.wav",
+      "sha256": "19c38f17b9f904ef27507674bc665d75d3827c8ec8d6dd8d03e7947155313cb0",
+      "bytes": 265190,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_07_NoCards_19": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_07_NoCards_19.wav",
+      "file": "VO_HERO_07_NoCards_19.wav",
+      "sha256": "2bdea859f538280dea90ede50da075d5eb9b434ba5966686403466c47a8d8142",
+      "bytes": 185798,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_07_Oops_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_07_Oops_03.wav",
+      "file": "VO_HERO_07_Oops_03.wav",
+      "sha256": "840f63dca6ceb3357aa3c0a25cd0e59709407595d5cd3e438e1613d5bd206703",
+      "bytes": 226506,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_07_Picked_08": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_07_Picked_08.wav",
+      "file": "VO_HERO_07_Picked_08.wav",
+      "sha256": "77d093c310b562047cd242109bfc6b7c1b3baddde65c1922b97ec9808cbebb93",
+      "bytes": 285004,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_07_Sorry_06": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_07_Sorry_06.wav",
+      "file": "VO_HERO_07_Sorry_06.wav",
+      "sha256": "ace5a1a8813f62b08cc735cef0e19a6334f286e8f7e7fc070e6add611b3c5740",
+      "bytes": 158974,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_07_Start_09": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_07_Start_09.wav",
+      "file": "VO_HERO_07_Start_09.wav",
+      "sha256": "c4055631667dc6dbfbad5ce5068d5be0286997c7bc6e15f27ec1c6db0e21f144",
+      "bytes": 261124,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_07_Thanks_05": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_07_Thanks_05.wav",
+      "file": "VO_HERO_07_Thanks_05.wav",
+      "sha256": "7a715a75aaa7e126a02715f2f5319836886f64968847945e3b427eff592e4cf3",
+      "bytes": 161132,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_07_Thinking1_12": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_07_Thinking1_12.wav",
+      "file": "VO_HERO_07_Thinking1_12.wav",
+      "sha256": "a440036202e1bea91e5be1ebdcc63ec7a49126fc19fba6403675833c4aa3d4d4",
+      "bytes": 188922,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_07_Thinking2_13": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_07_Thinking2_13.wav",
+      "file": "VO_HERO_07_Thinking2_13.wav",
+      "sha256": "13182929b02f56d497f9b89993645a79534a317f36d6b5ad1ff1d2b219f04a03",
+      "bytes": 240674,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_07_Thinking3_14": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_07_Thinking3_14.wav",
+      "file": "VO_HERO_07_Thinking3_14.wav",
+      "sha256": "acfb3d12f73dd0e679c21541b17176e827655cc36d446fe290dbed02134d90eb",
+      "bytes": 334810,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_07_Threaten_04": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_07_Threaten_04.wav",
+      "file": "VO_HERO_07_Threaten_04.wav",
+      "sha256": "8000f1c745e8bab0f162ee737dfd4b402fc0fe017fe0dff91cc2775c946f7e73",
+      "bytes": 249222,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_07_Time_11": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_07_Time_11.wav",
+      "file": "VO_HERO_07_Time_11.wav",
+      "sha256": "fdc2bc9a79c2c845705367039f690f46d54e3c8f9a10aa21034b9b8ad82da780",
+      "bytes": 219024,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_07_WOW_06": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_07_WOW_06.wav",
+      "file": "VO_HERO_07_WOW_06.wav",
+      "sha256": "ce658c7dac20307aaeab337fb2c740b3768871ff910f81a4c2ca296eeaf0b7ff",
+      "bytes": 203204,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_07_Well Played_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_07_Well%20Played_02.wav",
+      "file": "VO_HERO_07_Well_Played_02.wav",
+      "sha256": "3817ea8ca4e17d793cf3a51bcb2ba0b7097b898654ab47d77c50214919c0e385",
+      "bytes": 202486,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_08_Concede_62": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_08_Concede_62.wav",
+      "file": "VO_HERO_08_Concede_62.wav",
+      "sha256": "99d3a15927713c9bfc3d1e88f134c60ad7e9de517b2628400da244bc0215782b",
+      "bytes": 159436,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_08_Death_72": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_08_Death_72.wav",
+      "file": "VO_HERO_08_Death_72.wav",
+      "sha256": "7f53d86ac76f6e6eeb70468460c35359b8dc9bc5678e83c037114ef2f5805dd9",
+      "bytes": 277716,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_08_ERROR01_75": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_08_ERROR01_75.wav",
+      "file": "VO_HERO_08_ERROR01_75.wav",
+      "sha256": "00d955fb55be5ab2ffff5b2a0a76154d3f60bfc3e4a4e5e55ea30bae60951f75",
+      "bytes": 94392,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_08_ERROR02_76": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_08_ERROR02_76.wav",
+      "file": "VO_HERO_08_ERROR02_76.wav",
+      "sha256": "5cbb87f51fd77490c6e8326958d62ef61cc5bb592069159855e1d3461181e2e0",
+      "bytes": 139820,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_08_ERROR03_77": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_08_ERROR03_77.wav",
+      "file": "VO_HERO_08_ERROR03_77.wav",
+      "sha256": "e401a06fa0f5da780c0902633af93e1468692e03886fb02f426e3c4c30a7ca62",
+      "bytes": 169212,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_08_ERROR04_78": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_08_ERROR04_78.wav",
+      "file": "VO_HERO_08_ERROR04_78.wav",
+      "sha256": "9a82af109d00e815587c98b48c4c1fb627b0516f3285b9498bf0c18c19951944",
+      "bytes": 132534,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_08_ERROR05_79": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_08_ERROR05_79.wav",
+      "file": "VO_HERO_08_ERROR05_79.wav",
+      "sha256": "aff83129feca23c08a22216492a8955c09b62d81aeb161ee52aebea4342371ea",
+      "bytes": 188714,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_08_ERROR06_80": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_08_ERROR06_80.wav",
+      "file": "VO_HERO_08_ERROR06_80.wav",
+      "sha256": "18be41b1d708af4f229cc7949e1731baef2bddfd0235e063ab85b9203d983fc5",
+      "bytes": 153916,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_08_ERROR07_81": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_08_ERROR07_81.wav",
+      "file": "VO_HERO_08_ERROR07_81.wav",
+      "sha256": "519d6d6a1bf739a83301c69b8156866656e2cabd44514a0ca3470a43317606c0",
+      "bytes": 149370,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_08_ERROR08_82": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_08_ERROR08_82.wav",
+      "file": "VO_HERO_08_ERROR08_82.wav",
+      "sha256": "c40b58265be293122459ec58d39e36625c6d4b596cb97bf6db284b1158f930c7",
+      "bytes": 205182,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_08_ERROR09_83": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_08_ERROR09_83.wav",
+      "file": "VO_HERO_08_ERROR09_83.wav",
+      "sha256": "b4b910808108737212e022900b5e853ef7f7246ee76e8fb8f13d6d41118148dc",
+      "bytes": 115524,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_08_ERROR10_84": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_08_ERROR10_84.wav",
+      "file": "VO_HERO_08_ERROR10_84.wav",
+      "sha256": "df1af88604c024b423a5a8306cbb05e541db56aca464f9b4842e07f729b58826",
+      "bytes": 161568,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_08_ERROR11_20": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_08_ERROR11_20.wav",
+      "file": "VO_HERO_08_ERROR11_20.wav",
+      "sha256": "8b901281c077e0f5b2120961cf72e3edd492d87e862ea4e4a861e62f80338089",
+      "bytes": 170102,
+      "channels": 1,
+      "rate": 44100
+    },
+    "VO_HERO_08_ERROR12_86": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_08_ERROR12_86.wav",
+      "file": "VO_HERO_08_ERROR12_86.wav",
+      "sha256": "11adaefd8bb4b5fd52a51738c7d83190bbb3debfc5ac1eba6844de57efe5e6fe",
+      "bytes": 110228,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_08_Greetings_56": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_08_Greetings_56.wav",
+      "file": "VO_HERO_08_Greetings_56.wav",
+      "sha256": "c78e597a9d90aafcfaa6923534abcbcc5b29362c62eacac89123cf9be2cee0ee",
+      "bytes": 53014,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_08_LowCards_73": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_08_LowCards_73.wav",
+      "file": "VO_HERO_08_LowCards_73.wav",
+      "sha256": "5b1c06d95e4389e568121efd18fd59a89f3d4d0046845616e8e6ab9030e943a3",
+      "bytes": 158576,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_08_MIRROR_GREETINGS_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_08_MIRROR_GREETINGS_02.wav",
+      "file": "VO_HERO_08_MIRROR_GREETINGS_02.wav",
+      "sha256": "2921c17dd8d8903000a534295145415007347b6233d9bcd9518d217088c8942e",
+      "bytes": 123656,
+      "channels": 1,
+      "rate": 44100
+    },
+    "VO_HERO_08_MIRROR_START_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_08_MIRROR_START_01.wav",
+      "file": "VO_HERO_08_MIRROR_START_01.wav",
+      "sha256": "bba180d81ccdf324477dc4a4770aef85b1df1f4572e85e15410a2be6621076ba",
+      "bytes": 161120,
+      "channels": 1,
+      "rate": 44100
+    },
+    "VO_HERO_08_NoCards_74": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_08_NoCards_74.wav",
+      "file": "VO_HERO_08_NoCards_74.wav",
+      "sha256": "8ed96ace131cf1db4872a8026a2b3acb65c8e3175623396b45372aed9683c0e8",
+      "bytes": 113646,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_08_Oops_58": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_08_Oops_58.wav",
+      "file": "VO_HERO_08_Oops_58.wav",
+      "sha256": "ef012fe1ea3157310a68e6166297e460bc04c2a638e9716159c07da6abafe3c2",
+      "bytes": 69288,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_08_Picked_63": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_08_Picked_63.wav",
+      "file": "VO_HERO_08_Picked_63.wav",
+      "sha256": "3932cc1f230be7968bb6c7a7378a2a7c1b51f797f3854b67279067ed74d95ed9",
+      "bytes": 212498,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_08_Sorry_61": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_08_Sorry_61.wav",
+      "file": "VO_HERO_08_Sorry_61.wav",
+      "sha256": "42b78eff556101f12fcaadac54275d1a97ac214214888642c8d0ac329f2557f7",
+      "bytes": 95116,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_08_Start_64": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_08_Start_64.wav",
+      "file": "VO_HERO_08_Start_64.wav",
+      "sha256": "de50b20c0b6cbd53bbfb982a93b4f93035b54a1eef13c5ba92b880b42073b8cd",
+      "bytes": 129396,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_08_Thanks_60": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_08_Thanks_60.wav",
+      "file": "VO_HERO_08_Thanks_60.wav",
+      "sha256": "de46e1b5714c044791f653a9648ad4cc4bcad401ab7aefb59e631d6d18fff9ab",
+      "bytes": 79232,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_08_Thinking1_67": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_08_Thinking1_67.wav",
+      "file": "VO_HERO_08_Thinking1_67.wav",
+      "sha256": "bf7140087b1b37fb2a2e0c900ec25f1e7fcf0e4e82e20d895dc6862f5ab86db9",
+      "bytes": 124754,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_08_Thinking2_68": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_08_Thinking2_68.wav",
+      "file": "VO_HERO_08_Thinking2_68.wav",
+      "sha256": "c0870f867ebdb7ab7cd6bef7c4c2563c1d9846c25419ee573c2a9bafceff6cee",
+      "bytes": 128262,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_08_Thinking3_69": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_08_Thinking3_69.wav",
+      "file": "VO_HERO_08_Thinking3_69.wav",
+      "sha256": "2915ceb446576bd2b9037d31338bbcc2fac2a5ac263ac485231d90e09a800743",
+      "bytes": 279314,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_08_Threaten_59": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_08_Threaten_59.wav",
+      "file": "VO_HERO_08_Threaten_59.wav",
+      "sha256": "73efbb84908dfe86a7343713d7968732b592466d3c623f45b8591faa9c6c0169",
+      "bytes": 274266,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_08_Time_66": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_08_Time_66.wav",
+      "file": "VO_HERO_08_Time_66.wav",
+      "sha256": "ba277b7f2b947ec4de71234d7557acc7dca9c58ae31d8ebc343f91979cbde6ca",
+      "bytes": 141730,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_08_WOW_06": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_08_WOW_06.wav",
+      "file": "VO_HERO_08_WOW_06.wav",
+      "sha256": "00f1a180869749b546cd0eaf02cdb6c32fb772e3abcfa5db73957bb3716dee0a",
+      "bytes": 90966,
+      "channels": 1,
+      "rate": 44100
+    },
+    "VO_HERO_08_Well Played_57": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_08_Well%20Played_57.wav",
+      "file": "VO_HERO_08_Well_Played_57.wav",
+      "sha256": "1bc2e3c410fc18f8d2765f9e1f9f01580ee5a4705cef17e682c6b479cf35911e",
+      "bytes": 117876,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_09_Concede_07": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_09_Concede_07.wav",
+      "file": "VO_HERO_09_Concede_07.wav",
+      "sha256": "d4800d8d20921b1e687857a9127c164433bc016266efea02cd57355e0fb77cc1",
+      "bytes": 128864,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_09_Death_17": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_09_Death_17.wav",
+      "file": "VO_HERO_09_Death_17.wav",
+      "sha256": "46eeff39e35eec4760619d80d645754714cdb2dfa90684e1bf2ca471415d7a23",
+      "bytes": 291980,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_09_ERROR01_20": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_09_ERROR01_20.wav",
+      "file": "VO_HERO_09_ERROR01_20.wav",
+      "sha256": "8e59af9f5c18fedac293fb5405a9b8f77c274f2621c3e941157c7a8334b01dbe",
+      "bytes": 87878,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_09_ERROR02_21": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_09_ERROR02_21.wav",
+      "file": "VO_HERO_09_ERROR02_21.wav",
+      "sha256": "c81275ee9ea8e6063e6fd34ab67c24941c35fc7353bf9aa8eeb7f5c932fe2351",
+      "bytes": 108166,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_09_ERROR03_22": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_09_ERROR03_22.wav",
+      "file": "VO_HERO_09_ERROR03_22.wav",
+      "sha256": "d5a59564d2bbc427eaff494333f664003f6ed7eb88af7152f24639a44401497e",
+      "bytes": 143814,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_09_ERROR04_23": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_09_ERROR04_23.wav",
+      "file": "VO_HERO_09_ERROR04_23.wav",
+      "sha256": "ff19626e99786cafbfd65f9fb8ae4a85557a1b5942b1d7e1ea6987427fa41e4e",
+      "bytes": 112448,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_09_ERROR05_24": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_09_ERROR05_24.wav",
+      "file": "VO_HERO_09_ERROR05_24.wav",
+      "sha256": "4f2c74d899345b5c96c4cba077c5d4e9fad9db51c5368c59694c641dfb3f64b4",
+      "bytes": 164710,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_09_ERROR06_25": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_09_ERROR06_25.wav",
+      "file": "VO_HERO_09_ERROR06_25.wav",
+      "sha256": "40f9e8c25b8e186a95a9704a55dd3a70e5db3ab7c71f52dbd032bff013fcd059",
+      "bytes": 136308,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_09_ERROR07_26": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_09_ERROR07_26.wav",
+      "file": "VO_HERO_09_ERROR07_26.wav",
+      "sha256": "ffaeb821baae6e4120b0cb90860d0f5392050440a84fd677b53451abf8ec18a2",
+      "bytes": 127438,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_09_ERROR08_27": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_09_ERROR08_27.wav",
+      "file": "VO_HERO_09_ERROR08_27.wav",
+      "sha256": "79d68e8a7d3161c4a7f2058cfdec6ac3dfce78b8200885a7748f944686c75f93",
+      "bytes": 186392,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_09_ERROR09_28": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_09_ERROR09_28.wav",
+      "file": "VO_HERO_09_ERROR09_28.wav",
+      "sha256": "1df40fc0cef1510d755df805fca937c2b7c075c71391426c3c478a49fba0741d",
+      "bytes": 96082,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_09_ERROR10_29": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_09_ERROR10_29.wav",
+      "file": "VO_HERO_09_ERROR10_29.wav",
+      "sha256": "c03a26b9080979ea6eb9e426e6c1b16de30aadea0685722b42a3076c601a14f3",
+      "bytes": 125670,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_09_ERROR11_20": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_09_ERROR11_20.wav",
+      "file": "VO_HERO_09_ERROR11_20.wav",
+      "sha256": "c92354f309f7c7b5810a42fc8698d58685e513386b7cfa352fd3b8e6b25ca6e5",
+      "bytes": 225294,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_09_ERROR12_31": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_09_ERROR12_31.wav",
+      "file": "VO_HERO_09_ERROR12_31.wav",
+      "sha256": "49f1327372b1731cf7fa2cdb0b80aeb2010e81b54bd518a644861187b4878d68",
+      "bytes": 98116,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_09_Greetings_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_09_Greetings_01.wav",
+      "file": "VO_HERO_09_Greetings_01.wav",
+      "sha256": "e8225aec77950fa9a385652af3492f4f5446ccbdda1ddd5db8cc5814f2679c52",
+      "bytes": 83736,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_09_LowCards_18": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_09_LowCards_18.wav",
+      "file": "VO_HERO_09_LowCards_18.wav",
+      "sha256": "0af2e3cbde6f8ba46164b2b4f36b341dc9b1489947119068e48a5a5d2bc4085b",
+      "bytes": 134902,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_09_MIRROR_GREETINGS_02_ALT": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_09_MIRROR_GREETINGS_02_ALT.wav",
+      "file": "VO_HERO_09_MIRROR_GREETINGS_02_ALT.wav",
+      "sha256": "67584a204dea7a61527f05d7581d9324566b380b0bd5416fea3ff2c14f997007",
+      "bytes": 106564,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_09_MIRROR_START_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_09_MIRROR_START_01.wav",
+      "file": "VO_HERO_09_MIRROR_START_01.wav",
+      "sha256": "7e1ff10f15e8ec2a61b2eafd5c0653efaff14f7020b5f14df4531c71c2fee033",
+      "bytes": 253760,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_09_NoCards_19": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_09_NoCards_19.wav",
+      "file": "VO_HERO_09_NoCards_19.wav",
+      "sha256": "2752fad40471e6ffb98b19f289d6171d503626af43fef27b0b56a26a09e14bd4",
+      "bytes": 94636,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_09_Oops_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_09_Oops_03.wav",
+      "file": "VO_HERO_09_Oops_03.wav",
+      "sha256": "45650bb8eacefe534aa84c0d885a34522753e228fcaa3d7a66b93b697f17debf",
+      "bytes": 182942,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_09_Picked_08": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_09_Picked_08.wav",
+      "file": "VO_HERO_09_Picked_08.wav",
+      "sha256": "af64e77a1451677288bd8d89cc4b1f43a8307a1e600602a5f3cd39e206b23360",
+      "bytes": 114930,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_09_Sorry_06": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_09_Sorry_06.wav",
+      "file": "VO_HERO_09_Sorry_06.wav",
+      "sha256": "84fec2b7a1db46d3acc3a856eeac56623c557a1461b32286713f5f672c75c845",
+      "bytes": 129640,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_09_Start_09": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_09_Start_09.wav",
+      "file": "VO_HERO_09_Start_09.wav",
+      "sha256": "f40319020180c8b0823d7694345c630fec5a7e2b17e599ad3dce49b9325cf90e",
+      "bytes": 199986,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_09_Thanks_05": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_09_Thanks_05.wav",
+      "file": "VO_HERO_09_Thanks_05.wav",
+      "sha256": "108197d5ece47cd296ca3a2d1a8190b01bd606025b32ea6925027e95005de67d",
+      "bytes": 71566,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_09_Thinking1_12": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_09_Thinking1_12.wav",
+      "file": "VO_HERO_09_Thinking1_12.wav",
+      "sha256": "31a09203b442c131a627b2a7db2a57c6512ec50105f521d7e53ae67839880c9d",
+      "bytes": 137028,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_09_Thinking2_13": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_09_Thinking2_13.wav",
+      "file": "VO_HERO_09_Thinking2_13.wav",
+      "sha256": "cbb145908a8b6450bc402dcc22b1aa07ecee9e93c3e53fd47a6c5ea4fcea594d",
+      "bytes": 163244,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_09_Thinking3_14": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_09_Thinking3_14.wav",
+      "file": "VO_HERO_09_Thinking3_14.wav",
+      "sha256": "28a66debde3f14eddc67d5854b0f884ce72cdbfa5d0d286b62a6d73446d22614",
+      "bytes": 212836,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_09_Threaten_04": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_09_Threaten_04.wav",
+      "file": "VO_HERO_09_Threaten_04.wav",
+      "sha256": "b14bca81691ba453bacdb0cc8452d6969806ea93bcbd4a634c1a73485f98aa4a",
+      "bytes": 148434,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_09_Time_11": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_09_Time_11.wav",
+      "file": "VO_HERO_09_Time_11.wav",
+      "sha256": "c984e97e2c91f5277367ae4fd264c348f7c421252ced72ccd138f258c676d7bb",
+      "bytes": 113892,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_09_WOW_06": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_09_WOW_06.wav",
+      "file": "VO_HERO_09_WOW_06.wav",
+      "sha256": "7dddf0b02f7d93386b9fd3d694ee0fffe4d125d6aa7585bb08d45eaf39dec59e",
+      "bytes": 119858,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_09_Well_Played_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_09_Well_Played_02.wav",
+      "file": "VO_HERO_09_Well_Played_02.wav",
+      "sha256": "ab3304681e8f6cde548ab570ae4fe50a7677ff8b56e6066645ac330d57d42d93",
+      "bytes": 101526,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_Hero_02_Concede_07": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_Hero_02_Concede_07.wav",
+      "file": "VO_Hero_02_Concede_07.wav",
+      "sha256": "80fdd70b18d45057d6f4641a8fa57d63b62839762b7600bc23b8e701e2a4739b",
+      "bytes": 206964,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_Hero_02_Death_17": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_Hero_02_Death_17.wav",
+      "file": "VO_Hero_02_Death_17.wav",
+      "sha256": "8701dd902da3f2533e869cf70fdc221059efc548b74aa72cdcc292d489abac56",
+      "bytes": 228058,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_Hero_02_ERROR010_29": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_Hero_02_ERROR010_29.wav",
+      "file": "VO_Hero_02_ERROR010_29.wav",
+      "sha256": "ff29ec3cce8c5a300c50923a789adbb9bb2b83620132e8b1f25bc0ab5ec225a6",
+      "bytes": 188802,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_Hero_02_ERROR01_20": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_Hero_02_ERROR01_20.wav",
+      "file": "VO_Hero_02_ERROR01_20.wav",
+      "sha256": "227324751cd066a472934ba2a15b9849f40eb18226a6ef7f9d5558e4cee63747",
+      "bytes": 169736,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_Hero_02_ERROR02_21": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_Hero_02_ERROR02_21.wav",
+      "file": "VO_Hero_02_ERROR02_21.wav",
+      "sha256": "0a3854d6f5de0a9e134e4ada5df11e692b77ec159ae465e12e58dad5be4593ab",
+      "bytes": 174718,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_Hero_02_ERROR03_22": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_Hero_02_ERROR03_22.wav",
+      "file": "VO_Hero_02_ERROR03_22.wav",
+      "sha256": "0e01f8483f2e405db78b70d5db7673b05ce170a3c6bb5eaefdede8cb1f3f361b",
+      "bytes": 205756,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_Hero_02_ERROR04_23": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_Hero_02_ERROR04_23.wav",
+      "file": "VO_Hero_02_ERROR04_23.wav",
+      "sha256": "7903e64912e27ff600973b12af96432159770974534e89a2a0c535163ac20dd0",
+      "bytes": 159502,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_Hero_02_ERROR05_24": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_Hero_02_ERROR05_24.wav",
+      "file": "VO_Hero_02_ERROR05_24.wav",
+      "sha256": "d908cec822a1c1e836485d1823304ad3e12f00bb9ee38a54e939259f5dad1ea7",
+      "bytes": 244902,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_Hero_02_ERROR06_25": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_Hero_02_ERROR06_25.wav",
+      "file": "VO_Hero_02_ERROR06_25.wav",
+      "sha256": "871b4f6833eee707293109630735f319e75a8df2752103aba77b831f9df5f331",
+      "bytes": 187846,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_Hero_02_ERROR07_26": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_Hero_02_ERROR07_26.wav",
+      "file": "VO_Hero_02_ERROR07_26.wav",
+      "sha256": "f4be57faa2072f319a86ccad9aea5b807723535373283c2cb664149f35ed67c0",
+      "bytes": 202688,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_Hero_02_ERROR08_27": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_Hero_02_ERROR08_27.wav",
+      "file": "VO_Hero_02_ERROR08_27.wav",
+      "sha256": "2ba48de378bb4de0262a8d945a13fb6f7799c130e83efe189de59c312ab170a2",
+      "bytes": 239928,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_Hero_02_ERROR09_28": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_Hero_02_ERROR09_28.wav",
+      "file": "VO_Hero_02_ERROR09_28.wav",
+      "sha256": "7d09d598ef1aecd9ead9507c6e46636521787d7de29c9de452a2ba6360d33955",
+      "bytes": 135288,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_Hero_02_ERROR12_31": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_Hero_02_ERROR12_31.wav",
+      "file": "VO_Hero_02_ERROR12_31.wav",
+      "sha256": "19ff48b593aec5f6266e51f116597fea331cd15dc7400bda3107369615c1dfde",
+      "bytes": 136394,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_Hero_02_Greetings_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_Hero_02_Greetings_01.wav",
+      "file": "VO_Hero_02_Greetings_01.wav",
+      "sha256": "decb7f2d303b519f448c52b69f4a72761f19bffefd85ff4509e9f3abfc82a4d5",
+      "bytes": 192054,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_Hero_02_LowCards_18": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_Hero_02_LowCards_18.wav",
+      "file": "VO_Hero_02_LowCards_18.wav",
+      "sha256": "88a1d1e3a2057729291410ec3096317298b3e144cd0ff50389329c99f7623cd1",
+      "bytes": 204696,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_Hero_02_NoCards_19": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_Hero_02_NoCards_19.wav",
+      "file": "VO_Hero_02_NoCards_19.wav",
+      "sha256": "9cb67f03f5f33678654facd1ec56958f1439b490f1f65486216f07422d87f46a",
+      "bytes": 147520,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_Hero_02_Oops_03_ALT": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_Hero_02_Oops_03_ALT.wav",
+      "file": "VO_Hero_02_Oops_03_ALT.wav",
+      "sha256": "efae6dfcbbcd5acc94fbe526afd7025a78a76dd857fe801b2dd336f52904173c",
+      "bytes": 167248,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_Hero_02_Picked_08": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_Hero_02_Picked_08.wav",
+      "file": "VO_Hero_02_Picked_08.wav",
+      "sha256": "98bbe21e863dea036933204d83403f2c8370e2cad4e1189b45244bfa1450a5ca",
+      "bytes": 361430,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_Hero_02_Sorry_06": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_Hero_02_Sorry_06.wav",
+      "file": "VO_Hero_02_Sorry_06.wav",
+      "sha256": "fc7866283bfb68583f631d066f5ce700ae51b4420cdf93ea0d5c75739c9affdc",
+      "bytes": 150276,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_Hero_02_Start_09": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_Hero_02_Start_09.wav",
+      "file": "VO_Hero_02_Start_09.wav",
+      "sha256": "682f95f106e41b48912240c7a221f2da48d548b55117f49e09bf8dccb02b65f8",
+      "bytes": 151596,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_Hero_02_Thanks_05": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_Hero_02_Thanks_05.wav",
+      "file": "VO_Hero_02_Thanks_05.wav",
+      "sha256": "2ea94dcee2025133e371a99bce680a734f9c7f69d163a987a02b4aedc5845015",
+      "bytes": 143698,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_Hero_02_Thinking1_12": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_Hero_02_Thinking1_12.wav",
+      "file": "VO_Hero_02_Thinking1_12.wav",
+      "sha256": "032fba5cae39f699347815d553da0f09b010e51bc7fbfcd9f331655fd1ffe3c9",
+      "bytes": 107430,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_Hero_02_Thinking2_13": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_Hero_02_Thinking2_13.wav",
+      "file": "VO_Hero_02_Thinking2_13.wav",
+      "sha256": "ac82cfab93ff24cad5ff36c455388e6e219726ede4215a9b5c3c82356eed415e",
+      "bytes": 155752,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_Hero_02_Thinking3_14": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_Hero_02_Thinking3_14.wav",
+      "file": "VO_Hero_02_Thinking3_14.wav",
+      "sha256": "36b9787211a4324e32c62ec67e4d1b630f86f0d0016cf7f1ce1a662d31db03df",
+      "bytes": 262544,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_Hero_02_Threaten_04": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_Hero_02_Threaten_04.wav",
+      "file": "VO_Hero_02_Threaten_04.wav",
+      "sha256": "a68fb91304b8c7ca14881e01e436a71547746098556d53c7411c29e89f975835",
+      "bytes": 244592,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_Hero_02_Time_11": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_Hero_02_Time_11.wav",
+      "file": "VO_Hero_02_Time_11.wav",
+      "sha256": "eab9480e498982c7a7ac68643ed54a1a9c01bbff0220b1fe443a4389066031af",
+      "bytes": 187398,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_Hero_02_Well Played_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_Hero_02_Well%20Played_02.wav",
+      "file": "VO_Hero_02_Well_Played_02.wav",
+      "sha256": "1f99357e32013752460e37d104a7f539f7449c83fcc06021eb59c06b8333a9bb",
+      "bytes": 145698,
+      "channels": 1,
+      "rate": 48000
+    }
+  }
+}

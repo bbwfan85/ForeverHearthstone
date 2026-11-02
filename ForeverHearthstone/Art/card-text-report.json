@@ -1,0 +1,18 @@
+{
+  "cards": 791,
+  "files": 1668,
+  "bytes": 78126768,
+  "name_file": [
+    256,
+    32
+  ],
+  "text_file": [
+    256,
+    64
+  ],
+  "supersample": 6,
+  "fonts": [
+    "Vollkorn-Black (names)",
+    "LibreFranklin-SemiBold / ExtraBold (rules)"
+  ]
+}

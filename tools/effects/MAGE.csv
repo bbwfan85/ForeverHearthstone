@@ -1,0 +1,10 @@
+card_id,hook,trigger,cond,ops,flags,notes
+NEW1_012,trigger,SPELL_CAST,PayloadIsMine,"Buff(self, 1, 0)",,Mana Wyrm - permanent unlike Mana Addict
+GVG_001,spell,,,"Damage(enemy.minion~1, 4)",,Flamecannon - random enemy minion
+EX1_289,secret,PRE_ATTACK,PayloadTargetIsHero,"GainArmor(friendly.hero, 8)",,Ice Barrier - attack still resolves
+EX1_594,secret,PRE_ATTACK,PayloadTargetIsHero and PayloadAttackerIsMinion,Destroy(attacker),cancels,Vaporize - destroys attacker and cancels the attack
+GVG_004,battlecry,,"Count(friendly.mech, 1)","MissileSplit(enemy.char, 4)",,Goblin Blastmage - Blastmage is not itself a Mech
+CS2_028,spell,,,"Damage(enemy.minion, 2); Freeze(enemy.minion)",,Blizzard
+EX1_559,trigger,SPELL_CAST,PayloadIsMine,AddCard(CS2_029),,Archmage Antonidas - CS2_029 is Fireball
+EX1_279,spell,,,"Damage(target, 10)",,Pyroblast
+CS2_033,trigger,DAMAGE_DEALT,PayloadSourceIsSelf,Freeze(payload),,"Water Elemental - identical shape to Snowchugger (GVG_002); it was missing from both batch worklists and so did nothing at all"

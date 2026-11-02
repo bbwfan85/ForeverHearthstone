@@ -1,0 +1,8 @@
+## Interface: 16001, 120100, 120000, 120005, 110200
+## Title: Forever Hearthstone - Screenshot Tour (dev)
+## Notes: Developer tool. Walks every Forever Hearthstone screen and a self-playing practice match, taking a real client screenshot at each. Never packaged.
+## Dependencies: ForeverHearthstone
+## SavedVariables: FHTourDB
+
+Config.lua
+Tour.lua

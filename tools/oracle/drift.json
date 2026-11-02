@@ -1,0 +1,1944 @@
+{
+ "missing": [
+  "CS1h_001",
+  "CS2_017",
+  "CS2_034",
+  "CS2_049",
+  "CS2_056",
+  "CS2_083b",
+  "CS2_101",
+  "CS2_102",
+  "DS1h_292",
+  "PlaceholderCard",
+  "XXX_001",
+  "XXX_002",
+  "XXX_003",
+  "XXX_004",
+  "XXX_005",
+  "XXX_006",
+  "XXX_007",
+  "XXX_008",
+  "XXX_009",
+  "XXX_010",
+  "XXX_011",
+  "XXX_012",
+  "XXX_013",
+  "XXX_014",
+  "XXX_015",
+  "XXX_016",
+  "XXX_017",
+  "XXX_018",
+  "XXX_019",
+  "XXX_020",
+  "XXX_021",
+  "XXX_022",
+  "XXX_023",
+  "XXX_024",
+  "XXX_025",
+  "XXX_026",
+  "XXX_027",
+  "XXX_028",
+  "XXX_029",
+  "XXX_030",
+  "XXX_039",
+  "XXX_040",
+  "XXX_041",
+  "XXX_042",
+  "XXX_043",
+  "XXX_044",
+  "XXX_045",
+  "XXX_046",
+  "XXX_047",
+  "XXX_048",
+  "XXX_049",
+  "XXX_050",
+  "XXX_051",
+  "XXX_052",
+  "XXX_053",
+  "XXX_054",
+  "XXX_055",
+  "XXX_056",
+  "XXX_057",
+  "XXX_095",
+  "XXX_096",
+  "XXX_097",
+  "XXX_098",
+  "XXX_099"
+ ],
+ "reworked": {},
+ "same": [
+  "CRED_01",
+  "CRED_02",
+  "CRED_03",
+  "CRED_04",
+  "CRED_05",
+  "CRED_06",
+  "CRED_07",
+  "CRED_08",
+  "CRED_09",
+  "CRED_10",
+  "CRED_11",
+  "CRED_12",
+  "CRED_13",
+  "CRED_14",
+  "CRED_15",
+  "CRED_16",
+  "CRED_17",
+  "CS1_042",
+  "CS1_069",
+  "CS1_113",
+  "CS1_129",
+  "CS2_003",
+  "CS2_005",
+  "CS2_007",
+  "CS2_008",
+  "CS2_009",
+  "CS2_011",
+  "CS2_012",
+  "CS2_013t",
+  "CS2_022",
+  "CS2_023",
+  "CS2_024",
+  "CS2_025",
+  "CS2_026",
+  "CS2_027",
+  "CS2_028",
+  "CS2_029",
+  "CS2_031",
+  "CS2_032",
+  "CS2_033",
+  "CS2_037",
+  "CS2_038",
+  "CS2_039",
+  "CS2_041",
+  "CS2_042",
+  "CS2_046",
+  "CS2_050",
+  "CS2_051",
+  "CS2_052",
+  "CS2_053",
+  "CS2_057",
+  "CS2_059",
+  "CS2_061",
+  "CS2_062",
+  "CS2_063",
+  "CS2_064",
+  "CS2_065",
+  "CS2_072",
+  "CS2_074",
+  "CS2_075",
+  "CS2_076",
+  "CS2_077",
+  "CS2_080",
+  "CS2_082",
+  "CS2_087",
+  "CS2_088",
+  "CS2_089",
+  "CS2_091",
+  "CS2_092",
+  "CS2_093",
+  "CS2_094",
+  "CS2_097",
+  "CS2_101t",
+  "CS2_104",
+  "CS2_105",
+  "CS2_112",
+  "CS2_114",
+  "CS2_117",
+  "CS2_118",
+  "CS2_119",
+  "CS2_120",
+  "CS2_121",
+  "CS2_122",
+  "CS2_124",
+  "CS2_125",
+  "CS2_127",
+  "CS2_131",
+  "CS2_141",
+  "CS2_142",
+  "CS2_146",
+  "CS2_147",
+  "CS2_150",
+  "CS2_151",
+  "CS2_152",
+  "CS2_155",
+  "CS2_161",
+  "CS2_162",
+  "CS2_168",
+  "CS2_169",
+  "CS2_171",
+  "CS2_172",
+  "CS2_173",
+  "CS2_179",
+  "CS2_181",
+  "CS2_182",
+  "CS2_186",
+  "CS2_187",
+  "CS2_189",
+  "CS2_196",
+  "CS2_197",
+  "CS2_200",
+  "CS2_201",
+  "CS2_213",
+  "CS2_221",
+  "CS2_222",
+  "CS2_226",
+  "CS2_227",
+  "CS2_231",
+  "CS2_232",
+  "CS2_234",
+  "CS2_235",
+  "CS2_236",
+  "CS2_237",
+  "CS2_boar",
+  "CS2_mirror",
+  "DREAM_01",
+  "DREAM_02",
+  "DREAM_03",
+  "DREAM_04",
+  "DREAM_05",
+  "DS1_055",
+  "DS1_070",
+  "DS1_175",
+  "DS1_178",
+  "DS1_183",
+  "DS1_184",
+  "DS1_185",
+  "DS1_188",
+  "DS1_233",
+  "EX1_001",
+  "EX1_002",
+  "EX1_004",
+  "EX1_006",
+  "EX1_007",
+  "EX1_008",
+  "EX1_009",
+  "EX1_010",
+  "EX1_011",
+  "EX1_012",
+  "EX1_014",
+  "EX1_014t",
+  "EX1_015",
+  "EX1_016",
+  "EX1_017",
+  "EX1_019",
+  "EX1_020",
+  "EX1_021",
+  "EX1_023",
+  "EX1_025",
+  "EX1_025t",
+  "EX1_028",
+  "EX1_032",
+  "EX1_033",
+  "EX1_043",
+  "EX1_044",
+  "EX1_045",
+  "EX1_046",
+  "EX1_048",
+  "EX1_049",
+  "EX1_050",
+  "EX1_055",
+  "EX1_057",
+  "EX1_058",
+  "EX1_059",
+  "EX1_062",
+  "EX1_066",
+  "EX1_067",
+  "EX1_076",
+  "EX1_080",
+  "EX1_082",
+  "EX1_083",
+  "EX1_085",
+  "EX1_091",
+  "EX1_093",
+  "EX1_095",
+  "EX1_096",
+  "EX1_097",
+  "EX1_100",
+  "EX1_102",
+  "EX1_105",
+  "EX1_110",
+  "EX1_110t",
+  "EX1_112",
+  "EX1_116",
+  "EX1_116t",
+  "EX1_124",
+  "EX1_126",
+  "EX1_128",
+  "EX1_129",
+  "EX1_130",
+  "EX1_130a",
+  "EX1_131",
+  "EX1_131t",
+  "EX1_132",
+  "EX1_133",
+  "EX1_134",
+  "EX1_136",
+  "EX1_137",
+  "EX1_144",
+  "EX1_154",
+  "EX1_155",
+  "EX1_158",
+  "EX1_160",
+  "EX1_160t",
+  "EX1_161",
+  "EX1_162",
+  "EX1_165",
+  "EX1_165t1",
+  "EX1_165t2",
+  "EX1_170",
+  "EX1_173",
+  "EX1_178",
+  "EX1_238",
+  "EX1_241",
+  "EX1_243",
+  "EX1_244",
+  "EX1_245",
+  "EX1_247",
+  "EX1_248",
+  "EX1_249",
+  "EX1_250",
+  "EX1_251",
+  "EX1_258",
+  "EX1_259",
+  "EX1_274",
+  "EX1_275",
+  "EX1_277",
+  "EX1_278",
+  "EX1_279",
+  "EX1_283",
+  "EX1_284",
+  "EX1_287",
+  "EX1_289",
+  "EX1_295",
+  "EX1_298",
+  "EX1_301",
+  "EX1_302",
+  "EX1_303",
+  "EX1_304",
+  "EX1_306",
+  "EX1_308",
+  "EX1_309",
+  "EX1_310",
+  "EX1_312",
+  "EX1_313",
+  "EX1_315",
+  "EX1_316",
+  "EX1_317",
+  "EX1_317t",
+  "EX1_319",
+  "EX1_320",
+  "EX1_323",
+  "EX1_323h",
+  "EX1_323w",
+  "EX1_332",
+  "EX1_335",
+  "EX1_341",
+  "EX1_345",
+  "EX1_345t",
+  "EX1_349",
+  "EX1_350",
+  "EX1_354",
+  "EX1_355",
+  "EX1_360",
+  "EX1_362",
+  "EX1_363",
+  "EX1_365",
+  "EX1_371",
+  "EX1_382",
+  "EX1_383",
+  "EX1_383t",
+  "EX1_384",
+  "EX1_390",
+  "EX1_391",
+  "EX1_392",
+  "EX1_393",
+  "EX1_396",
+  "EX1_398",
+  "EX1_398t",
+  "EX1_399",
+  "EX1_400",
+  "EX1_402",
+  "EX1_405",
+  "EX1_407",
+  "EX1_408",
+  "EX1_409",
+  "EX1_409t",
+  "EX1_410",
+  "EX1_411",
+  "EX1_412",
+  "EX1_414",
+  "EX1_506",
+  "EX1_509",
+  "EX1_522",
+  "EX1_531",
+  "EX1_533",
+  "EX1_534",
+  "EX1_534t",
+  "EX1_536",
+  "EX1_537",
+  "EX1_538",
+  "EX1_538t",
+  "EX1_539",
+  "EX1_543",
+  "EX1_544",
+  "EX1_549",
+  "EX1_554",
+  "EX1_556",
+  "EX1_557",
+  "EX1_558",
+  "EX1_559",
+  "EX1_560",
+  "EX1_561",
+  "EX1_562",
+  "EX1_563",
+  "EX1_564",
+  "EX1_567",
+  "EX1_570",
+  "EX1_572",
+  "EX1_573",
+  "EX1_575",
+  "EX1_577",
+  "EX1_578",
+  "EX1_581",
+  "EX1_582",
+  "EX1_583",
+  "EX1_584",
+  "EX1_586",
+  "EX1_587",
+  "EX1_590",
+  "EX1_591",
+  "EX1_593",
+  "EX1_594",
+  "EX1_595",
+  "EX1_596",
+  "EX1_597",
+  "EX1_598",
+  "EX1_603",
+  "EX1_604",
+  "EX1_606",
+  "EX1_607",
+  "EX1_608",
+  "EX1_610",
+  "EX1_611",
+  "EX1_612",
+  "EX1_613",
+  "EX1_614",
+  "EX1_614t",
+  "EX1_616",
+  "EX1_617",
+  "EX1_620",
+  "EX1_621",
+  "EX1_624",
+  "EX1_625",
+  "EX1_625t",
+  "EX1_625t2",
+  "EX1_626",
+  "EX1_tk11",
+  "EX1_tk28",
+  "EX1_tk29",
+  "EX1_tk33",
+  "EX1_tk34",
+  "FP1_001",
+  "FP1_002",
+  "FP1_002t",
+  "FP1_003",
+  "FP1_004",
+  "FP1_005",
+  "FP1_006",
+  "FP1_007",
+  "FP1_008",
+  "FP1_009",
+  "FP1_010",
+  "FP1_011",
+  "FP1_012",
+  "FP1_012t",
+  "FP1_013",
+  "FP1_014",
+  "FP1_014t",
+  "FP1_015",
+  "FP1_016",
+  "FP1_017",
+  "FP1_018",
+  "FP1_019",
+  "FP1_020",
+  "FP1_021",
+  "FP1_022",
+  "FP1_023",
+  "FP1_024",
+  "FP1_025",
+  "FP1_026",
+  "FP1_027",
+  "FP1_029",
+  "FP1_030",
+  "FP1_031",
+  "GAME_002",
+  "GAME_005",
+  "GAME_006",
+  "GVG_001",
+  "GVG_002",
+  "GVG_003",
+  "GVG_004",
+  "GVG_005",
+  "GVG_006",
+  "GVG_007",
+  "GVG_008",
+  "GVG_009",
+  "GVG_010",
+  "GVG_011",
+  "GVG_012",
+  "GVG_013",
+  "GVG_014",
+  "GVG_015",
+  "GVG_016",
+  "GVG_017",
+  "GVG_019",
+  "GVG_020",
+  "GVG_021",
+  "GVG_022",
+  "GVG_023",
+  "GVG_024",
+  "GVG_025",
+  "GVG_026",
+  "GVG_027",
+  "GVG_028",
+  "GVG_028t",
+  "GVG_029",
+  "GVG_030",
+  "GVG_031",
+  "GVG_032",
+  "GVG_033",
+  "GVG_034",
+  "GVG_035",
+  "GVG_036",
+  "GVG_037",
+  "GVG_038",
+  "GVG_039",
+  "GVG_040",
+  "GVG_041",
+  "GVG_042",
+  "GVG_043",
+  "GVG_044",
+  "GVG_045",
+  "GVG_045t",
+  "GVG_046",
+  "GVG_047",
+  "GVG_048",
+  "GVG_049",
+  "GVG_050",
+  "GVG_051",
+  "GVG_052",
+  "GVG_053",
+  "GVG_054",
+  "GVG_055",
+  "GVG_056",
+  "GVG_057",
+  "GVG_058",
+  "GVG_059",
+  "GVG_060",
+  "GVG_061",
+  "GVG_062",
+  "GVG_063",
+  "GVG_064",
+  "GVG_065",
+  "GVG_066",
+  "GVG_067",
+  "GVG_068",
+  "GVG_069",
+  "GVG_070",
+  "GVG_071",
+  "GVG_073",
+  "GVG_074",
+  "GVG_075",
+  "GVG_076",
+  "GVG_077",
+  "GVG_078",
+  "GVG_079",
+  "GVG_080",
+  "GVG_080t",
+  "GVG_081",
+  "GVG_082",
+  "GVG_083",
+  "GVG_084",
+  "GVG_085",
+  "GVG_086",
+  "GVG_087",
+  "GVG_088",
+  "GVG_089",
+  "GVG_090",
+  "GVG_091",
+  "GVG_092",
+  "GVG_092t",
+  "GVG_093",
+  "GVG_094",
+  "GVG_095",
+  "GVG_096",
+  "GVG_097",
+  "GVG_098",
+  "GVG_099",
+  "GVG_100",
+  "GVG_101",
+  "GVG_102",
+  "GVG_103",
+  "GVG_104",
+  "GVG_105",
+  "GVG_106",
+  "GVG_107",
+  "GVG_108",
+  "GVG_109",
+  "GVG_110",
+  "GVG_110t",
+  "GVG_111",
+  "GVG_111t",
+  "GVG_112",
+  "GVG_113",
+  "GVG_114",
+  "GVG_115",
+  "GVG_116",
+  "GVG_117",
+  "GVG_118",
+  "GVG_119",
+  "GVG_120",
+  "GVG_121",
+  "GVG_122",
+  "GVG_123",
+  "HERO_01",
+  "HERO_02",
+  "HERO_03",
+  "HERO_04",
+  "HERO_05",
+  "HERO_06",
+  "HERO_07",
+  "HERO_08",
+  "HERO_09",
+  "Mekka1",
+  "Mekka2",
+  "Mekka3",
+  "Mekka4",
+  "Mekka4t",
+  "NAX10_01",
+  "NAX10_01H",
+  "NAX10_02",
+  "NAX10_02H",
+  "NAX10_03",
+  "NAX10_03H",
+  "NAX11_01",
+  "NAX11_01H",
+  "NAX11_02",
+  "NAX11_02H",
+  "NAX11_03",
+  "NAX11_04",
+  "NAX12_01",
+  "NAX12_01H",
+  "NAX12_02",
+  "NAX12_02H",
+  "NAX12_03",
+  "NAX12_03H",
+  "NAX12_04",
+  "NAX13_01",
+  "NAX13_01H",
+  "NAX13_02",
+  "NAX13_03",
+  "NAX13_04H",
+  "NAX13_05H",
+  "NAX14_01",
+  "NAX14_01H",
+  "NAX14_02",
+  "NAX14_03",
+  "NAX14_04",
+  "NAX15_01",
+  "NAX15_01H",
+  "NAX15_02",
+  "NAX15_02H",
+  "NAX15_03n",
+  "NAX15_03t",
+  "NAX15_04",
+  "NAX15_04H",
+  "NAX15_05",
+  "NAX1_01",
+  "NAX1_03",
+  "NAX1_04",
+  "NAX1_05",
+  "NAX1h_01",
+  "NAX1h_03",
+  "NAX1h_04",
+  "NAX2_01",
+  "NAX2_01H",
+  "NAX2_03",
+  "NAX2_03H",
+  "NAX2_05",
+  "NAX2_05H",
+  "NAX3_01",
+  "NAX3_01H",
+  "NAX3_02",
+  "NAX3_02H",
+  "NAX3_03",
+  "NAX4_01",
+  "NAX4_01H",
+  "NAX4_03",
+  "NAX4_03H",
+  "NAX4_04",
+  "NAX4_04H",
+  "NAX4_05",
+  "NAX5_01",
+  "NAX5_01H",
+  "NAX5_02",
+  "NAX5_02H",
+  "NAX5_03",
+  "NAX6_01",
+  "NAX6_01H",
+  "NAX6_02",
+  "NAX6_02H",
+  "NAX6_03",
+  "NAX6_03t",
+  "NAX6_04",
+  "NAX7_01",
+  "NAX7_01H",
+  "NAX7_02",
+  "NAX7_03",
+  "NAX7_03H",
+  "NAX7_04",
+  "NAX7_04H",
+  "NAX7_05",
+  "NAX8_01",
+  "NAX8_01H",
+  "NAX8_02",
+  "NAX8_02H",
+  "NAX8_03",
+  "NAX8_03t",
+  "NAX8_04",
+  "NAX8_04t",
+  "NAX8_05",
+  "NAX8_05t",
+  "NAX9_01",
+  "NAX9_01H",
+  "NAX9_02",
+  "NAX9_02H",
+  "NAX9_03",
+  "NAX9_03H",
+  "NAX9_04",
+  "NAX9_04H",
+  "NAX9_05",
+  "NAX9_05H",
+  "NAX9_06",
+  "NAX9_07",
+  "NAXM_001",
+  "NAXM_002",
+  "NEW1_004",
+  "NEW1_005",
+  "NEW1_007",
+  "NEW1_009",
+  "NEW1_010",
+  "NEW1_011",
+  "NEW1_016",
+  "NEW1_017",
+  "NEW1_018",
+  "NEW1_020",
+  "NEW1_021",
+  "NEW1_022",
+  "NEW1_023",
+  "NEW1_024",
+  "NEW1_025",
+  "NEW1_026",
+  "NEW1_027",
+  "NEW1_029",
+  "NEW1_030",
+  "NEW1_031",
+  "NEW1_032",
+  "NEW1_033",
+  "NEW1_034",
+  "NEW1_036",
+  "NEW1_037",
+  "NEW1_038",
+  "NEW1_040",
+  "NEW1_040t",
+  "NEW1_041",
+  "PART_001",
+  "PART_002",
+  "PART_003",
+  "PART_004",
+  "PART_005",
+  "PART_006",
+  "PART_007",
+  "PRO_001",
+  "PRO_001a",
+  "PRO_001b",
+  "PRO_001c",
+  "TU4a_001",
+  "TU4a_002",
+  "TU4a_003",
+  "TU4a_004",
+  "TU4a_005",
+  "TU4b_001",
+  "TU4c_001",
+  "TU4c_002",
+  "TU4c_003",
+  "TU4c_004",
+  "TU4c_005",
+  "TU4c_006",
+  "TU4c_007",
+  "TU4c_008",
+  "TU4d_001",
+  "TU4d_002",
+  "TU4d_003",
+  "TU4e_001",
+  "TU4e_002",
+  "TU4e_002t",
+  "TU4e_003",
+  "TU4e_004",
+  "TU4e_005",
+  "TU4e_007",
+  "TU4f_001",
+  "TU4f_002",
+  "TU4f_003",
+  "TU4f_004",
+  "TU4f_005",
+  "TU4f_006",
+  "TU4f_007",
+  "ds1_whelptoken",
+  "hexfrog",
+  "skele11",
+  "skele21",
+  "tt_004",
+  "tt_010"
+ ],
+ "shimmed": {
+  "CS1_112": {
+   "name": "Holy Nova",
+   "pin": {
+    "atk": 0,
+    "cost": 5,
+    "durability": 0,
+    "health": 0
+   },
+   "text": "Deal $2 damage to all enemies. Restore #2 Health to all friendly characters."
+  },
+  "CS1_130": {
+   "name": "Holy Smite",
+   "pin": {
+    "atk": 0,
+    "cost": 1,
+    "durability": 0,
+    "health": 0
+   },
+   "text": "Deal $2 damage."
+  },
+  "CS2_004": {
+   "name": "Power Word: Shield",
+   "pin": {
+    "atk": 0,
+    "cost": 1,
+    "durability": 0,
+    "health": 0
+   },
+   "text": "Give a minion +2 Health.\nDraw a card."
+  },
+  "CS2_103": {
+   "name": "Charge",
+   "pin": {
+    "atk": 0,
+    "cost": 3,
+    "durability": 0,
+    "health": 0
+   },
+   "text": "Give a friendly minion +2 Attack and <b>Charge</b>."
+  },
+  "CS2_233": {
+   "name": "Blade Flurry",
+   "pin": {
+    "atk": 0,
+    "cost": 2,
+    "durability": 0,
+    "health": 0
+   },
+   "text": "Destroy your weapon and deal its damage to all enemies."
+  },
+  "EX1_084": {
+   "name": "Warsong Commander",
+   "pin": {
+    "atk": 2,
+    "cost": 3,
+    "durability": 0,
+    "health": 3
+   },
+   "text": "Whenever you summon a minion with 3 or less Attack, give it <b>Charge</b>."
+  },
+  "EX1_089": {
+   "name": "Arcane Golem",
+   "pin": {
+    "atk": 4,
+    "cost": 3,
+    "durability": 0,
+    "health": 2
+   },
+   "text": "<b>Charge</b>. <b>Battlecry:</b> Give your opponent a Mana Crystal."
+  },
+  "EX1_103": {
+   "name": "Coldlight Seer",
+   "pin": {
+    "atk": 2,
+    "cost": 3,
+    "durability": 0,
+    "health": 3
+   },
+   "text": "<b>Battlecry:</b> Give ALL other Murlocs +2 Health."
+  },
+  "EX1_145": {
+   "name": "Preparation",
+   "pin": {
+    "atk": 0,
+    "cost": 0,
+    "durability": 0,
+    "health": 0
+   },
+   "text": "The next spell you cast this turn costs (3) less."
+  },
+  "EX1_169": {
+   "name": "Innervate",
+   "pin": {
+    "atk": 0,
+    "cost": 0,
+    "durability": 0,
+    "health": 0
+   },
+   "text": "Gain 2 Mana Crystals this turn only."
+  },
+  "EX1_294": {
+   "name": "Mirror Entity",
+   "pin": {
+    "atk": 0,
+    "cost": 3,
+    "durability": 0,
+    "health": 0
+   },
+   "text": "<b>Secret:</b> When your opponent plays a minion, summon a copy of it."
+  },
+  "EX1_366": {
+   "name": "Sword of Justice",
+   "pin": {
+    "atk": 1,
+    "cost": 3,
+    "durability": 5,
+    "health": 0
+   },
+   "text": "Whenever you summon a minion, give it +1/+1 and this loses 1 Durability."
+  },
+  "EX1_379": {
+   "name": "Repentance",
+   "pin": {
+    "atk": 0,
+    "cost": 1,
+    "durability": 0,
+    "health": 0
+   },
+   "text": "<b>Secret:</b> When your opponent plays a minion, reduce its Health to 1."
+  },
+  "EX1_507": {
+   "name": "Murloc Warleader",
+   "pin": {
+    "atk": 3,
+    "cost": 3,
+    "durability": 0,
+    "health": 3
+   },
+   "text": "ALL other Murlocs have +2/+1."
+  },
+  "EX1_508": {
+   "name": "Grimscale Oracle",
+   "pin": {
+    "atk": 1,
+    "cost": 1,
+    "durability": 0,
+    "health": 1
+   },
+   "text": "ALL other Murlocs have +1 Attack."
+  },
+  "EX1_571": {
+   "name": "Force of Nature",
+   "pin": {
+    "atk": 0,
+    "cost": 6,
+    "durability": 0,
+    "health": 0
+   },
+   "text": "Summon three 2/2 Treants with <b>Charge</b> that die at the end of the turn."
+  },
+  "EX1_609": {
+   "name": "Snipe",
+   "pin": {
+    "atk": 0,
+    "cost": 2,
+    "durability": 0,
+    "health": 0
+   },
+   "text": "<b>Secret:</b> When your opponent plays a minion, deal $4 damage to it."
+  },
+  "EX1_tk9": {
+   "name": "Treant",
+   "pin": {
+    "atk": 2,
+    "cost": 1,
+    "durability": 0,
+    "health": 2
+   },
+   "text": "<b>Charge</b>.  At the end of the turn, destroy this minion."
+  },
+  "FP1_028": {
+   "name": "Undertaker",
+   "pin": {
+    "atk": 1,
+    "cost": 1,
+    "durability": 0,
+    "health": 2
+   },
+   "text": "Whenever you summon a minion with <b>Deathrattle</b>, gain +1/+1."
+  },
+  "GVG_018": {
+   "name": "Mistress of Pain",
+   "pin": {
+    "atk": 1,
+    "cost": 2,
+    "durability": 0,
+    "health": 4
+   },
+   "text": "Whenever this minion deals damage, restore that much Health to your hero."
+  },
+  "GVG_072": {
+   "name": "Shadowboxer",
+   "pin": {
+    "atk": 2,
+    "cost": 2,
+    "durability": 0,
+    "health": 3
+   },
+   "text": "Whenever a character is healed, deal 1 damage to a random enemy."
+  },
+  "NEW1_003": {
+   "name": "Sacrificial Pact",
+   "pin": {
+    "atk": 0,
+    "cost": 0,
+    "durability": 0,
+    "health": 0
+   },
+   "text": "Destroy a Demon. Restore #5 Health to your hero."
+  },
+  "NEW1_008": {
+   "name": "Ancient of Lore",
+   "pin": {
+    "atk": 5,
+    "cost": 7,
+    "durability": 0,
+    "health": 5
+   },
+   "text": "<b>Choose One -</b> Draw 2 cards; or Restore 5 Health."
+  },
+  "NEW1_008a": {
+   "name": "Ancient Teachings",
+   "pin": {
+    "atk": 0,
+    "cost": 0,
+    "durability": 0,
+    "health": 0
+   },
+   "text": "Draw 2 cards."
+  },
+  "NEW1_014": {
+   "name": "Master of Disguise",
+   "pin": {
+    "atk": 4,
+    "cost": 4,
+    "durability": 0,
+    "health": 4
+   },
+   "text": "<b>Battlecry:</b> Give a friendly minion <b>Stealth</b>."
+  }
+ },
+ "stats": {
+  "CS2_013": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 3,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Wild Growth",
+   "pin": {
+    "atk": 0,
+    "cost": 2,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "CS2_045": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 2,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Rockbiter Weapon",
+   "pin": {
+    "atk": 0,
+    "cost": 1,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "CS2_073": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 2,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Cold Blood",
+   "pin": {
+    "atk": 0,
+    "cost": 1,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "CS2_084": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 2,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Hunter's Mark",
+   "pin": {
+    "atk": 0,
+    "cost": 0,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "CS2_106": {
+   "fireplace": {
+    "atk": 3,
+    "cost": 3,
+    "durability": 2,
+    "health": 0
+   },
+   "name": "Fiery War Axe",
+   "pin": {
+    "atk": 3,
+    "cost": 2,
+    "durability": 2,
+    "health": 0
+   }
+  },
+  "CS2_108": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 2,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Execute",
+   "pin": {
+    "atk": 0,
+    "cost": 1,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "CS2_188": {
+   "fireplace": {
+    "atk": 1,
+    "cost": 1,
+    "durability": 0,
+    "health": 1
+   },
+   "name": "Abusive Sergeant",
+   "pin": {
+    "atk": 2,
+    "cost": 1,
+    "durability": 0,
+    "health": 1
+   }
+  },
+  "CS2_203": {
+   "fireplace": {
+    "atk": 2,
+    "cost": 3,
+    "durability": 0,
+    "health": 1
+   },
+   "name": "Ironbeak Owl",
+   "pin": {
+    "atk": 2,
+    "cost": 2,
+    "durability": 0,
+    "health": 1
+   }
+  },
+  "CS2_tk1": {
+   "fireplace": {
+    "atk": 1,
+    "cost": 1,
+    "durability": 0,
+    "health": 1
+   },
+   "name": "Sheep",
+   "pin": {
+    "atk": 1,
+    "cost": 0,
+    "durability": 0,
+    "health": 1
+   }
+  },
+  "EX1_005": {
+   "fireplace": {
+    "atk": 4,
+    "cost": 5,
+    "durability": 0,
+    "health": 2
+   },
+   "name": "Big Game Hunter",
+   "pin": {
+    "atk": 4,
+    "cost": 3,
+    "durability": 0,
+    "health": 2
+   }
+  },
+  "EX1_029": {
+   "fireplace": {
+    "atk": 1,
+    "cost": 1,
+    "durability": 0,
+    "health": 1
+   },
+   "name": "Leper Gnome",
+   "pin": {
+    "atk": 2,
+    "cost": 1,
+    "durability": 0,
+    "health": 1
+   }
+  },
+  "EX1_154a": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 2,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Wrath",
+   "pin": {
+    "atk": 0,
+    "cost": 0,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "EX1_154b": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 2,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Wrath",
+   "pin": {
+    "atk": 0,
+    "cost": 0,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "EX1_155a": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 3,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Mark of Nature",
+   "pin": {
+    "atk": 0,
+    "cost": 0,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "EX1_155b": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 3,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Mark of Nature",
+   "pin": {
+    "atk": 0,
+    "cost": 0,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "EX1_158t": {
+   "fireplace": {
+    "atk": 2,
+    "cost": 2,
+    "durability": 0,
+    "health": 2
+   },
+   "name": "Treant",
+   "pin": {
+    "atk": 2,
+    "cost": 1,
+    "durability": 0,
+    "health": 2
+   }
+  },
+  "EX1_160a": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 2,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Summon a Panther",
+   "pin": {
+    "atk": 0,
+    "cost": 0,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "EX1_160b": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 2,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Leader of the Pack",
+   "pin": {
+    "atk": 0,
+    "cost": 0,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "EX1_164": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 6,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Nourish",
+   "pin": {
+    "atk": 0,
+    "cost": 5,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "EX1_164a": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 6,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Nourish",
+   "pin": {
+    "atk": 0,
+    "cost": 0,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "EX1_164b": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 6,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Nourish",
+   "pin": {
+    "atk": 0,
+    "cost": 0,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "EX1_165a": {
+   "fireplace": {
+    "atk": 4,
+    "cost": 5,
+    "durability": 0,
+    "health": 4
+   },
+   "name": "Cat Form",
+   "pin": {
+    "atk": 0,
+    "cost": 0,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "EX1_165b": {
+   "fireplace": {
+    "atk": 4,
+    "cost": 5,
+    "durability": 0,
+    "health": 6
+   },
+   "name": "Bear Form",
+   "pin": {
+    "atk": 0,
+    "cost": 0,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "EX1_166": {
+   "fireplace": {
+    "atk": 2,
+    "cost": 4,
+    "durability": 0,
+    "health": 2
+   },
+   "name": "Keeper of the Grove",
+   "pin": {
+    "atk": 2,
+    "cost": 4,
+    "durability": 0,
+    "health": 4
+   }
+  },
+  "EX1_166a": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 4,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Moonfire",
+   "pin": {
+    "atk": 0,
+    "cost": 0,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "EX1_166b": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 4,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Dispel",
+   "pin": {
+    "atk": 0,
+    "cost": 0,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "EX1_178a": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 7,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Rooted",
+   "pin": {
+    "atk": 0,
+    "cost": 0,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "EX1_178b": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 7,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Uproot",
+   "pin": {
+    "atk": 0,
+    "cost": 0,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "EX1_246": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 4,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Hex",
+   "pin": {
+    "atk": 0,
+    "cost": 3,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "EX1_334": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 3,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Shadow Madness",
+   "pin": {
+    "atk": 0,
+    "cost": 4,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "EX1_339": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 2,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Thoughtsteal",
+   "pin": {
+    "atk": 0,
+    "cost": 3,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "EX1_506a": {
+   "fireplace": {
+    "atk": 1,
+    "cost": 1,
+    "durability": 0,
+    "health": 1
+   },
+   "name": "Murloc Scout",
+   "pin": {
+    "atk": 1,
+    "cost": 0,
+    "durability": 0,
+    "health": 1
+   }
+  },
+  "EX1_554t": {
+   "fireplace": {
+    "atk": 1,
+    "cost": 1,
+    "durability": 0,
+    "health": 1
+   },
+   "name": "Snake",
+   "pin": {
+    "atk": 1,
+    "cost": 0,
+    "durability": 0,
+    "health": 1
+   }
+  },
+  "EX1_565": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 3,
+    "durability": 0,
+    "health": 3
+   },
+   "name": "Flametongue Totem",
+   "pin": {
+    "atk": 0,
+    "cost": 2,
+    "durability": 0,
+    "health": 3
+   }
+  },
+  "EX1_573a": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 9,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Demigod's Favor",
+   "pin": {
+    "atk": 0,
+    "cost": 0,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "EX1_573b": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 9,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Shan'do's Lesson",
+   "pin": {
+    "atk": 0,
+    "cost": 0,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "EX1_573t": {
+   "fireplace": {
+    "atk": 2,
+    "cost": 2,
+    "durability": 0,
+    "health": 2
+   },
+   "name": "Treant",
+   "pin": {
+    "atk": 2,
+    "cost": 1,
+    "durability": 0,
+    "health": 2
+   }
+  },
+  "EX1_619": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 4,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Equality",
+   "pin": {
+    "atk": 0,
+    "cost": 2,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "EX1_622": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 2,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Shadow Word: Death",
+   "pin": {
+    "atk": 0,
+    "cost": 3,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "EX1_623": {
+   "fireplace": {
+    "atk": 5,
+    "cost": 5,
+    "durability": 0,
+    "health": 6
+   },
+   "name": "Temple Enforcer",
+   "pin": {
+    "atk": 6,
+    "cost": 6,
+    "durability": 0,
+    "health": 6
+   }
+  },
+  "EX1_finkle": {
+   "fireplace": {
+    "atk": 3,
+    "cost": 3,
+    "durability": 0,
+    "health": 3
+   },
+   "name": "Finkle Einhorn",
+   "pin": {
+    "atk": 3,
+    "cost": 2,
+    "durability": 0,
+    "health": 3
+   }
+  },
+  "FP1_007t": {
+   "fireplace": {
+    "atk": 4,
+    "cost": 4,
+    "durability": 0,
+    "health": 4
+   },
+   "name": "Nerubian",
+   "pin": {
+    "atk": 4,
+    "cost": 3,
+    "durability": 0,
+    "health": 4
+   }
+  },
+  "FP1_019t": {
+   "fireplace": {
+    "atk": 2,
+    "cost": 2,
+    "durability": 0,
+    "health": 2
+   },
+   "name": "Treant",
+   "pin": {
+    "atk": 2,
+    "cost": 1,
+    "durability": 0,
+    "health": 2
+   }
+  },
+  "GVG_030a": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 2,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Attack Mode",
+   "pin": {
+    "atk": 0,
+    "cost": 0,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "GVG_030b": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 2,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Tank Mode",
+   "pin": {
+    "atk": 0,
+    "cost": 0,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "GVG_032a": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 3,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Gift of Mana",
+   "pin": {
+    "atk": 0,
+    "cost": 0,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "GVG_032b": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 3,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Gift of Cards",
+   "pin": {
+    "atk": 0,
+    "cost": 0,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "GVG_041a": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 6,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Dark Wispers",
+   "pin": {
+    "atk": 0,
+    "cost": 0,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "GVG_041b": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 6,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Dark Wispers",
+   "pin": {
+    "atk": 0,
+    "cost": 0,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "GVG_056t": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 6,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Burrowing Mine",
+   "pin": {
+    "atk": 0,
+    "cost": 0,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "NEW1_007a": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 5,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Starfall",
+   "pin": {
+    "atk": 0,
+    "cost": 0,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "NEW1_007b": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 5,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Starfall",
+   "pin": {
+    "atk": 0,
+    "cost": 0,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "NEW1_008b": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 7,
+    "durability": 0,
+    "health": 0
+   },
+   "name": "Ancient Secrets",
+   "pin": {
+    "atk": 0,
+    "cost": 0,
+    "durability": 0,
+    "health": 0
+   }
+  },
+  "NEW1_012": {
+   "fireplace": {
+    "atk": 1,
+    "cost": 2,
+    "durability": 0,
+    "health": 3
+   },
+   "name": "Mana Wyrm",
+   "pin": {
+    "atk": 1,
+    "cost": 1,
+    "durability": 0,
+    "health": 3
+   }
+  },
+  "NEW1_019": {
+   "fireplace": {
+    "atk": 2,
+    "cost": 2,
+    "durability": 0,
+    "health": 2
+   },
+   "name": "Knife Juggler",
+   "pin": {
+    "atk": 3,
+    "cost": 2,
+    "durability": 0,
+    "health": 2
+   }
+  },
+  "NEW1_026t": {
+   "fireplace": {
+    "atk": 1,
+    "cost": 1,
+    "durability": 0,
+    "health": 1
+   },
+   "name": "Violet Apprentice",
+   "pin": {
+    "atk": 1,
+    "cost": 0,
+    "durability": 0,
+    "health": 1
+   }
+  },
+  "PRO_001at": {
+   "fireplace": {
+    "atk": 1,
+    "cost": 0,
+    "durability": 0,
+    "health": 1
+   },
+   "name": "Murloc",
+   "pin": {
+    "atk": 1,
+    "cost": 1,
+    "durability": 0,
+    "health": 1
+   }
+  },
+  "TU4a_006": {
+   "fireplace": {
+    "atk": 0,
+    "cost": 0,
+    "durability": 0,
+    "health": 30
+   },
+   "name": "Jaina Proudmoore",
+   "pin": {
+    "atk": 0,
+    "cost": 0,
+    "durability": 0,
+    "health": 27
+   }
+  },
+  "tt_010a": {
+   "fireplace": {
+    "atk": 1,
+    "cost": 1,
+    "durability": 0,
+    "health": 3
+   },
+   "name": "Spellbender",
+   "pin": {
+    "atk": 1,
+    "cost": 0,
+    "durability": 0,
+    "health": 3
+   }
+  }
+ }
+}

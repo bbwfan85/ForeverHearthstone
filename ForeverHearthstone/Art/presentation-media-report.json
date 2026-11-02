@@ -1,0 +1,2191 @@
+{
+  "textures": {
+    "hero_attack": {
+      "source": "https://raw.githubusercontent.com/HearthSim/Joust/main/assets/images/hero_attack.png",
+      "sha256": "2fab38bb934e21497fa92dbfed523b41e63af5b929767968e30bab6fbaac35a1"
+    },
+    "hero_armor": {
+      "source": "https://raw.githubusercontent.com/HearthSim/Joust/main/assets/images/hero_armor.png",
+      "sha256": "3f0d53305dc1fc12937de9a8ea2201f98d9e943cbcf66c09cf2e1755a5f393e3"
+    },
+    "inplay_minion_taunt": {
+      "source": "https://raw.githubusercontent.com/HearthSim/Joust/main/assets/images/inplay_minion_taunt.png",
+      "sha256": "b5a176beea5e7bde99482975bc533eadf951817e7ed138520ff0747966a49c48"
+    },
+    "inplay_weapon": {
+      "source": "https://raw.githubusercontent.com/HearthSim/Joust/main/assets/images/inplay_weapon.png",
+      "sha256": "ac29a989520344106e74b4d93479013e1e0adbc302f0b0d19db8f1b5accc79e0"
+    },
+    "inplay_weapon_dome": {
+      "source": "https://raw.githubusercontent.com/HearthSim/Joust/main/assets/images/inplay_weapon_dome.png",
+      "sha256": "b374ef273c550c9ab58c41797d3a71cc7f64e3c0577a4853607516835a5ef3d4"
+    }
+  },
+  "audio": {
+    "VO_CS1_042_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_CS1_042_Play_01.wav",
+      "sha256": "cfb39abc6d2e99508faf059c40f021ef5214a6f8919ce227a865947923e97617",
+      "bytes": 149314,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_CS1_042_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_CS1_042_Attack_02.wav",
+      "sha256": "9de27b3da403a7b821b3fb46888cb86b831d411286e2e1265c79ba4a2e229cd7",
+      "bytes": 129256,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_CS1_042_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_CS1_042_Death_03.wav",
+      "sha256": "48429184d05de3c263031faaad245377de10aea181d7db3537596219c9943803",
+      "bytes": 168760,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_CS2_122_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_CS2_122_Play_01.wav",
+      "sha256": "821439abcbab8c157b2b210da82ee8dce05c571ab20740e3e86557468eff8c8d",
+      "bytes": 109406,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_CS2_122_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_CS2_122_Attack_02.wav",
+      "sha256": "995332a7e0faec8c647199a9016f4f41da7ca90911b0acc6255a1635c2f46cf5",
+      "bytes": 117562,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_CS2_122_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_CS2_122_Death_03.wav",
+      "sha256": "782b068f6f44c3eec962a285c8f419b1deabdc80a3bb2ba2cbfb8ecd82b9ee25",
+      "bytes": 203192,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_CS2_142_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_CS2_142_Play_01.wav",
+      "sha256": "90f5111f3460bd24e8581bc73a47de713eeda40c97fa89256fd6eaf12d7d0c18",
+      "bytes": 210408,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_CS2_142_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_CS2_142_Attack_02.wav",
+      "sha256": "45d947c56e89456dfc03d838d1c7475c3d4bce3142ad46d9000663cbf41892f4",
+      "bytes": 151452,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_CS2_142_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_CS2_142_Death_03.wav",
+      "sha256": "d69225ea5a98ba8f327fca42a2275929c26c061b6c3f1c49655b9f65d30ce8b0",
+      "bytes": 215662,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_CS2_179_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_CS2_179_Play_01.wav",
+      "sha256": "991669e9532baa8a61977eb54e7546fc8400dd94c1f4b08dc8226e32b9ab7f37",
+      "bytes": 263410,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_CS2_179_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_CS2_179_Attack_02.wav",
+      "sha256": "6a8203d4b368ca83fe2ab88c86b78298abcf385389bf6fa36ab6ab6e40b443ab",
+      "bytes": 176214,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_CS2_179_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_CS2_179_Death_03.wav",
+      "sha256": "5ecf605fbef5cec420e2864e94defe03cf6fb2c6402df46fc8b0a54eb3c06e91",
+      "bytes": 206508,
+      "channels": 1,
+      "rate": 48000
+    },
+    "CS2_182_ChillwindYeti_EnterPlay1": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/CS2_182_ChillwindYeti_EnterPlay1.wav",
+      "sha256": "a47c2b3046b73f4ae29c59670dbf744536ecf1b47c72dfcd1fada17dab544f0c",
+      "bytes": 141756,
+      "channels": 1,
+      "rate": 48000
+    },
+    "CS2_182_ChillwindYeti_Attack1": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/CS2_182_ChillwindYeti_Attack1.wav",
+      "sha256": "42aea33dc046dfd6f523c033ce70ee7f13323a079e53da515be8b73508c0695b",
+      "bytes": 145812,
+      "channels": 1,
+      "rate": 48000
+    },
+    "CS2_182_ChillwindYeti_Death4": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/CS2_182_ChillwindYeti_Death4.wav",
+      "sha256": "1019f7ddfacb863e28704945c0651d4e3e67827af5f925cab63cb48256d3ad2d",
+      "bytes": 175340,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_CS2_189_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_CS2_189_Play_01.wav",
+      "sha256": "8bc1ee687b98cd15dba8ede89221374d7f1cf96d3cfa42389e0620cb9e8f6f34",
+      "bytes": 259968,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_CS2_189_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_CS2_189_Attack_02.wav",
+      "sha256": "2ebbbc557bf1185d74836845e84ce64740f81a06c0d22c9704aaed88245a8ad5",
+      "bytes": 146672,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_CS2_189_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_CS2_189_Death_03.wav",
+      "sha256": "df329dcfe87d4373730b59682cae43ab5f90799ad253ba6ea057d8b395ff2b47",
+      "bytes": 158874,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_CS2_222_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_CS2_222_Play_01.wav",
+      "sha256": "2216d6e36ca111d14020366303fbb0ed48cb81aeeeefdcee111a16d5db3f489b",
+      "bytes": 271846,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_CS2_222_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_CS2_222_Attack_02.wav",
+      "sha256": "a8a2ebdd756f2b911f37344818267e4ddefa9f21cacb4a0ac09218262dc2c3aa",
+      "bytes": 207112,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_CS2_222_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_CS2_222_Death_03.wav",
+      "sha256": "75a4a7689231d4650c77e30bdbc7438a965d461953f6448ad0d026062d7a3175",
+      "bytes": 194516,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_011_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_011_Play_01.wav",
+      "sha256": "d21e43832a0e81fcdc1c8c4fb6bcc196f283fb6b12a024f46189fdb42f3bebcc",
+      "bytes": 247076,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_011_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_011_Attack_02.wav",
+      "sha256": "72284a1b4e59d6d3f41c437591abfeb6bbfc78ca43879c95a8914fdbe817d72e",
+      "bytes": 200158,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_011_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_011_Death_03.wav",
+      "sha256": "f8af83de14b1b1996daca0547199efa61547470d3e26a12b609475dc054ba4a8",
+      "bytes": 248718,
+      "channels": 1,
+      "rate": 48000
+    },
+    "EX1_066_AcidicSwampOoze_EnterPlay": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/EX1_066_AcidicSwampOoze_EnterPlay.wav",
+      "sha256": "9e0e84a66bd8f975f5b78761a61b64ac67d87f2e426edaf2e232abb6c4dc7978",
+      "bytes": 117464,
+      "channels": 1,
+      "rate": 48000
+    },
+    "EX1_066_AcidicSwampOoze_Attack": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/EX1_066_AcidicSwampOoze_Attack.wav",
+      "sha256": "c03d16798fb4c961d042bc328d22d27109e8aab86577e4f4c95299ae75e1c874",
+      "bytes": 120816,
+      "channels": 1,
+      "rate": 48000
+    },
+    "EX1_066_AcidicSwampOoze_Death": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/EX1_066_AcidicSwampOoze_Death.wav",
+      "sha256": "7dd8c618ad42b1d6bd26c0cd5456e1f7c7d2b516d339a9772e4ca549921e0340",
+      "bytes": 207182,
+      "channels": 1,
+      "rate": 48000
+    },
+    "EX1_506_Murloc_Scout_EnterPlay1": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/EX1_506_Murloc_Scout_EnterPlay1.wav",
+      "sha256": "ef276f49e3a4a9461c03dc578b95f325ad8fc29d5f1b4ffe5faebcedc73c83b0",
+      "bytes": 172308,
+      "channels": 1,
+      "rate": 48000
+    },
+    "EX1_506_Murloc_Scout_Attack2": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/EX1_506_Murloc_Scout_Attack2.wav",
+      "sha256": "b254b5ea4e5732013b72d5a7834301d2f4cb2fa4a6664f2c56b6aa9e0b960c10",
+      "bytes": 92034,
+      "channels": 1,
+      "rate": 48000
+    },
+    "EX1_506_Murloc_Scout_Death2": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/EX1_506_Murloc_Scout_Death2.wav",
+      "sha256": "0ed41f6db75e1c66b1b14712ce6c754245a8b289e425fbf21ee2f88060674c26",
+      "bytes": 52030,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_CS2_235_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_CS2_235_Play_01.wav",
+      "sha256": "ea724ee97c0e0378ab2037102401379705d69e11e0431ebb476b3afb3567e963",
+      "bytes": 113810,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_CS2_235_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_CS2_235_Attack_02.wav",
+      "sha256": "9b7ec2b9a37cb165e1219fd8212fddaff1bd2577cb47f9ca45a1f074141bccb1",
+      "bytes": 75132,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_CS2_235_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_CS2_235_Death_03.wav",
+      "sha256": "f4de413b00a4faf1fa7868f3a9e306e310a8f7a68eee00d59f3fb375c2bb93df",
+      "bytes": 88398,
+      "channels": 1,
+      "rate": 48000
+    },
+    "CS2_042_Play_FireElemental": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/CS2_042_Play_FireElemental.wav",
+      "sha256": "16e28866da01d848fe9d4b4fab83244fe14ecc570f16c0866a2c8bede093278f",
+      "bytes": 230440,
+      "channels": 1,
+      "rate": 48000
+    },
+    "CS2_042_Attack_FireElemental": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/CS2_042_Attack_FireElemental.wav",
+      "sha256": "72a9e3e94161f7c6f928ff1a156c15bb2907a2ca8012e9f9df8dac3a76994e8b",
+      "bytes": 197142,
+      "channels": 1,
+      "rate": 48000
+    },
+    "CS2_042_Death_FireElemental": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/CS2_042_Death_FireElemental.wav",
+      "sha256": "e8a5155a955d569f5b114d91752b2cabd1659614179f7a42fa61ef4fb498d9f9",
+      "bytes": 249340,
+      "channels": 1,
+      "rate": 48000
+    },
+    "EX1_565_Play_FlametongueTotem": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/EX1_565_Play_FlametongueTotem.wav",
+      "sha256": "8f69e199fc3965f3ee4d2e6828c2c5c2c8370ce36004d4b5faf567fc09204afb",
+      "bytes": 66128,
+      "channels": 1,
+      "rate": 22050
+    },
+    "SFX_EX1_565_Attack_00": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/SFX_EX1_565_Attack_00.wav",
+      "sha256": "2d50ac513379bb634d49d4134e928c3d5bd530410024026a83c97597e49b7241",
+      "bytes": 178310,
+      "channels": 1,
+      "rate": 44100
+    },
+    "EX1_565_Death_FlameTongueTotem": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/EX1_565_Death_FlameTongueTotem.wav",
+      "sha256": "fa74210158924a95440adf0ef04cb286c72fe032937f1cf159c66efbd3a30a08",
+      "bytes": 112270,
+      "channels": 1,
+      "rate": 44100
+    },
+    "SFX_CS2_064_EnterPlay": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/SFX_CS2_064_EnterPlay.wav",
+      "sha256": "a5dd3c4f353ef41947d10722b1ac727d1f71d8c79984ec80ebd0246fda304305",
+      "bytes": 168302,
+      "channels": 1,
+      "rate": 44100
+    },
+    "SFX_CS2_064_Attack": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/SFX_CS2_064_Attack.wav",
+      "sha256": "f4553decc06516e23b713f0f944ae02a4293630199f4bacc86d6ae023aaa6da9",
+      "bytes": 139050,
+      "channels": 1,
+      "rate": 44100
+    },
+    "SFX_CS2_064_Death": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/SFX_CS2_064_Death.wav",
+      "sha256": "67fd1c0876291d74e5502869aadb22703a6364e69205b8d74b85b153d5b3c8e9",
+      "bytes": 237802,
+      "channels": 1,
+      "rate": 44100
+    },
+    "VO_CS2_065_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_CS2_065_Play_01.wav",
+      "sha256": "f0e6d4afadc671082c533b48f5bb87cd969be167360fa4d356c41ee2f233e907",
+      "bytes": 494292,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_CS2_065_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_CS2_065_Attack_02.wav",
+      "sha256": "1ff20b66e2b3e3046c44c66794463d80b2cba18887027bdf3f25a18b977cd2d1",
+      "bytes": 464114,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_CS2_065_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_CS2_065_Death_03.wav",
+      "sha256": "ca2dc17e808f68f1061fb1fe855e81df0f749bd1a7f4d07e01fbbf5477455f22",
+      "bytes": 372736,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_084_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_084_Play_01.wav",
+      "sha256": "308e96f5d3bb2ecd233528170db1d9b20b2947928a89193c3f65dd96bcb9c237",
+      "bytes": 246414,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_084_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_084_Attack_02.wav",
+      "sha256": "d49e5682b700ae98548b5f53306962a9fbcaeb038e8395b4dc3570c941b24324",
+      "bytes": 197054,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_084_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_084_Death_03.wav",
+      "sha256": "cdf2a31b257b1f4b471e85cf7c226cb0bf6a79d5dfb4ca90fc76c2d4475a4aee",
+      "bytes": 147976,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_165_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_165_Play_01.wav",
+      "sha256": "054553eba36b91d18cc4d4b2fae92db3313da0dd4266297f972b8cf9d308ab7a",
+      "bytes": 195372,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_165_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_165_Attack_02.wav",
+      "sha256": "eb64591d0573d27863010a446168fe3bec5ad6c93e73dc1a43c80021943c92f0",
+      "bytes": 200986,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_165_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_165_Death_03.wav",
+      "sha256": "4f7ed1e9628eece4a68fb00087bc6ae890b42347f5fc3380237de59ca043fcfc",
+      "bytes": 134308,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_573_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_573_Play_01.wav",
+      "sha256": "180e6dbb47223cf2c6febcd55c50813acc3a8b40017de6cff9a54b9e0b1dda12",
+      "bytes": 374216,
+      "channels": 1,
+      "rate": 48000
+    },
+    "Pegasus_Stinger_Misc1": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/Pegasus_Stinger_Misc1.wav",
+      "sha256": "8e75d7c19e45f6be2977c41852b19c4881bee107dd348b5c84e6cdb0eeda0d55",
+      "bytes": 1060856,
+      "channels": 2,
+      "rate": 48000
+    },
+    "VO_EX1_573_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_573_Attack_02.wav",
+      "sha256": "72d6832bb18ece4e5e9613173ef6ed11ccc180532f2f6700173603b01a25f171",
+      "bytes": 138732,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_573_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_573_Death_03.wav",
+      "sha256": "1f85c35d425018f240149c86d5d243eef007880093c7a82216475d1aad84d6cb",
+      "bytes": 192054,
+      "channels": 1,
+      "rate": 48000
+    },
+    "NEW1_008_AncientOfLore_EnterPlay": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/NEW1_008_AncientOfLore_EnterPlay.wav",
+      "sha256": "0b9e61d0ff6ee01b6a061885fa8bd298671f47c945dde8215857855bc04e336c",
+      "bytes": 239046,
+      "channels": 1,
+      "rate": 48000
+    },
+    "NEW1_008_AncientOfLore_Attack": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/NEW1_008_AncientOfLore_Attack.wav",
+      "sha256": "0ab97251d45206b1a38599b4ba3a09d58b545fb3c4fbff3b96355d2d0615ffdc",
+      "bytes": 168276,
+      "channels": 1,
+      "rate": 48000
+    },
+    "NEW1_008_AncientOfLore_Death": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/NEW1_008_AncientOfLore_Death.wav",
+      "sha256": "89339a0c2191be2504f6dd4713410a4de3155f9f37e6b2b3970d7755ef6e3ff3",
+      "bytes": 297320,
+      "channels": 1,
+      "rate": 48000
+    },
+    "SFX_EX1_534_EnterPlay": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/SFX_EX1_534_EnterPlay.wav",
+      "sha256": "f97bdce0701f88579110910fb6efae399af1bdf3916ed33e78502933737c7334",
+      "bytes": 163754,
+      "channels": 1,
+      "rate": 44100
+    },
+    "SFX_EX1_534_Attack": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/SFX_EX1_534_Attack.wav",
+      "sha256": "c8d7061de840249816fe4f3d9609e0276ddcaca4a274f4e6ef27636e38b671aa",
+      "bytes": 154314,
+      "channels": 1,
+      "rate": 44100
+    },
+    "SFX_EX1_534_Death": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/SFX_EX1_534_Death.wav",
+      "sha256": "04acffd64bce24410162f3f35f4a793a7e643a1b6f54f5b66b313e0fdae92b00",
+      "bytes": 147148,
+      "channels": 1,
+      "rate": 44100
+    },
+    "SFX_EX1_543_EnterPlay": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/SFX_EX1_543_EnterPlay.wav",
+      "sha256": "f723d2a78849ace8d4dd2ba5ed017d31ce62030b8220f45e2f8f9f405640f6ce",
+      "bytes": 181022,
+      "channels": 1,
+      "rate": 44100
+    },
+    "Pegasus_Stinger_Beast_Villain": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/Pegasus_Stinger_Beast_Villain.wav",
+      "sha256": "32be7a3136c5793ffa4238c9ff3c5f87740aca4b285c34f11668c2a9dccb38d0",
+      "bytes": 1136732,
+      "channels": 2,
+      "rate": 48000
+    },
+    "SFX_EX1_543_Attack": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/SFX_EX1_543_Attack.wav",
+      "sha256": "c60159b624fbe3b379bebf52d8eb69ff92ea10310869413674eaa01528db76d0",
+      "bytes": 221648,
+      "channels": 1,
+      "rate": 44100
+    },
+    "SFX_EX1_543_Death": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/SFX_EX1_543_Death.wav",
+      "sha256": "70e8b4261b5cedd137fca7a61f74831a60b28916d24193e13fbfff737c01671f",
+      "bytes": 255628,
+      "channels": 1,
+      "rate": 44100
+    },
+    "VO_CS2_188_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_CS2_188_Play_01.wav",
+      "sha256": "dc5c63a388138823065d1df90fc6027369f4dde1fe4a1f746204c758fb3427fc",
+      "bytes": 148628,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_CS2_188_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_CS2_188_Attack_02.wav",
+      "sha256": "7bafed7f84d8061293953ed69b5bf90943a8ea3d102a0fefd17c69dbc83cd6fb",
+      "bytes": 157132,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_CS2_188_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_CS2_188_Death_03.wav",
+      "sha256": "993384a9b4c997885f296a13467c2bc1c614dc2685683f3b11899b4ae8ddb8fe",
+      "bytes": 139464,
+      "channels": 1,
+      "rate": 48000
+    },
+    "SFX_CS2_203_EnterPlay": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/SFX_CS2_203_EnterPlay.wav",
+      "sha256": "a743b12f245004c908a4f59452f204eb889d9301876d46ca73db0de1da2d7675",
+      "bytes": 94150,
+      "channels": 1,
+      "rate": 44100
+    },
+    "SFX_CS2_203_Attack": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/SFX_CS2_203_Attack.wav",
+      "sha256": "2c2a1a9da6d8dfe3ff55abb559220c3cdc70d524a6693fbcee69af756322e2d0",
+      "bytes": 72060,
+      "channels": 1,
+      "rate": 44100
+    },
+    "SFX_CS2_203_Death": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/SFX_CS2_203_Death.wav",
+      "sha256": "d089d26285e17d18587fddeadd768e8621b80873b2a543027cd341645556d663",
+      "bytes": 81708,
+      "channels": 1,
+      "rate": 44100
+    },
+    "VO_EX1_002_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_002_Play_01.wav",
+      "sha256": "f0340e9b1f390a3914540787e2cee63df012cb9282dfebccff230be67e7cb7d4",
+      "bytes": 353036,
+      "channels": 1,
+      "rate": 48000
+    },
+    "Pegasus_Stinger_Undead2": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/Pegasus_Stinger_Undead2.wav",
+      "sha256": "c955d37f7cdc57c30a66909ab034ecf4e23565775891cfa88fb6a41452045aab",
+      "bytes": 1177696,
+      "channels": 2,
+      "rate": 48000
+    },
+    "VO_EX1_002_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_002_Attack_02.wav",
+      "sha256": "8d2f6f5bfd9a9ae6f559f850ebdf86e1668e1234b39a4ebe8e544c42fd42f83c",
+      "bytes": 307366,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_002_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_002_Death_03.wav",
+      "sha256": "e4b0967ea9f4c1e38c972c9b83c4f7fea061c1c8b31e7f3d7484d91976e6c035",
+      "bytes": 244412,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_005_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_005_Play_01.wav",
+      "sha256": "f812c9f12394ae2454746bd17e88effe87ea483dc79dd5a9a8c6dc76d5e53a11",
+      "bytes": 250698,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_005_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_005_Attack_02.wav",
+      "sha256": "21fb2faa46ab6ebb79066fdfbb709a1af7f82d9b0b1e0d5560631db3c2eacc17",
+      "bytes": 92740,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_005_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_005_Death_03.wav",
+      "sha256": "5defb663b3be9639307d610c9e3dbd579395f04a724cec9ef92ffaf694604768",
+      "bytes": 183974,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_007_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_007_Play_01.wav",
+      "sha256": "0450bed51108c1a52516779eaa23018d69f953a93ceb2079d7b639bcd457d6f1",
+      "bytes": 291682,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_007_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_007_Attack_02.wav",
+      "sha256": "268d86839c9b27666196f12e111ffe27d161d6c4592c29c3c0ac2ed8d55b2a2f",
+      "bytes": 275314,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_007_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_007_Death_03.wav",
+      "sha256": "2ce9059b612298cd21dbc98ef14c2bf8e750e3206e767945edbd9fd2dc7169f0",
+      "bytes": 155778,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_010_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_010_Play_01.wav",
+      "sha256": "075cf52d1921c8fd4e5573b1595d80bd5b34e491d85cc1fe4ee071b7b164d55e",
+      "bytes": 218842,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_010_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_010_Attack_02.wav",
+      "sha256": "32b27266997e8fce295949b0eec51b4ab7f68b99d63550dd13a3ef89dcca5779",
+      "bytes": 169764,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_010_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_010_Death_03.wav",
+      "sha256": "7236f840410ee88d54f667226f2c11cdce3e97b79a14434f7dc2edb9e8522041",
+      "bytes": 241780,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_012_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_012_Play_01.wav",
+      "sha256": "dc92c7c425501172a14e7ba99a5cbf7acd955c3e97dfd2d76885de3e16ab4acd",
+      "bytes": 414536,
+      "channels": 1,
+      "rate": 48000
+    },
+    "Pegasus_Stinger_Undead1": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/Pegasus_Stinger_Undead1.wav",
+      "sha256": "5a0eb9099b40db3253c87a788744910e2f728054a144443141f852c55de308de",
+      "bytes": 1168412,
+      "channels": 2,
+      "rate": 48000
+    },
+    "VO_EX1_012_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_012_Attack_02.wav",
+      "sha256": "399bb0be3564d16b37ebee5cb3f5bd8106dec3b3a3696cdad55aa1922ab1f868",
+      "bytes": 445586,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_012_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_012_Death_03.wav",
+      "sha256": "4d34b7f9545e91866c145e37d8bc01d660fe262cdb8fb92c462b96833836f574",
+      "bytes": 426892,
+      "channels": 1,
+      "rate": 48000
+    },
+    "SFX_EX1_017_EnterPlay": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/SFX_EX1_017_EnterPlay.wav",
+      "sha256": "83017b409ce9c30c8a48a698dc9c76e6211636a8ee78d9707b0c296f939f84fb",
+      "bytes": 145322,
+      "channels": 1,
+      "rate": 44100
+    },
+    "SFX_EX1_017_Attack": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/SFX_EX1_017_Attack.wav",
+      "sha256": "420c665bb5d5324f572356c67da20e36086fc5e6e1500368c3a1a57cd351aa1c",
+      "bytes": 123252,
+      "channels": 1,
+      "rate": 44100
+    },
+    "SFX_EX1_017_Death": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/SFX_EX1_017_Death.wav",
+      "sha256": "159ebf01f916c51046a2a88cf998816a99c1ff0f3f40cfaf94d9aaae9d795cd4",
+      "bytes": 142494,
+      "channels": 1,
+      "rate": 44100
+    },
+    "SFX_EX1_028_EnterPlay": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/SFX_EX1_028_EnterPlay.wav",
+      "sha256": "4f9d4a1dc47c931008d057e95dcfc99768e36c70405d88da4c48e00b6c8e2877",
+      "bytes": 185846,
+      "channels": 1,
+      "rate": 44100
+    },
+    "SFX_EX1_028_Attack": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/SFX_EX1_028_Attack.wav",
+      "sha256": "21d44de33f386e9e0af60a79758ace21a4911e0643c3e51b03531aa11652bf7d",
+      "bytes": 135136,
+      "channels": 1,
+      "rate": 44100
+    },
+    "SFX_EX1_028_Death": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/SFX_EX1_028_Death.wav",
+      "sha256": "00057c6fff87c49df56bfecf803e4dfa726eeaba287d9a543b504de5073f3da0",
+      "bytes": 146510,
+      "channels": 1,
+      "rate": 44100
+    },
+    "WoW_EX1_043_TwilightDrake_EnterPlay": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/WoW_EX1_043_TwilightDrake_EnterPlay.wav",
+      "sha256": "982023f04a3b95672a92e89fa377fe051f194ecddf7f6a9b854836349c55ebea",
+      "bytes": 166984,
+      "channels": 1,
+      "rate": 48000
+    },
+    "WoW_EX1_043_TwilightDrake_Attack": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/WoW_EX1_043_TwilightDrake_Attack.wav",
+      "sha256": "f03b6a1387fa8e66b26f925250c1465d50bdc37e8e1c03f7a4478ff67490fc33",
+      "bytes": 84912,
+      "channels": 1,
+      "rate": 48000
+    },
+    "WoW_EX1_043_TwilightDrake_Death": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/WoW_EX1_043_TwilightDrake_Death.wav",
+      "sha256": "a352eeff21658d6dd8280d273a79d20d48c63d4c3e2234d2d86ba2b638da5edb",
+      "bytes": 238966,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_046_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_046_Play_01.wav",
+      "sha256": "1abd33fa92d937030497767a8c50327395ecb02ae80e49c33929dfd373ab9a33",
+      "bytes": 279742,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_046_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_046_Attack_02.wav",
+      "sha256": "00bf088e7b4a868ccfb2a33a0458296bffea32bfae2a8d5be7a34c799c2d59f8",
+      "bytes": 98068,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_046_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_046_Death_03.wav",
+      "sha256": "a57f34291507a5d24df7caae5d4f4ae87bb2ce9293128fa523a6ea7edb3d8622",
+      "bytes": 173756,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_049_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_049_Play_01.wav",
+      "sha256": "8564bf4e43b3b31d8ef8831c5ddd3e756dfce0236887c65ab9f62a80f0613acc",
+      "bytes": 172450,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_049_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_049_Attack_02.wav",
+      "sha256": "368e2f6082c801b2368089b40f3d33fb4c1e839be65f1c998952b1e63a19b04f",
+      "bytes": 193320,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_049_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_049_Death_03.wav",
+      "sha256": "ae2c5ebbd4df3353fc9cd7f9502564f3ae1008ea9d95fcc9bc872cf0256f6806",
+      "bytes": 155862,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_059_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_059_Play_01.wav",
+      "sha256": "57d3a02c0cd2a7998fb8257e9693329be886bc9fd0d3394f27f1c9ece728f53c",
+      "bytes": 298818,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_059_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_059_Attack_02.wav",
+      "sha256": "db95f671ed7232b82f8e3594e22fb3667f85a365844d0aebe62188df7d8e4bdd",
+      "bytes": 283674,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_059_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_059_Death_03.wav",
+      "sha256": "58350652f9c2e74d13075f9b61a5fe8837ffd7b99bcddf982339ccea95dae59d",
+      "bytes": 208064,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_082_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_082_Play_01.wav",
+      "sha256": "d37a50e26cc41e8171d9936aba3329166c048102db7f5e3ab8360fd6238a2de9",
+      "bytes": 200434,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_082_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_082_Attack_02.wav",
+      "sha256": "0296e27a4277f4ef47a1d082af2e352095385fae073a2a067f5bded0d2c2d137",
+      "bytes": 180280,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_082_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_082_Death_03.wav",
+      "sha256": "cf47031b5bac7f950e0e0c3ed4b0c89ec0156c295d445b4e28adea9b7bc56098",
+      "bytes": 139264,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_093_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_093_Play_01.wav",
+      "sha256": "3d91c287b2b96a5c74679b7fbb366c7f7abce2e26e1aa9831233173cbef4aebf",
+      "bytes": 197018,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_093_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_093_Attack_02.wav",
+      "sha256": "bdde59aec0e34640da306eedb3992c7a036b41f4710f4430a87f293bdd5412ee",
+      "bytes": 149680,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_093_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_093_Death_03.wav",
+      "sha256": "e1f38a40d1a5aba3c7a970964c362fbc7c49347f19587187a742f87fd578ced3",
+      "bytes": 196310,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_095_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_095_Play_01.wav",
+      "sha256": "3075e0f1d45d27ffc71872856d6c695a619a0ff7c049d8d0e11f1876baa70b7d",
+      "bytes": 237038,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_095_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_095_Attack_02.wav",
+      "sha256": "bd1b3ad4ae161715d5d970478fe0de46194a94375d2c5d6c899e1c153fe40a6f",
+      "bytes": 254146,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_095_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_095_Death_03.wav",
+      "sha256": "88e45bbc1e15b1656bb4280aafc84bd0cac8d6dfd7de7756e3dfac077e82328e",
+      "bytes": 182030,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_096_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_096_Play_01.wav",
+      "sha256": "0c49e2e305a213737566a6494b82e562a02846922ebc36054c2b493c9eee7b26",
+      "bytes": 178140,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_096_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_096_Attack_02.wav",
+      "sha256": "e38f22bd7c633ee6a5f76a2073b5e4d5c56af5b693b39d731817e3b9e23c74d7",
+      "bytes": 136130,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_096_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_096_Death_03.wav",
+      "sha256": "f9dbda3ef322e6603e9ef2485c50019459cab481925250ec6ec18acf125a7992",
+      "bytes": 212702,
+      "channels": 1,
+      "rate": 48000
+    },
+    "EX1_103_Coldlight_Seer_EnterPlay1": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/EX1_103_Coldlight_Seer_EnterPlay1.wav",
+      "sha256": "b9940bed3ea0948369f454b067a6e90d00f966659737a2da53c08748febc7335",
+      "bytes": 233106,
+      "channels": 1,
+      "rate": 48000
+    },
+    "EX1_103_Coldlight_Seer_Attack2": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/EX1_103_Coldlight_Seer_Attack2.wav",
+      "sha256": "0dc0571b27494bb9ce0278756d6c1ef58f325256a23a2531b7dd27fe07e1949f",
+      "bytes": 104274,
+      "channels": 1,
+      "rate": 48000
+    },
+    "EX1_103_Coldlight_Seer_Death2": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/EX1_103_Coldlight_Seer_Death2.wav",
+      "sha256": "23ffe9a53d92cad9ecbca833bbb2187d9a8e88f4315bc6ffe745a3bdfabf7e39",
+      "bytes": 144162,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_110_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_110_Play_01.wav",
+      "sha256": "1c105a515adc474d2fe98a9a4f4618a3197b65e042ec10a1ece79f1bb11d996c",
+      "bytes": 432678,
+      "channels": 1,
+      "rate": 48000
+    },
+    "Pegasus_Stinger_Horde2": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/Pegasus_Stinger_Horde2.wav",
+      "sha256": "fd94913e716c694cbf86b3bd218e60e9c167b7b27f0c0130e689243003a8734b",
+      "bytes": 1133480,
+      "channels": 2,
+      "rate": 48000
+    },
+    "VO_EX1_110_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_110_Attack_02.wav",
+      "sha256": "568c3518bc3bf903027bb2d3251b9bb05a398400de41534de72b43aca4b8b000",
+      "bytes": 155576,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_110_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_110_Death_03.wav",
+      "sha256": "f045d2dbf1b15d0b104368d0bb4d14cb73e23267537b6a0ca138b261ed8ddd50",
+      "bytes": 155368,
+      "channels": 1,
+      "rate": 48000
+    },
+    "SFX_EX1_162_EnterPlay": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/SFX_EX1_162_EnterPlay.wav",
+      "sha256": "85220b1c2ec385bae19cce0db1c19965883982f5f649ab69253ece9f4284316c",
+      "bytes": 106240,
+      "channels": 1,
+      "rate": 44100
+    },
+    "SFX_EX1_162_Attack": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/SFX_EX1_162_Attack.wav",
+      "sha256": "be34337482215ca35bb8642487ed56a602ad6c58d574a1a3fabdc9f48b8ce72c",
+      "bytes": 111480,
+      "channels": 1,
+      "rate": 44100
+    },
+    "SFX_EX1_162_Death": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/SFX_EX1_162_Death.wav",
+      "sha256": "005b64d19367acdfcc30fd8a7e3638bcdc4f8409a25a02603e7b6774905c5e4c",
+      "bytes": 84802,
+      "channels": 1,
+      "rate": 44100
+    },
+    "VO_BRMA05_1_START_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_BRMA05_1_START_01.wav",
+      "sha256": "9dc7e5d5e3f80bd9d5efd07384b533fb2aeae7acfc74a580586fc1d29bdf3b27",
+      "bytes": 401754,
+      "channels": 1,
+      "rate": 48000
+    },
+    "Pegasus_Stinger_Elemental_Villain": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/Pegasus_Stinger_Elemental_Villain.wav",
+      "sha256": "bb3fdf6872f8d23cede3426b8ad3214fe1144e4a9aefcd81df7f1882b1e2777f",
+      "bytes": 1022348,
+      "channels": 2,
+      "rate": 48000
+    },
+    "EX1_249_Baron_Geddon_Attack1": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/EX1_249_Baron_Geddon_Attack1.wav",
+      "sha256": "72a9e3e94161f7c6f928ff1a156c15bb2907a2ca8012e9f9df8dac3a76994e8b",
+      "bytes": 197142,
+      "channels": 1,
+      "rate": 48000
+    },
+    "EX1_249_Baron_Geddon_Death1": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/EX1_249_Baron_Geddon_Death1.wav",
+      "sha256": "e8a5155a955d569f5b114d91752b2cabd1659614179f7a42fa61ef4fb498d9f9",
+      "bytes": 249340,
+      "channels": 1,
+      "rate": 48000
+    },
+    "WoW_EX1_284_AzureDrake_EnterPlay": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/WoW_EX1_284_AzureDrake_EnterPlay.wav",
+      "sha256": "982023f04a3b95672a92e89fa377fe051f194ecddf7f6a9b854836349c55ebea",
+      "bytes": 166984,
+      "channels": 1,
+      "rate": 48000
+    },
+    "WoW_EX1_284_AzureDrake_Attack": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/WoW_EX1_284_AzureDrake_Attack.wav",
+      "sha256": "f03b6a1387fa8e66b26f925250c1465d50bdc37e8e1c03f7a4478ff67490fc33",
+      "bytes": 84912,
+      "channels": 1,
+      "rate": 48000
+    },
+    "WoW_EX1_284_AzureDrake_Death": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/WoW_EX1_284_AzureDrake_Death.wav",
+      "sha256": "a352eeff21658d6dd8280d273a79d20d48c63d4c3e2234d2d86ba2b638da5edb",
+      "bytes": 238966,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_298_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_298_Play_01.wav",
+      "sha256": "699da19a4b554713875b8d28096a80316baaeaf992fda13a2089ba04f13066c8",
+      "bytes": 265072,
+      "channels": 1,
+      "rate": 44100
+    },
+    "VO_EX1_298_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_298_Attack_02.wav",
+      "sha256": "be1e285c5657648c81533c075c91b2e3fd1920add578114be0db0d8567d8d652",
+      "bytes": 220296,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_298_Death_04": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_298_Death_04.wav",
+      "sha256": "de3988c473fac9d7305c9855de1ddb1ee8dbec05be4473f27d0e7c18a1212743",
+      "bytes": 280184,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_298_Trigger_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_298_Trigger_03.wav",
+      "sha256": "ca9acf1c37c995649bf0e6bb54dc06ef7cf0e5a43b22558798d2dcd62bde2004",
+      "bytes": 281666,
+      "channels": 1,
+      "rate": 48000
+    },
+    "EX1_507_Murloc_Warleader_EnterPlay1": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/EX1_507_Murloc_Warleader_EnterPlay1.wav",
+      "sha256": "fe64254d88f61f75b2f4578cd8959d27eaa991d0f01ae12934129bf8b8d0d244",
+      "bytes": 169950,
+      "channels": 1,
+      "rate": 48000
+    },
+    "EX1_507_Murloc_Warleader_Attack1": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/EX1_507_Murloc_Warleader_Attack1.wav",
+      "sha256": "e3142012bfa053b39d72455ea721ab888abe9ebf68a3af668c8c27e9236764fc",
+      "bytes": 77366,
+      "channels": 1,
+      "rate": 48000
+    },
+    "EX1_507_Murloc_Warleader_Death1": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/EX1_507_Murloc_Warleader_Death1.wav",
+      "sha256": "d486d3595bae4f6cc8538ca52652c9abed35f873f9b14a5eeead4cc0b0b2f596",
+      "bytes": 89020,
+      "channels": 1,
+      "rate": 48000
+    },
+    "EX1_509_Murloc_Tidecaller_EnterPlay1": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/EX1_509_Murloc_Tidecaller_EnterPlay1.wav",
+      "sha256": "5e242e1c7c88fd0a889d0a6ca8c7f806882bf61976b08a29b1862e47143ea0c0",
+      "bytes": 231044,
+      "channels": 1,
+      "rate": 48000
+    },
+    "EX1_509_Murloc_Tidecaller_Attack1": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/EX1_509_Murloc_Tidecaller_Attack1.wav",
+      "sha256": "d77e68a8e2e3e03c08f240bebcc025c22320931236dcdff520dc2a1a08f54ea0",
+      "bytes": 121858,
+      "channels": 1,
+      "rate": 48000
+    },
+    "EX1_509_Murloc_Tidecaller_Death1": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/EX1_509_Murloc_Tidecaller_Death1.wav",
+      "sha256": "c8b65b28b0f9f32366dbbb574fbbd08d55040a0b89deb35e8da8d839f6c08b45",
+      "bytes": 164780,
+      "channels": 1,
+      "rate": 48000
+    },
+    "WoW_EX1_564_FacelessManipulator_EnterPlay": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/WoW_EX1_564_FacelessManipulator_EnterPlay.wav",
+      "sha256": "d5f3c3c0b018f8a62ac153090694004427164699050f7ada18b21f61f4e0e731",
+      "bytes": 154008,
+      "channels": 1,
+      "rate": 48000
+    },
+    "WoW_EX1_564_FacelessManipulator_Attack": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/WoW_EX1_564_FacelessManipulator_Attack.wav",
+      "sha256": "07d8eb68e258bafb993e676a2d2d6e4d28ade1011293972cfd1094324e15232c",
+      "bytes": 79338,
+      "channels": 1,
+      "rate": 48000
+    },
+    "WoW_EX1_564_FacelessManipulator_Death": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/WoW_EX1_564_FacelessManipulator_Death.wav",
+      "sha256": "79dbb00634511176a80ade0679527cce8e7b5ec153d4de0bea2bca6fc158fa3c",
+      "bytes": 150810,
+      "channels": 1,
+      "rate": 48000
+    },
+    "SFX_EX1_586_EnterPlay": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/SFX_EX1_586_EnterPlay.wav",
+      "sha256": "c02aa2357d5352ee6ae4b20b3f63902d9eb2deaf0f5947d11818b0e5e9e8abca",
+      "bytes": 253212,
+      "channels": 1,
+      "rate": 44100
+    },
+    "SFX_EX1_586_Attack": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/SFX_EX1_586_Attack.wav",
+      "sha256": "c5ea3c616d88848b33c54674882323988b45d419069c3804d177314cf7341498",
+      "bytes": 206882,
+      "channels": 1,
+      "rate": 44100
+    },
+    "SFX_EX1_586_Death": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/SFX_EX1_586_Death.wav",
+      "sha256": "624a033a5c163da9647513536f10d1ef58caffbd2eb78d56b5fea5ea6b7e0a78",
+      "bytes": 242224,
+      "channels": 1,
+      "rate": 44100
+    },
+    "VO_NEW1_018_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_NEW1_018_Play_01.wav",
+      "sha256": "12fd59f4b57f4c5a493e4d9b66392fb9b3ad3473f0fe651bbe4e9b6d0a8dab34",
+      "bytes": 155076,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_NEW1_018_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_NEW1_018_Attack_02.wav",
+      "sha256": "74472c3c9d0aeb539589152d0b70e8949ef9b79c0778400232eab7d2d82db148",
+      "bytes": 128136,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_NEW1_018_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_NEW1_018_Death_03.wav",
+      "sha256": "134c5a28d854f15c1796aea0da10801100b56e8979d023d2132cb04dd6d81449",
+      "bytes": 96196,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_NEW1_020_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_NEW1_020_Play_01.wav",
+      "sha256": "e17eb5ed7f60be92d833be2f81739dc58303e8b30f47c73831f5d8296849e4f3",
+      "bytes": 345756,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_NEW1_020_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_NEW1_020_Attack_02.wav",
+      "sha256": "4c47e78ee17765cbff7265c6950dcfcee50f111d09e26ada0e432e192dab5e63",
+      "bytes": 304544,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_NEW1_020_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_NEW1_020_Death_03.wav",
+      "sha256": "08755efeb9ed741948cd8066b160536480deefa95ccd4fd0dbb1549c39f15603",
+      "bytes": 229950,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_NEW1_021_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_NEW1_021_Play_01.wav",
+      "sha256": "936a5f56d2102b3323d068ab929bad876e8ffd05cd4f68bbc1449efbc2eb9dc2",
+      "bytes": 179538,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_NEW1_021_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_NEW1_021_Attack_02.wav",
+      "sha256": "f940ece28898cd81e0345da948c91c71062b78ba9a1df9bbe65b18752adfe870",
+      "bytes": 102922,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_NEW1_021_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_NEW1_021_Death_03.wav",
+      "sha256": "3f2073f65ffba918f0dc47ce10e18d5aaf166c075f2b4db7d22c5cd76ec2d491",
+      "bytes": 113390,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_NEW1_022_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_NEW1_022_Play_01.wav",
+      "sha256": "567929b730f9ce71d2fb1ecd070298caa44e26d7487313224d5af660fb443f46",
+      "bytes": 198840,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_NEW1_022_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_NEW1_022_Attack_02.wav",
+      "sha256": "8f7d051300db6bd374f511b681289c3480cb9aa57b7615a10704dd543c70b724",
+      "bytes": 151818,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_NEW1_022_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_NEW1_022_Death_03.wav",
+      "sha256": "bd1aa369ff45bf77abdfe33bc0526bb0d89da7e6fe983ae5b3a759cb99e2ae13",
+      "bytes": 220244,
+      "channels": 1,
+      "rate": 48000
+    },
+    "NEW1_023_Faerie_Dragon_EnterPlay_2": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/NEW1_023_Faerie_Dragon_EnterPlay_2.wav",
+      "sha256": "f6b5c6ed5a8760a44764d491edfdb25093ed4e734aee8cf1b716de611da61b9a",
+      "bytes": 163830,
+      "channels": 1,
+      "rate": 48000
+    },
+    "NEW1_023_Faerie_Dragon_Attack_2": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/NEW1_023_Faerie_Dragon_Attack_2.wav",
+      "sha256": "105cd3fc77ae0373e073805f2c3df50202bb3079896b08008de242ceb3c75660",
+      "bytes": 115244,
+      "channels": 1,
+      "rate": 48000
+    },
+    "NEW1_023_Faerie_Dragon_Death_3": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/NEW1_023_Faerie_Dragon_Death_3.wav",
+      "sha256": "a66da5d109ca7f4cc51f0d8a4172a1b1860f0aec7fd6854ecec84a0d039f124f",
+      "bytes": 161796,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_NEW1_026_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_NEW1_026_Play_01.wav",
+      "sha256": "252e1e4f26bb6236b55c4dccf7eecad8cf282a5cbc7fd678f367296901715c34",
+      "bytes": 169270,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_NEW1_026_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_NEW1_026_Attack_02.wav",
+      "sha256": "b445553e0c1310cd135ca28da1a6267432b0b279e9cc2d0294bb94f0d4acdeeb",
+      "bytes": 204522,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_NEW1_026_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_NEW1_026_Death_03.wav",
+      "sha256": "2269b6c19db6941ebbf1e52a123a91a52c44dc4826d1284e5a355d570773d049",
+      "bytes": 77968,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_NEW1_027_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_NEW1_027_Play_01.wav",
+      "sha256": "eb9367c12a59319e845ac1b3933867c32cc93868330102e8dbe67bf43b04d129",
+      "bytes": 336650,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_NEW1_027_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_NEW1_027_Attack_02.wav",
+      "sha256": "eacb41c6d87b1d77f055b3c83ab6970ea93f01b42b85f2eff9148a142766739a",
+      "bytes": 224098,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_NEW1_027_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_NEW1_027_Death_03.wav",
+      "sha256": "b080060bb9d188fd495e3bfc27c21749f79391e6cc40929a3f7806494d79a535",
+      "bytes": 131268,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_362_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_362_Play_01.wav",
+      "sha256": "74c37854b383b9d5b8ab8f940637e4cb20fb37b287d9dc432284563ce45feb2a",
+      "bytes": 189136,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_362_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_362_Attack_02.wav",
+      "sha256": "efdb4f23c6edb325d01a90708508c23adfc62cac626f5857a832a3e789bebfe6",
+      "bytes": 193920,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_362_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_362_Death_03.wav",
+      "sha256": "85280ab52687241c8890249f6693bafc555d770b25dbc385be081dcc2d513ca6",
+      "bytes": 133440,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_382_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_382_Play_01.wav",
+      "sha256": "d67019e8a5f48acef5ef271a355fe606e8d74489ff2be89753aba6fca232881a",
+      "bytes": 173536,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_382_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_382_Attack_02.wav",
+      "sha256": "001d7b4a2ac8f18b8b6f34b1cef1f0349a3cb3cd8cb31b7dd1f80a51c789409e",
+      "bytes": 198770,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_382_Death_03-01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_382_Death_03-01.wav",
+      "sha256": "a5d985942d96caa2f789d7e5ed17d358f1e577dd2ee45c148e4fc57a4776f6b8",
+      "bytes": 185046,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_383_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_383_Play_01.wav",
+      "sha256": "8e5cb9a8947a86f24574bc328ee2d6148840d9c6f44b17d50ccf9099bf2d8e78",
+      "bytes": 170206,
+      "channels": 1,
+      "rate": 48000
+    },
+    "Pegasus_Stinger_Alliance": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/Pegasus_Stinger_Alliance.wav",
+      "sha256": "acdb273e6554401a10882b9fb0ad7c747ea30e1fb6f8bcd7e2eec42423ab8c9d",
+      "bytes": 1139228,
+      "channels": 2,
+      "rate": 48000
+    },
+    "VO_EX1_383_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_383_Attack_02.wav",
+      "sha256": "01eaad34f1f4f3881d676b4802fedcebb719b062067bd7edb3dbc533630968fc",
+      "bytes": 180068,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_383_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_383_Death_03.wav",
+      "sha256": "728366132e0bfad7da092dccae728451db99f73fc52c0f6d19917b3b5c7cc421",
+      "bytes": 166564,
+      "channels": 1,
+      "rate": 48000
+    },
+    "EX1_335_Lightspawn_EnterPlay2": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/EX1_335_Lightspawn_EnterPlay2.wav",
+      "sha256": "67558e6ab58613567363e47e8bf66ed54f7fe3102287f214a66bd4d2f9571565",
+      "bytes": 290076,
+      "channels": 1,
+      "rate": 48000
+    },
+    "EX1_335_Lightspawn_Attack2": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/EX1_335_Lightspawn_Attack2.wav",
+      "sha256": "5842374871ae0fb57913f84a803ec165de7d3ce8fa8f35739e3eb5509431f04b",
+      "bytes": 266702,
+      "channels": 1,
+      "rate": 48000
+    },
+    "EX1_335_Lightspawn_Death4": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/EX1_335_Lightspawn_Death4.wav",
+      "sha256": "3043dff7679bca9156bdf3b96d4842840bce406570dd5f70d8c122bcdc75c684",
+      "bytes": 241346,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_134_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_134_Play_01.wav",
+      "sha256": "a6dc34104e82ef112fbedc5cc310ef18d4dd69584f68744c9e3dbb0da782a12b",
+      "bytes": 195168,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_134_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_134_Attack_02.wav",
+      "sha256": "4bc8748ad9639e2e6c95ad8a70b25740f2875461a38f39e69fa2d158356ad79b",
+      "bytes": 135952,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_134_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_134_Death_03.wav",
+      "sha256": "72d5e9126b52955e20583b37e86c74afd440eada29da1c628f0510244f0c7b32",
+      "bytes": 118722,
+      "channels": 1,
+      "rate": 48000
+    },
+    "EX1_250_Earth_Elemental_EnterPlay2": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/EX1_250_Earth_Elemental_EnterPlay2.wav",
+      "sha256": "daa75dbff1ceb62857c1de3c553cfc719f8960ce4059e0566ce695783e7219c7",
+      "bytes": 207622,
+      "channels": 1,
+      "rate": 48000
+    },
+    "EX1_250_Earth_Elemental_Attack3": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/EX1_250_Earth_Elemental_Attack3.wav",
+      "sha256": "1f06823971eef76651e752d0da18a809450aa19099b78916e9eb8516875d7b49",
+      "bytes": 226412,
+      "channels": 1,
+      "rate": 48000
+    },
+    "EX1_250_Earth_Elemental_Death2": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/EX1_250_Earth_Elemental_Death2.wav",
+      "sha256": "873072a69cf7d2be004bc56c7a56490c5aa6e4341f9ab9475002717183e1e44c",
+      "bytes": 221720,
+      "channels": 1,
+      "rate": 48000
+    },
+    "EX1_575_mana_tide_totem_EnterPlay": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/EX1_575_mana_tide_totem_EnterPlay.wav",
+      "sha256": "8f69e199fc3965f3ee4d2e6828c2c5c2c8370ce36004d4b5faf567fc09204afb",
+      "bytes": 66128,
+      "channels": 1,
+      "rate": 22050
+    },
+    "SFX_EX1_575_Attack_00": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/SFX_EX1_575_Attack_00.wav",
+      "sha256": "72ad855c0da74098b3fbee75b3cde0361dc0efe83412485cb18d36b1131dab2f",
+      "bytes": 177308,
+      "channels": 1,
+      "rate": 44100
+    },
+    "EX1_575_mana_tide_totem_Death": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/EX1_575_mana_tide_totem_Death.wav",
+      "sha256": "fa74210158924a95440adf0ef04cb286c72fe032937f1cf159c66efbd3a30a08",
+      "bytes": 112270,
+      "channels": 1,
+      "rate": 44100
+    },
+    "VO_NEW1_010_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_NEW1_010_Play_01.wav",
+      "sha256": "58cfd879e013e51388fac88b52c1e8e1be1867f425de1e5a61fb2f9f214b2b93",
+      "bytes": 512784,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_NEW1_010_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_NEW1_010_Attack_02.wav",
+      "sha256": "c72bfeff55296751ce1cb5db0ae4499ac3bfdaa5c0348e11efda6f426fdeeaea",
+      "bytes": 285590,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_NEW1_010_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_NEW1_010_Death_03.wav",
+      "sha256": "66adac4527cf2146f7d22ebfbc309c4866e924e902615c85830b71744f60413f",
+      "bytes": 247720,
+      "channels": 1,
+      "rate": 48000
+    },
+    "EX1_304_VoidTerror_Play": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/EX1_304_VoidTerror_Play.wav",
+      "sha256": "d5af4c7e83f426ab3ebf07e8d2540dc6226163dae18ed92fe20ac299fe906c6e",
+      "bytes": 247574,
+      "channels": 1,
+      "rate": 48000
+    },
+    "EX1_304_VoidTerror_Attack": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/EX1_304_VoidTerror_Attack.wav",
+      "sha256": "9c4591957516e284c471513100c1740265a336edbd44a17a152a3af518be3462",
+      "bytes": 269474,
+      "channels": 1,
+      "rate": 48000
+    },
+    "EX1_304_VoidTerror_Death": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/EX1_304_VoidTerror_Death.wav",
+      "sha256": "050a41b60d3f3e261188f801e94e0ddb546c457bd833ec4507524fa96a4fb3ac",
+      "bytes": 232154,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_319_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_319_Play_01.wav",
+      "sha256": "4ac7eb75574264a472a3f9c70ab156b6fdeba8e87eddf1ed123ebee464be0941",
+      "bytes": 336748,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_319_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_319_Attack_02.wav",
+      "sha256": "990b0963d0289c53904e2b55e30c58cb7ef945b8291cfc79fe2461d308bca3bf",
+      "bytes": 335608,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_319_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_319_Death_03.wav",
+      "sha256": "022d33cebec6a9d296f79acf58ca184afad8a92b017dd2fa69d79fc8e5d0cafd",
+      "bytes": 242656,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_323_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_323_Attack_02.wav",
+      "sha256": "d154d29440f9d7da00d1b609466d8975b1d1ebd89f68171eb748a40db96225cf",
+      "bytes": 416158,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_323_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_323_Death_03.wav",
+      "sha256": "c60febcc6a875d993fa8fb28a25eb3bcefc522b2ffc81197ce6514e0e099cf92",
+      "bytes": 690352,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_402_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_402_Play_01.wav",
+      "sha256": "a1a48754125e19dab526290b665219482ed02b869e1b60633de7e379320d19f6",
+      "bytes": 204558,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_402_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_402_Attack_02.wav",
+      "sha256": "73e82bca7afb6b8439d3eaabd72a5c7d117809f6ff34f29974681a4b19472b4b",
+      "bytes": 89878,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_402_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_402_Death_03.wav",
+      "sha256": "105278e80ba70efab7873f5ece2db5d89df0a02d18514ebf34cb54815de879b3",
+      "bytes": 62200,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_414_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_414_Play_01.wav",
+      "sha256": "e81077a9549b2023e156b40b315bcfc573d52d11fdfbc13d13dcc0d145ae649d",
+      "bytes": 257830,
+      "channels": 1,
+      "rate": 48000
+    },
+    "Pegasus_Stinger_Horde1": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/Pegasus_Stinger_Horde1.wav",
+      "sha256": "72625539af70be05fe00821b704cbdf981cdf4ea2a4fb59890becec06a4726b3",
+      "bytes": 1119596,
+      "channels": 2,
+      "rate": 48000
+    },
+    "VO_EX1_414_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_414_Attack_02.wav",
+      "sha256": "8f292c2169fa106e787365b7412554828e246d4b8ac189692dbe856e8fc70283",
+      "bytes": 203868,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_414_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_414_Death_03.wav",
+      "sha256": "cb5775fe72eeab25dfb8fb917a634c0a37f9cf7d6260c0cbbc1b6251a9f8701e",
+      "bytes": 190462,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_603_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_603_Play_01.wav",
+      "sha256": "55467fc4b4697f1c759125fd47c84d6988244555d411578d39fd7d555e5f2920",
+      "bytes": 155610,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_603_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_603_Attack_02.wav",
+      "sha256": "3f24fe4d93cf13e7f190c14a27fbfa41653ba26a5a8a75edff1caec2516ee739",
+      "bytes": 184908,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_603_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_603_Death_03.wav",
+      "sha256": "56b17b21a3941c21c8891f3c7b9ae3b083e32bd2a4a938d29c39778f57ba1e12",
+      "bytes": 159622,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_604_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_604_Play_01.wav",
+      "sha256": "02a701e096d5f137ce0e3d4cf0dbe479dd0e8cfc6800b897553c53bf3a434ecc",
+      "bytes": 352240,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_604_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_604_Attack_02.wav",
+      "sha256": "ea805c43d4338f1d11e6df83cca1acfdb7dd3a18fbc19a2d368a9b22692344fa",
+      "bytes": 149190,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_EX1_604_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_EX1_604_Death_03.wav",
+      "sha256": "05f154952d759fab2ebcf2d5eed0654bd0f1792c539e83c645577ae8f375a9d0",
+      "bytes": 187356,
+      "channels": 1,
+      "rate": 48000
+    },
+    "SFX_GVG_076_EnterPlay": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/SFX_GVG_076_EnterPlay.wav",
+      "sha256": "6553da16730feae962c0127767da87049ba75e76d4a9649990c81399f1dd8170",
+      "bytes": 112326,
+      "channels": 1,
+      "rate": 44100
+    },
+    "SFX_GVG_076_Attack": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/SFX_GVG_076_Attack.wav",
+      "sha256": "ae0052a62b423ba8eaafa7d5928eeefedf80e587d9a42736b577ad0de1b4adb9",
+      "bytes": 117992,
+      "channels": 1,
+      "rate": 44100
+    },
+    "SFX_GVG_076_Death": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/SFX_GVG_076_Death.wav",
+      "sha256": "d3776c90337d24a4a8e6a5c145eb557931f0376962741a5c313914dd75e7ba64",
+      "bytes": 119114,
+      "channels": 1,
+      "rate": 44100
+    },
+    "VO_GVG_085_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_GVG_085_Play_01.wav",
+      "sha256": "07b836de6ab041017689d36034259027ab92ed4bad2dcad20e734d9793190ce0",
+      "bytes": 169612,
+      "channels": 1,
+      "rate": 48000
+    },
+    "ClunkyMechSmall_Play_Underlay": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/ClunkyMechSmall_Play_Underlay.wav",
+      "sha256": "eac982d03d89d2db1492029ad3c41b5f9fb35dd664c2767dfffca246d3ee0f14",
+      "bytes": 211046,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_GVG_085_Attack_02_ALT": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_GVG_085_Attack_02_ALT.wav",
+      "sha256": "7f75c29f60a772cc059f4bc2f6768089a38931ea5ec312cb82aba55af6f218ca",
+      "bytes": 155960,
+      "channels": 1,
+      "rate": 48000
+    },
+    "ClunkyMechSmall_Attack_Underlay": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/ClunkyMechSmall_Attack_Underlay.wav",
+      "sha256": "edafb0ff21281bf689d079c0bd423ba0236fc212e869ee923ed4987dde5cf31b",
+      "bytes": 214740,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_GVG_085_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_GVG_085_Death_03.wav",
+      "sha256": "319e6356a45f67822eede856bba034325e0e293cb5fc635b8cb93713df2d7881",
+      "bytes": 173254,
+      "channels": 1,
+      "rate": 48000
+    },
+    "ClunkyMechSmall_Death_Underlay": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/ClunkyMechSmall_Death_Underlay.wav",
+      "sha256": "c6138cdeb8059acf1d0f4b01cbaef623f4d3cf70491f52e4aee6ea5bd8482062",
+      "bytes": 353826,
+      "channels": 1,
+      "rate": 48000
+    },
+    "GVG_110_DrBoom_Play": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/GVG_110_DrBoom_Play.wav",
+      "sha256": "550c322643f4d92de5943540e78be1e95cd9c0aca49d71f3bca309919c9a21cb",
+      "bytes": 126020,
+      "channels": 1,
+      "rate": 44100
+    },
+    "GVG_110_DrBoom_Attack": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/GVG_110_DrBoom_Attack.wav",
+      "sha256": "dd4a3e3cfd44e71949aa971c1088da4df3ec9efd8a61d192c22753d5d1b0e5a3",
+      "bytes": 112772,
+      "channels": 1,
+      "rate": 44100
+    },
+    "GVG_110_DrBoom_Death": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/GVG_110_DrBoom_Death.wav",
+      "sha256": "73530d8c821dcee01442c55c9d54ccc0404e3f07ab64b3aa2edbff92d4c85a64",
+      "bytes": 141044,
+      "channels": 1,
+      "rate": 44100
+    },
+    "VO_GVG_021_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_GVG_021_Play_01.wav",
+      "sha256": "9d8614ea313b8bb20d6e6e560a7952eab5e07fcfb66dde3bd06509cc6eaaa6cf",
+      "bytes": 730242,
+      "channels": 1,
+      "rate": 48000
+    },
+    "MalGanis_Play_Stinger": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/MalGanis_Play_Stinger.wav",
+      "sha256": "b0dc608c4a8c6a20ee1184dfb4ac76b824d2e01a2349219ab6e1c65fecf45631",
+      "bytes": 1420400,
+      "channels": 2,
+      "rate": 48000
+    },
+    "VO_GVG_021_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_GVG_021_Attack_02.wav",
+      "sha256": "e10cd70b66a2232c17ddc52c638bd16a9aa860497b6c19f5cab10278aaf29a36",
+      "bytes": 266102,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_GVG_021_Death_04": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_GVG_021_Death_04.wav",
+      "sha256": "0b13284218455bbddb0871e3100cd550e3a12c646f0cf9e857bf20a0991c89b8",
+      "bytes": 385600,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_GVG_053_Play_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_GVG_053_Play_01.wav",
+      "sha256": "ecf4171f447cbae3e2425a167f7a19d4cd1e4a2cb47f31626bae9930dca67ff1",
+      "bytes": 132434,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_GVG_053_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_GVG_053_Attack_02.wav",
+      "sha256": "1d18ce8623dc6b46b6d882971cb405844ed1922069ffa14464155af335ee440a",
+      "bytes": 138900,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_GVG_053_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_GVG_053_Death_03.wav",
+      "sha256": "2ec81b474194794993a34c1adbd926ff0d56ae0ce0936828fa04fa2d16e66574",
+      "bytes": 225516,
+      "channels": 1,
+      "rate": 48000
+    },
+    "SFX_FP1_007_EnterPlay": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/SFX_FP1_007_EnterPlay.wav",
+      "sha256": "8ee6782dcf5dd9050775845ec1f54fea72934d8c2a6aa02c9576452ee2a32131",
+      "bytes": 135570,
+      "channels": 1,
+      "rate": 44100
+    },
+    "SFX_FP1_007_Attack": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/SFX_FP1_007_Attack.wav",
+      "sha256": "449597468314e54c1a464af6f2b93199607fa2284add3644c0901269b4ba3932",
+      "bytes": 131794,
+      "channels": 1,
+      "rate": 44100
+    },
+    "SFX_FP1_007_Death": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/SFX_FP1_007_Death.wav",
+      "sha256": "66c58519b7cbe22bface8b2b6c1da5f89acc381b4ee5c71b89042cf0e2b6bfae",
+      "bytes": 204766,
+      "channels": 1,
+      "rate": 44100
+    },
+    "VO_FP1_022_EnterPlay_01": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_FP1_022_EnterPlay_01.wav",
+      "sha256": "21961fdafa5de434ec80576619532797a533b83b5dafa5a99f90e2414da50467",
+      "bytes": 469882,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_FP1_022_Attack_02": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_FP1_022_Attack_02.wav",
+      "sha256": "2a9303e6b7c08da73a03f26fb54ddc7da9db0606660613668074c2f88a27270a",
+      "bytes": 302936,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_FP1_022_Death_03": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_FP1_022_Death_03.wav",
+      "sha256": "40c6c9907e2da00b2516fe8b7b137663471c348b6197a63c4c4d30c05681d48a",
+      "bytes": 299034,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_01_Attack_16": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_01_Attack_16.wav",
+      "sha256": "452e3caf3b5f77adbda4b47cd6e0a5331113ab838cf8ec2da8b5f2a28d8041a8",
+      "bytes": 259904,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_01_Death_17": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_01_Death_17.wav",
+      "sha256": "f43441fce3e52f51e24b3ee292b6766d5da773e5e17571217eb1143929004d39",
+      "bytes": 232450,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_Hero_02_Attack_16": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_Hero_02_Attack_16.wav",
+      "sha256": "34d4debeec56c1f5723a9beb3164179951a995aea162babbe6a3cbd794e4b6c0",
+      "bytes": 193916,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_Hero_02_Death_17": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_Hero_02_Death_17.wav",
+      "sha256": "8701dd902da3f2533e869cf70fdc221059efc548b74aa72cdcc292d489abac56",
+      "bytes": 228058,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_03_Attack_16": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_03_Attack_16.wav",
+      "sha256": "4a53d0065e0587debc2d363a1486c7053f2e649aa5376b044e22aec1f7e534cf",
+      "bytes": 162710,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_03_Death_17": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_03_Death_17.wav",
+      "sha256": "44261889737c742ec368f1dce774d0875e6e0b57f9f32af12e11570ae333d014",
+      "bytes": 239634,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_04_Attack_16": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_04_Attack_16.wav",
+      "sha256": "42ee958b09428d7be5aea54c50484d32c13318d531c09ea47ac674c3bb730e72",
+      "bytes": 104794,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_04_Death_17": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_04_Death_17.wav",
+      "sha256": "a2033518f5e3e53f33c1e8abb4ed0f397b4e16e63a96885ac1debb5095eb1936",
+      "bytes": 292644,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_05_Attack_16": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_05_Attack_16.wav",
+      "sha256": "3dd2a75d27d7b30d0963444c1c385ceca184f884d7dabac42fbe106b2427b5a7",
+      "bytes": 156846,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_05_Death_17": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_05_Death_17.wav",
+      "sha256": "9720e2788363f39258af0899ad3ed0d3ad590a7591bf9044ff99731be59182e0",
+      "bytes": 505908,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_06_Attack_16": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_06_Attack_16.wav",
+      "sha256": "2c590e2236b5db69685f723347c61b5d25f92146020656ef8e1aa8635bc6a234",
+      "bytes": 239038,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_06_Death_17": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_06_Death_17.wav",
+      "sha256": "52826d8118a43762d79fcbd3fc1a0f7d214d1fc28485b3f0c6aa2c2f1c6e6b2b",
+      "bytes": 217864,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_07_Attack_16": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_07_Attack_16.wav",
+      "sha256": "a501d63bb180ea695bb6f2f255922da683194d1e0fc58803321b29770b3b92b6",
+      "bytes": 167192,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_07_Death_17": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_07_Death_17.wav",
+      "sha256": "a6b3472179a470a695b53a079dcb80fbaee0674c443334b4fdf7e4a27279e8cf",
+      "bytes": 468024,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_08_Attack_71": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_08_Attack_71.wav",
+      "sha256": "bcb3e4b4112275577c4fad1c2f0e8423151d45bdcb29149608470e9302a3a8ac",
+      "bytes": 75390,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_08_Death_72": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_08_Death_72.wav",
+      "sha256": "7f53d86ac76f6e6eeb70468460c35359b8dc9bc5678e83c037114ef2f5805dd9",
+      "bytes": 277716,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_09_Attack_16": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_09_Attack_16.wav",
+      "sha256": "4cee368ea0c0a5f4d2e43fc069e4dab1ecd90a84b382e9260c480f933df0ffc3",
+      "bytes": 94140,
+      "channels": 1,
+      "rate": 48000
+    },
+    "VO_HERO_09_Death_17": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/VO_HERO_09_Death_17.wav",
+      "sha256": "46eeff39e35eec4760619d80d645754714cdb2dfa90684e1bf2ca471415d7a23",
+      "bytes": 291980,
+      "channels": 1,
+      "rate": 48000
+    },
+    "EX1_506a_Murloc_Tidehunter_EnterPlay1": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/EX1_506a_Murloc_Tidehunter_EnterPlay1.wav",
+      "sha256": "b8bea7e63c519a7e80504eb9bcb199b557875d566b27f3adf60be814acd32512",
+      "bytes": 172074,
+      "channels": 1,
+      "rate": 48000
+    },
+    "EX1_506a_Murloc_Tidehunter_Attack1": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/EX1_506a_Murloc_Tidehunter_Attack1.wav",
+      "sha256": "82cf60da683c01c4b3d0971bd02bdbf5bce0d275426fdb9251d1e35d85e9fd84",
+      "bytes": 82452,
+      "channels": 1,
+      "rate": 48000
+    },
+    "EX1_506a_Murloc_Tidehunter_Death1": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/EX1_506a_Murloc_Tidehunter_Death1.wav",
+      "sha256": "f003896669454f2f498a3e1648ca87cd6e6ac44055f917c943a4975087a6dbb3",
+      "bytes": 58264,
+      "channels": 1,
+      "rate": 48000
+    },
+    "Sword1_Attack_Underlay": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/Sword1_Attack_Underlay.wav",
+      "sha256": "76067c5adfb92c52136d72ea37eaacd53026e9d905b6078446db5e9460ce8899",
+      "bytes": 28358,
+      "channels": 1,
+      "rate": 48000
+    },
+    "Fire_Underlay_Play": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/Fire_Underlay_Play.wav",
+      "sha256": "454edb45e76143ab6c27449c98005550d9cba2de9b37edf6ef8360f26d810008",
+      "bytes": 208842,
+      "channels": 1,
+      "rate": 48000
+    },
+    "IceElemental_Underlay_Play": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/IceElemental_Underlay_Play.wav",
+      "sha256": "5257dc3edb6eab9d1e068ea8aa9306d437aa914e0d48bb676620e20f1fb60404",
+      "bytes": 184846,
+      "channels": 1,
+      "rate": 48000
+    },
+    "HolyMagic_Play_Underlay": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/HolyMagic_Play_Underlay.wav",
+      "sha256": "62f0756fee46b704dae26cd77994e3e24789f06d52efae8a0d751e1e4e4fb316",
+      "bytes": 221622,
+      "channels": 1,
+      "rate": 48000
+    },
+    "ShadowMagic_Play_Underlay": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/ShadowMagic_Play_Underlay.wav",
+      "sha256": "355d87b13d14d929f83a09de733640753b868f68d325ca98d9a59d979b0b8bd8",
+      "bytes": 235520,
+      "channels": 1,
+      "rate": 44100
+    },
+    "Nature_Magic_Underlay_Play": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/Nature_Magic_Underlay_Play.wav",
+      "sha256": "9fabd8897ec08c92fee36061ad8541617ae6a16b48109bbad56eabd7690c620e",
+      "bytes": 174554,
+      "channels": 1,
+      "rate": 44100
+    },
+    "ArcaneMagic_Play_Underlay": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/ArcaneMagic_Play_Underlay.wav",
+      "sha256": "3ded2cf00089425bc0e5dfbb8f2dd7425bd0245a956dcd9d5e90ec166cf751a3",
+      "bytes": 241720,
+      "channels": 1,
+      "rate": 48000
+    },
+    "1H_SwordFine_Underlay_Play": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/1H_SwordFine_Underlay_Play.wav",
+      "sha256": "285d4de346a58784d4775947b5ed442003fb2ad32a23a4ff98a0a992c6606848",
+      "bytes": 171812,
+      "channels": 1,
+      "rate": 48000
+    },
+    "ArcaneFletcher_Bow_Underlay_Play": {
+      "source": "https://hearthstonesounds.s3.amazonaws.com/ArcaneFletcher_Bow_Underlay_Play.wav",
+      "sha256": "2c04ec9a54f7b8cf9c0738c12bdcab889e811b8be5519de94b02531aa7d717db",
+      "bytes": 136398,
+      "channels": 1,
+      "rate": 48000
+    }
+  },
+  "failed": [
+    {
+      "name": "CS2_033_Play_WaterElemental",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "CS2_033_Attack_WaterElemental",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "CS2_033_Death_WaterElemental",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "SFX_CS2_120_EnterPlay",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "SFX_CS2_120_Attack",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "SFX_CS2_120_Death",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "SFX_EX1_399_EnterPlay_02",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "SFX_EX1_399_Attack_02",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "SFX_EX1_399_Death_02",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "VO_CS2_088_Play_01",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "VO_CS2_088_Attack_02",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "VO_CS2_088_Death_03",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "EX1_178_Ancient_Of_War_EnterPlay1",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "EX1_178_Ancient_Of_War_Attack3",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "EX1_178_Ancient_Of_War_Death2",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "SFX_EX1_531_EnterPlay",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "SFX_EX1_531_Attack",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "SFX_EX1_531_Death",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "VO_CS2_117_Play_01",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "VO_CS2_117_Attack_02",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "VO_CS2_117_Death_03",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "VO_CS2_181_Play_01",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "VO_CS2_181_Attack_02",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "VO_CS2_181_Death_03",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "VO_EX1_004_Play_01",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "VO_EX1_004_Attack_02",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "VO_EX1_004_Death_03",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "VO_EX1_008_Play_01",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "VO_EX1_008_Attack_02",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "VO_EX1_008_Death_03",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "VO_TUTORIAL_03_MUKLA_01_01",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "VO_TUTORIAL_03_MUKLA_02_02",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "VO_TUTORIAL_03_MUKLA_08_08",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "tt_004_FleshEating_Ghoul_EnterPlay1",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "tt_004_FleshEating_Ghoul_Attack1",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "tt_004_FleshEating_Ghoul_Death1",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "EX1_623_Temple_Enforcer_EnterPlay_1",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "EX1_623_Temple_Enforcer_Attack_2",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "EX1_623_Temple_Enforcer_Death_4",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "VO_EX1_522_Play_01",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "VO_EX1_522_Attack_02",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "VO_EX1_522_Death_03",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "EX1_258_Unbound_Elemental_EnterPlay1",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "EX1_258_Unbound_Elemental_Attack3",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "EX1_258_Unbound_Elemental_Death1",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "VO_GVG_069_Play_01",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "VO_GVG_069_Attack_02",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "VO_GVG_069_Death_03",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "SFX_GVG_044_EnterPlay",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "SFX_GVG_044_Attack",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "SFX_GVG_044_Death",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "VO_GVG_109_Play_01",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "VO_GVG_109_Attack_02",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "VO_GVG_109_Death_03",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "SFX_GVG_121_EnterPlay",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "SFX_GVG_121_Attack",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "SFX_GVG_121_Death",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "SFX_FP1_011_EnterPlay",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "SFX_FP1_011_Attack",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "SFX_FP1_011_Death",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "VO_FP1_031_EnterPlay_06",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "VO_FP1_031_Attack_07",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "VO_NAX9_01_DEATH_05",
+      "error": "HTTP Error 403: Forbidden"
+    }
+  ]
+}

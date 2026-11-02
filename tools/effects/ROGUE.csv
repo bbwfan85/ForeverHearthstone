@@ -1,0 +1,25 @@
+card_id,hook,trigger,cond,ops,flags,notes
+CS2_072,spell,,,"Damage(target, 2)",,Backstab - undamaged req is printed
+EX1_144,spell,,,"ReturnToHand(target, -2)",,"Shadowstep - returns it costing (2) less (the same cost rider as Freezing Trap's +2)"
+CS2_073,spell,,,"Buff(target, 2, 0)",,Cold Blood - base
+CS2_073,combo,,,"Buff(target, 4, 0)",,Cold Blood - combo REPLACES the base
+CS2_075,spell,,,"Damage(enemy.hero, 3)",,Sinister Strike
+EX1_131,combo,,,Summon(EX1_131t),,Defias Ringleader -> Defias Bandit; combo only
+EX1_124,spell,,,"Damage(target, 2)",,Eviscerate - base
+EX1_124,combo,,,"Damage(target, 4)",,Eviscerate - combo
+GVG_025,trigger,MINION_SUMMONED,PayloadSummonedByMe and PayloadHasRace(pirate) and not PayloadIsSelf,"GiveKeyword(self, stealth)",,One-eyed Cheat
+EX1_581,spell,,,ReturnToHand(target),,Sap
+EX1_278,spell,,,"Damage(target, 1); Draw(1)",,Shiv
+EX1_129,spell,,,"Damage(enemy.minion, 1); Draw(1)",,Fan of Knives
+GVG_027,trigger,TURN_END,PayloadIsMine,"Buff(friendly.mech!self~1, 2, 2)",,Iron Sensei - end of YOUR turn only
+EX1_133,battlecry,,,"Damage(target, 1)",,Perdition's Blade - base
+EX1_133,combo,,,"Damage(target, 2)",,Perdition's Blade - combo
+EX1_134,combo,,,"Damage(target, 2)",,SI:7 Agent - combo only
+FP1_026,deathrattle,,,ReturnToHand(friendly.minion~1),,Anub'ar Ambusher
+NEW1_014,battlecry,,,"GiveKeyword(target, stealth)",,Master of Disguise - permanent Stealth
+GVG_047,spell,,,Destroy(enemy.minion~1),,Sabotage - base
+GVG_047,combo,,,"Destroy(enemy.minion~1); DestroyWeapon(enemy)",,"Sabotage - combo also destroys the opponent's weapon (combo REPLACES the base, so it repeats it)"
+CS2_076,spell,,,Destroy(target),,Assassinate
+NEW1_005,combo,,,ReturnToHand(target),,Kidnapper - combo only
+NEW1_004,spell,,,ReturnToHand(any.minion),,Vanish - all minions to owners' hands
+CS2_077,spell,,,Draw(4),,Sprint

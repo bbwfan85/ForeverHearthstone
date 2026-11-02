@@ -1,0 +1,68 @@
+{
+  "_comment": [
+    "Per-board measurements of the painted table, in coordinates normalised to",
+    "each SOURCE image (0..1, y measured from the BOTTOM edge).",
+    "",
+    "WHY THIS FILE EXISTS. Every board is a picture of a table with a playing",
+    "surface, a seam down the middle, an End Turn plaque and two deck slots",
+    "already painted on it -- and each one is cropped differently, so those",
+    "features sit at different places in each image. Stretching the raw image to",
+    "the window and hoping the layout lines up is what produced a live End Turn",
+    "button beside the painted one, deck pips floating off their slots, and rows",
+    "that did not sit on the table.",
+    "",
+    "tools/fetch_art.py uses these to NORMALISE each board as it is imported, so",
+    "every packaged board has its surface and seam in the same place. After that",
+    "Client/UI/Layout.lua needs ONE set of constants for all boards, and adding a",
+    "board is adding a row here.",
+    "",
+    "FOUR NUMBERS, because two anchors are needed on each axis. surface_x0/x1",
+    "fix the horizontal scale and offset; surface_y0 and seam_y do the same",
+    "vertically. An earlier version had only the seam and preserved the source",
+    "aspect instead, which cropped whatever did not fit -- and on a board taller",
+    "than 2:1 what did not fit was the mana trough along the bottom edge.",
+    "",
+    "HOW TO MEASURE A NEW BOARD. Run tools/grid_overlay.py on the source image,",
+    "open the result, and read off the left and right edges of the pale playing",
+    "surface, its bottom edge, and the seam across its middle."
+  ],
+  "canonical": {
+    "surface_x0": 0.155,
+    "surface_x1": 0.845,
+    "surface_y0": 0.305,
+    "seam_y": 0.545,
+    "_note": "Measured from org_clean_board, the reference. Must match SURFACE_X0/X1, SURFACE_Y0 and SEAM_Y in Layout.lua."
+  },
+  "boards": {
+    "board1": {
+      "surface_x0": 0.15,
+      "surface_x1": 0.845,
+      "surface_y0": 0.265,
+      "seam_y": 0.545
+    },
+    "board2": {
+      "surface_x0": 0.175,
+      "surface_x1": 0.815,
+      "surface_y0": 0.295,
+      "seam_y": 0.545
+    },
+    "board3": {
+      "surface_x0": 0.175,
+      "surface_x1": 0.825,
+      "surface_y0": 0.335,
+      "seam_y": 0.515
+    },
+    "orgrimmar": {
+      "surface_x0": 0.155,
+      "surface_x1": 0.845,
+      "surface_y0": 0.305,
+      "seam_y": 0.545
+    },
+    "orgrimmar_clean": {
+      "surface_x0": 0.155,
+      "surface_x1": 0.845,
+      "surface_y0": 0.305,
+      "seam_y": 0.545
+    }
+  }
+}

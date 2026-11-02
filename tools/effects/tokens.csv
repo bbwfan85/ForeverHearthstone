@@ -1,0 +1,12 @@
+card_id,hook,trigger,cond,ops,flags,notes
+GAME_005,spell,,,"Mana(1, temporary)",,"THE COIN. It had no script at all and therefore did nothing: you spent the card and gained no mana, in every single match whose coin flip you lost. It was invisible to the coverage report because that counted the COLLECTIBLE pool and the Coin is not collectible -- the same blind spot that once hid eight of the nine hero powers. Body is identical to GVG_028t Gallywix's Coin, which WAS authored, because that one is summoned by a script and this one is dealt by Engine/Game.lua"
+GVG_110t,deathrattle,,,"Damage(enemy.char~1, 1-4)",,"Boom Bot. Dr. Boom summons two of these and they are the entire reason to play him; unauthored, Dr. Boom was a 7/7 for 7 with two 1/1 vanilla bodies. `enemy.char` includes the hero, and the roll is per-bot rather than shared because each bot's deathrattle is its own op"
+GVG_111t,property,,,AttacksPerTurn(4),,"V-07-TR-0N. Mega-Windfury is printed only in the card TEXT -- the vendored data carries no mechanic for it, so nothing could import it -- and the engine's allowed-attacks sum was `Windfury and 2 or 1`, which gave the four-attack finisher two swings. Charge comes from printed keywords; this row supplies only the part that is not in the data"
+EX1_tk33,heropower,,,"Summon(EX1_tk34)",,"INFERNO! -- Lord Jaraxxus's hero power. EX1_323 correctly swapped the hero and set this power, and then the power did nothing whatsoever, so the marquee Warlock finisher cost you 15 health of hero swap for a 3/8 weapon and a dead button"
+EX1_625t,heropower,,,"Damage(target, 2)",,"Mind Spike -- Shadowform's first upgrade. Shadowform switched to it correctly and it did nothing, so casting Shadowform actively made a Priest WORSE: it replaced a working Lesser Heal with a dead button. REQ_TARGET_TO_PLAY is printed, so Targeting demands the target exactly as Fireblast does"
+EX1_625t2,heropower,,,"Damage(target, 3)",,"Mind Shatter -- Shadowform's second upgrade, same story as EX1_625t"
+NEW1_009,trigger,TURN_END,PayloadIsMine,"Heal(friendly.minion, 1)",,Healing Totem - end of your turn restore 1 to all friendly minions
+NEW1_033,aura,,,"Aura(friendly.minion!self, 1, 0)",,Leokk - other friendly minions +1 Attack
+DREAM_02,spell,,,"Damage(any.char.notid=EX1_572, 5)",,Ysera Awakens - all characters except Ysera
+DREAM_04,spell,,,ReturnToHand(target),,Dream - return a minion to its owner's hand
+FP1_006,deathrattle,,,"Damage(friendly.hero, 3)",,Deathcharger - deathrattle deals 3 to your hero

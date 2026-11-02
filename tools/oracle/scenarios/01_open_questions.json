@@ -1,0 +1,152 @@
+[
+  {
+    "name": "open: Shadowform twice gives Mind Shatter",
+    "question": "docs/32: Shadowform chain Lesser Heal -> Mind Spike -> Mind Shatter",
+    "p1": {"class": "PRIEST", "hand": ["EX1_625", "EX1_625"]},
+    "actions": [{"play": "EX1_625"}, {"play": "EX1_625"}]
+  },
+  {
+    "name": "open: Shadowform a third time",
+    "question": "docs/32: does a third Shadowform do anything (refresh Mind Shatter)?",
+    "p1": {"class": "PRIEST", "hand": ["EX1_625", "EX1_625", "EX1_625"]},
+    "actions": [{"play": "EX1_625"}, {"play": "EX1_625"}, {"play": "EX1_625"}]
+  },
+  {
+    "name": "open: Shadowform after using the hero power this turn",
+    "question": "does swapping the hero power give a fresh use this turn?",
+    "p1": {"class": "PRIEST", "hand": ["EX1_625"]},
+    "actions": [{"power": true, "target": "p1.hero"}, {"play": "EX1_625"}, {"power": true, "target": "p2.hero"}]
+  },
+  {
+    "name": "open: Mind Spike used, then Shadowform again",
+    "question": "does upgrading Mind Spike to Mind Shatter refresh the use?",
+    "p1": {"class": "PRIEST", "hand": ["EX1_625", "EX1_625"]},
+    "actions": [{"play": "EX1_625"}, {"power": true, "target": "p2.hero"}, {"play": "EX1_625"}, {"power": true, "target": "p2.hero"}]
+  },
+  {
+    "name": "open: Lightspawn with Blessing of Might",
+    "question": "docs/32: does an Attack buff add on top of Lightspawn's Health-as-Attack?",
+    "p1": {"class": "PALADIN", "board": ["EX1_335"], "hand": ["CS2_087"]},
+    "actions": [{"play": "CS2_087", "target": "p1.board.1"}]
+  },
+  {
+    "name": "open: Lightspawn with Abusive Sergeant",
+    "p1": {"board": ["EX1_335"], "hand": ["CS2_188"]},
+    "actions": [{"play": "CS2_188", "target": "p1.board.1"}]
+  },
+  {
+    "name": "open: Lightspawn damaged, then Divine Spirit",
+    "p1": {"class": "PRIEST", "board": [{"id": "EX1_335", "damage": 2}], "hand": ["CS2_236"]},
+    "actions": [{"play": "CS2_236", "target": "p1.board.1"}]
+  },
+  {
+    "name": "open: Lightspawn silenced",
+    "p1": {"board": ["EX1_335"], "hand": ["EX1_332"]},
+    "actions": [{"play": "EX1_332", "target": "p1.board.1"}]
+  },
+  {
+    "name": "open: Lightspawn with Dire Wolf Alpha",
+    "p1": {"board": ["EX1_335"], "hand": ["EX1_162"]},
+    "actions": [{"play": "EX1_162", "pos": 2}]
+  },
+  {
+    "name": "open: Wild Pyromancer on a countered spell",
+    "question": "docs/32: does Pyromancer fire when Counterspell eats the spell?",
+    "p1": {"board": ["NEW1_020"], "hand": ["CS2_008"]},
+    "p2": {"secrets": ["EX1_287"], "board": ["CS2_182"]},
+    "actions": [{"play": "CS2_008", "target": "p2.board.1"}]
+  },
+  {
+    "name": "open: Pyromancer killed by the spell it follows",
+    "p1": {"board": ["NEW1_020"], "hand": ["CS2_025"]},
+    "p2": {"board": ["CS2_182"]},
+    "actions": [{"play": "CS2_025"}]
+  },
+  {
+    "name": "open: Pyromancer and Mana Wyrm order",
+    "p1": {"board": ["NEW1_020", "NEW1_012"], "hand": ["CS2_008"]},
+    "actions": [{"play": "CS2_008", "target": "p2.hero"}]
+  },
+  {
+    "name": "open: Windfury minion frozen by its first attack",
+   "known": "Fireplace bug: a Windfury minion frozen with an attack left thaws at the end of that turn (hearthstone.wiki.gg/wiki/Freeze); Fireplace keeps it frozen",
+    "question": "docs/32: a Windfury minion frozen with an attack left -- does it thaw at end of turn?",
+    "p1": {"board": ["EX1_033"]},
+    "p2": {"board": ["CS2_033"]},
+    "actions": [{"attack": "p1.board.1", "at": "p2.board.1"}, {"end_turn": true}, {"end_turn": true}]
+  },
+  {
+    "name": "open: Windfury frozen after first attack, state on the opponent's turn",
+   "known": "same Fireplace thaw bug as above",
+    "p1": {"board": ["EX1_033"]},
+    "p2": {"board": ["CS2_033"]},
+    "actions": [{"attack": "p1.board.1", "at": "p2.board.1"}, {"end_turn": true}]
+  },
+  {
+    "name": "open: minion frozen before it attacked stays frozen",
+    "p1": {"board": ["CS2_182"], "hand": ["CS2_024"]},
+    "actions": [{"play": "CS2_024", "target": "p1.board.1"}, {"end_turn": true}, {"end_turn": true}]
+  },
+  {
+    "name": "open: minion frozen after it attacked thaws",
+    "p1": {"board": ["CS2_182"], "hand": ["CS2_024"]},
+    "actions": [{"attack": "p1.board.1", "at": "p2.hero"}, {"play": "CS2_024", "target": "p1.board.1"}, {"end_turn": true}, {"end_turn": true}]
+  },
+  {
+    "name": "open: Loatheb over Sorcerer's Apprentice on a 0-cost spell",
+    "question": "docs/32: cost floor order under Loatheb",
+    "p1": {"hand": ["FP1_030"]},
+    "p2": {"board": ["EX1_608"], "hand": ["CS2_008", "CS2_029"]},
+    "actions": [{"play": "FP1_030"}, {"end_turn": true}]
+  },
+  {
+    "name": "open: Apprentice played after Loatheb",
+    "p1": {"hand": ["FP1_030"]},
+    "p2": {"hand": ["EX1_608", "CS2_008"]},
+    "actions": [{"play": "FP1_030"}, {"end_turn": true}, {"play": "EX1_608"}]
+  },
+  {
+    "name": "open: Redemption and Harvest Golem",
+    "question": "docs/32: on-death Secret versus deathrattle order",
+    "p1": {"hand": ["CS2_029"]},
+    "p2": {"class": "PALADIN", "secrets": ["EX1_136"], "board": ["EX1_556"]},
+    "actions": [{"play": "CS2_029", "target": "p2.board.1"}]
+  },
+  {
+    "name": "open: Redemption and Cairne between two minions",
+    "p1": {"hand": ["CS2_029"]},
+    "p2": {"class": "PALADIN", "secrets": ["EX1_136"], "board": ["CS2_231", {"id": "EX1_110", "damage": 3}, "CS2_120"]},
+    "actions": [{"play": "CS2_029", "target": "p2.board.2"}]
+  },
+  {
+    "name": "open: Duplicate and Loot Hoarder",
+    "p1": {"hand": ["CS2_029"]},
+    "p2": {"class": "MAGE", "secrets": ["FP1_018"], "board": ["EX1_096"], "deck": ["CS2_182"]},
+    "actions": [{"play": "CS2_029", "target": "p2.board.1"}]
+  },
+  {
+    "name": "open: Avenge with one survivor",
+    "p1": {"hand": ["CS2_029"]},
+    "p2": {"class": "PALADIN", "secrets": ["FP1_020"], "board": ["CS2_182", "CS2_120"]},
+    "actions": [{"play": "CS2_029", "target": "p2.board.1"}]
+  },
+  {
+    "name": "open: Avenge and Redemption on one death",
+    "p1": {"hand": ["CS2_029"]},
+    "p2": {"class": "PALADIN", "secrets": ["FP1_020", "EX1_136"], "board": ["CS2_182", "CS2_120"]},
+    "actions": [{"play": "CS2_029", "target": "p2.board.1"}]
+  },
+  {
+    "name": "open: Truesilver Champion heal before the swing",
+    "question": "weapon trigger order: heal happens before damage",
+    "p1": {"class": "PALADIN", "hp": 29, "weapon": "CS2_097"},
+    "p2": {"board": ["CS2_182"]},
+    "actions": [{"attack": "p1.hero", "at": "p2.board.1"}]
+  },
+  {
+    "name": "open: Truesilver at 3 Health into a 4-Attack minion",
+    "p1": {"class": "PALADIN", "hp": 3, "weapon": "CS2_097"},
+    "p2": {"board": ["CS2_182"]},
+    "actions": [{"attack": "p1.hero", "at": "p2.board.1"}]
+  }
+]

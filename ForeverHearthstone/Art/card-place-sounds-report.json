@@ -1,0 +1,126 @@
+{
+  "acidic_swamp_ooze_play": {
+    "skipped": "HearthSFX already has this card",
+    "card": "EX1_066"
+  },
+  "alexstrasza_music_play": {
+    "card": "EX1_561",
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/sounds/cardPlaceSnds/alexstrasza_music_play.mp3",
+    "file": "rymedy_alexstrasza_music_play.mp3",
+    "sha256": "51ed6426203224e14e6ff840fbee874f80905b410f8ff0e21362d3a63f7b69d3",
+    "bytes": 91558
+  },
+  "alexstrasza_play": {
+    "card": "EX1_561",
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/sounds/cardPlaceSnds/alexstrasza_play.mp3",
+    "file": "rymedy_alexstrasza_play.mp3",
+    "sha256": "7f1319260aee5ef0606f9ea113288fc64ca30ccb5cb6d8e87987ed79acad8e89",
+    "bytes": 34837
+  },
+  "archmage_play": {
+    "card": "CS2_155",
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/sounds/cardPlaceSnds/archmage_play.mp3",
+    "file": "rymedy_archmage_play.mp3",
+    "sha256": "8d8e552804ae7a554fb7e2c6318a14e9e4bef65c28721c139c4e519d93d7a4c3",
+    "bytes": 25922
+  },
+  "bloodfen_raptor_play": {
+    "card": "CS2_172",
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/sounds/cardPlaceSnds/bloodfen_raptor_play.mp3",
+    "file": "rymedy_bloodfen_raptor_play.mp3",
+    "sha256": "0f2f1b9d8915d7a63fc7dc18bad4ec1a49f9f31b1dda38af94d080e0f8b30853",
+    "bytes": 20369
+  },
+  "boulderfist_ogre_play": {
+    "card": "CS2_200",
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/sounds/cardPlaceSnds/boulderfist_ogre_play.mp3",
+    "file": "rymedy_boulderfist_ogre_play.mp3",
+    "sha256": "8e7297ad895f438b286f42c07e41c393817c4d71abd667c4f64ddfa3e86d4a9f",
+    "bytes": 33931
+  },
+  "deathwing_play": {
+    "card": "NEW1_030",
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/sounds/cardPlaceSnds/deathwing_play.mp3",
+    "file": "rymedy_deathwing_play.mp3",
+    "sha256": "9d7cd05d5504f6752b95802251bb2a8e6806c4dfecf1e3f4be1039186507fda4",
+    "bytes": 64905
+  },
+  "devout_adventurer_play": {
+    "skipped": "no collectible minion of that name in the pinned pool"
+  },
+  "elite_tauren_chieftain_play": {
+    "card": "PRO_001",
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/sounds/cardPlaceSnds/elite_tauren_chieftain_play.mp3",
+    "file": "rymedy_elite_tauren_chieftain_play.mp3",
+    "sha256": "cf844006abb4ecf5372c318455a3288f82077d9104f3d2ce654eb629a4636d87",
+    "bytes": 180744
+  },
+  "elven_archer_play": {
+    "skipped": "HearthSFX already has this card",
+    "card": "CS2_189"
+  },
+  "gnomish_inventor_play": {
+    "card": "CS2_147",
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/sounds/cardPlaceSnds/gnomish_inventor_play.mp3",
+    "file": "rymedy_gnomish_inventor_play.mp3",
+    "sha256": "363d75cdf6c10e5a26469d4ad3b1fafebc270032be11c18e1e85b13928fe7d85",
+    "bytes": 24200
+  },
+  "king_krush_play": {
+    "skipped": "HearthSFX already has this card",
+    "card": "EX1_543"
+  },
+  "leeroy_jenkins_music_play": {
+    "card": "EX1_116",
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/sounds/cardPlaceSnds/leeroy_jenkins_music_play.mp3",
+    "file": "rymedy_leeroy_jenkins_music_play.mp3",
+    "sha256": "9a16a7c5b6a2714f08039f6f4d1e9c519412e73513e33ed5e9594911045ac808",
+    "bytes": 86602
+  },
+  "leeroy_jenkins_play": {
+    "card": "EX1_116",
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/sounds/cardPlaceSnds/leeroy_jenkins_play.mp3",
+    "file": "rymedy_leeroy_jenkins_play.mp3",
+    "sha256": "478da523ee55c533cd85dcffbd0a3b10e014470c3458177a0481a17815f899b4",
+    "bytes": 63078
+  },
+  "lich_king_play": {
+    "skipped": "no collectible minion of that name in the pinned pool"
+  },
+  "lifedrinker_play": {
+    "skipped": "no collectible minion of that name in the pinned pool"
+  },
+  "murloc_scout_play": {
+    "skipped": "no collectible minion of that name in the pinned pool"
+  },
+  "murloc_tidehunter_play": {
+    "skipped": "HearthSFX already has this card",
+    "card": "EX1_506"
+  },
+  "ragnaros_the_firelord_play": {
+    "skipped": "HearthSFX already has this card",
+    "card": "EX1_298"
+  },
+  "razorfen_hunter_play": {
+    "card": "CS2_196",
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/sounds/cardPlaceSnds/razorfen_hunter_play.mp3",
+    "file": "rymedy_razorfen_hunter_play.mp3",
+    "sha256": "2a33131b7a9ce0ff2a64283c251a77db9d0187e16ef6781a312debb4e4527765",
+    "bytes": 32831
+  },
+  "saronite_chain_gang_play": {
+    "skipped": "no collectible minion of that name in the pinned pool"
+  },
+  "senjin_shieldmasta_play": {
+    "skipped": "HearthSFX already has this card",
+    "card": "CS2_179"
+  },
+  "stormwind_champion_play": {
+    "skipped": "HearthSFX already has this card",
+    "card": "CS2_222"
+  },
+  "voodoo_doctor_play": {
+    "skipped": "HearthSFX already has this card",
+    "card": "EX1_011"
+  }
+}

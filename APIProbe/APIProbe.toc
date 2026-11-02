@@ -1,0 +1,14 @@
+## Interface: 16001, 120000, 120005, 120100, 120105, 110200, 110205
+## Title: APIProbe |cff909090(API surface report)|r
+## Notes: Read-only diagnostic. Reports which APIs this client actually has.|nRun /apiprobe, then /reload, then copy SavedVariables/APIProbe.lua
+## Author: Forever Hearthstone project
+## Version: 1.0
+## SavedVariables: APIProbeDB
+## SavedVariablesPerCharacter: APIProbeCharDB
+## IconTexture: Interface\Icons\INV_Misc_QuestionMark
+## AllowLoadGameType: mainline, classic
+## X-Category: Development Tools
+## X-Purpose: Passive API inspection only. No gameplay automation, no outgoing
+## X-Purpose-2: chat to other players, no CVar or setting writes.
+
+APIProbe.lua

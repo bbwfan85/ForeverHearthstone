@@ -1,0 +1,35 @@
+[
+  {
+    "name": "smoke: yeti trades into yeti",
+    "p1": {"board": ["CS2_182"]},
+    "p2": {"board": ["CS2_182"]},
+    "actions": [{"attack": "p1.board.1", "at": "p2.board.1"}]
+  },
+  {
+    "name": "smoke: fireball face",
+    "p1": {"hand": ["CS2_029"]},
+    "actions": [{"play": "CS2_029", "target": "p2.hero"}]
+  },
+  {
+    "name": "smoke: stormwind champion aura",
+    "p1": {"board": ["CS2_231", "CS2_222"], "hand": ["CS2_182"]},
+    "actions": [{"play": "CS2_182", "pos": 1}]
+  },
+  {
+    "name": "smoke: leper gnome is 2/1 at the pin",
+    "p1": {"board": ["EX1_029"]},
+    "p2": {"board": ["CS2_182"]},
+    "actions": [{"attack": "p1.board.1", "at": "p2.board.1"}]
+  },
+  {
+    "name": "smoke: end turn draws the stacked card",
+    "p2": {"deck": ["CS2_182"]},
+    "actions": [{"end_turn": true}]
+  },
+  {
+    "name": "smoke: weapon and secret",
+    "p1": {"weapon": "CS2_106"},
+    "p2": {"secrets": ["EX1_289"], "board": ["CS2_231"]},
+    "actions": [{"attack": "p1.hero", "at": "p2.board.1"}, {"end_turn": true}, {"power": true, "target": "p1.hero"}]
+  }
+]

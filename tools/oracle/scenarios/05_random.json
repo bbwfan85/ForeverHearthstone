@@ -1,0 +1,10 @@
+[
+  {"name": "random: Animal Companion",
+   "random": 40,
+   "p1": {"class": "HUNTER", "hand": ["NEW1_031"]},
+   "actions": [{"play": "NEW1_031"}]},
+  {"name": "random: Arcane Missiles split between hero and a minion",
+   "random": 60,
+   "p1": {"hand": ["EX1_277"]}, "p2": {"board": ["CS2_120"]},
+   "actions": [{"play": "EX1_277"}]}
+]

@@ -1,0 +1,76 @@
+## Interface: 16001, 120100, 120000, 120005, 110200
+# FIRST is the target: Forever, Mainline, interface 16001 (docs/07).
+# The rest let the same files load on a live retail client for testing --
+# retail is Mainline too, so it verifies the API surface without being
+# Forever. Every result from retail must still be re-confirmed on the beta.
+## Title: Forever Hearthstone
+## Notes: A faithful recreation of Hearthstone's Basic, Classic, Naxxramas and Goblins vs Gnomes sets, played between two players sitting near each other in the world.
+## Author: bbwfan85
+## Version: 1.0.1
+## IconTexture: Interface\AddOns\ForeverHearthstone\Art\minimap-icon.tga
+## AddonCompartmentFunc: ForeverHearthstone_OnAddonCompartmentClick
+## SavedVariables: ForeverHearthstoneDB
+## SavedVariablesPerCharacter: ForeverHearthstoneCharDB
+## X-Patch-Pin: 7234 (Basic + Classic + Naxxramas + Goblins vs Gnomes)
+
+# LOAD ORDER MATTERS.
+#
+# Each file captures its dependencies into locals at load time -- Ops.lua does
+# `local Selector = ns.Selector` -- so a file must never load before what it
+# captures. This order is the same one tests/harness.lua uses, and the test
+# suite is what proves it is correct: the engine loads and runs headless under
+# plain Lua 5.1 with nothing stubbed.
+#
+# Engine/ imports ZERO WoW API. So do Client/Assets, Client/FX, Client/UI/Layout
+# and Client/Controller. Only Client/UI/Board.lua and Client/Main.lua touch the
+# platform. That rule is what let this project survive discovering that the
+# brief's "Forever uses the Classic API" premise was wrong -- see docs/07.
+
+Engine\Enums.lua
+Engine\Entity.lua
+Engine\Selector.lua
+Engine\CardPool.lua
+Engine\Conditions.lua
+Engine\Ops.lua
+Engine\Aura.lua
+Engine\Bus.lua
+Engine\Targeting.lua
+Engine\Game.lua
+
+Data\PrintedCards.lua
+Data\Effects\Generated.lua
+Data\Effects\Handwritten.lua
+
+Client\Assets\HearthstoneArt.lua
+Client\Assets\ArtCrop.lua
+Client\Assets\CardText.lua
+Client\Assets\DeckTiles.lua
+Client\Assets\CardSounds.lua
+Client\Assets\CardPlaySounds.lua
+Client\Assets\HeroVoice.lua
+Client\Assets\GenericArt.lua
+Client\Assets\Resolver.lua
+Client\FX\Timeline.lua
+Client\FX\Choreography.lua
+Client\FX\SpellFX.lua
+Client\FX\Director.lua
+Client\FX\Sounds.lua
+Client\UI\Layout.lua
+Client\UI\CollectionLayout.lua
+Client\Actions.lua
+Client\Collection.lua
+Client\Packs.lua
+Client\Drops.lua
+Client\Controller.lua
+Client\Net\Protocol.lua
+Client\Net\Session.lua
+Client\Vault.lua
+Client\BotDecks.lua
+Client\AI.lua
+Client\Net\DevTest.lua
+Client\Rewards.lua
+Client\Net\Transport.lua
+Client\UI\Widgets.lua
+Client\UI\Board.lua
+Client\UI\Collection.lua
+Client\Main.lua

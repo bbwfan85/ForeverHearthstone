@@ -1,0 +1,122 @@
+{
+  "UI/playerturn.mp3": {
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/sounds/playerturn.mp3",
+    "sha256": "4e0ad88d3b987463fd9342c848ca7baf833ae7622b3067c518d27014b55da589",
+    "bytes": 85094
+  },
+  "UI/endturn.mp3": {
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/sounds/endturn.mp3",
+    "sha256": "662a6ce2dc7abe7467fe760977b654dcd335359c0cdf86f9604b4c61f33c8dc2",
+    "bytes": 8111
+  },
+  "UI/cardhover.mp3": {
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/sounds/cardhover.mp3",
+    "sha256": "6312c6d210bbb3cbc46d9fdb318f57bd24b38d3686e50c744a35a865fc082f52",
+    "bytes": 2219
+  },
+  "UI/cardplace.mp3": {
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/sounds/cardplace.mp3",
+    "sha256": "43b0215e6fe2c9f8e59ecade020fd2ddae427e342a3210e94d5779cb3cea4c75",
+    "bytes": 6906
+  },
+  "UI/flipcard.mp3": {
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/sounds/flipcard.mp3",
+    "sha256": "a1e2f0df3151ce518afd037166beb0c501a3d5a52c7e84742f44b9d9df147804",
+    "bytes": 7956
+  },
+  "UI/openpack.mp3": {
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/sounds/openpack.mp3",
+    "sha256": "60987e4fa08ad344f68bfea5839809ab701be6341c7154e39237abaa3e602f4e",
+    "bytes": 55869
+  },
+  "UI/rare.mp3": {
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/sounds/rare.mp3",
+    "sha256": "e36de863f93d26c51c7682f99f2bc5bc3c2439944bfa9d3cc14819d258ea205b",
+    "bytes": 11031
+  },
+  "UI/epic.mp3": {
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/sounds/epic.mp3",
+    "sha256": "a388ef17e68763cafbf7cd3a4bdaff8dd0c4b9ce7e9878c9d8c89857906567ce",
+    "bytes": 14471
+  },
+  "UI/legendary.mp3": {
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/sounds/legendary.mp3",
+    "sha256": "7203b42aa22526ac0fcc5eaac8ed3b851e68f0e1e3961bcd9c1d6eac8267afaf",
+    "bytes": 38146
+  },
+  "UI/goldencommon.mp3": {
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/sounds/goldencommon.mp3",
+    "sha256": "c7ba834bfba80040561ea344468e58e989d9ce0ed542aa7e38fc389c549f3fab",
+    "bytes": 23233
+  },
+  "UI/goldenrare.mp3": {
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/sounds/goldenrare.mp3",
+    "sha256": "91a743d0656bbaa501704f6a8f8a8eb6473278b53edeec597b588d6d2bf30d51",
+    "bytes": 23283
+  },
+  "UI/goldenepic.mp3": {
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/sounds/goldenepic.mp3",
+    "sha256": "248d504f029c121ea8dbaff38b2eeae3807116cd646e9824659a14803851acb4",
+    "bytes": 26414
+  },
+  "UI/goldenlegendary.mp3": {
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/sounds/goldenlegendary.mp3",
+    "sha256": "4c7b86cd5f7d2c3b8d77d44bb0520e78b84e7b6f0cc0880620a1750000cc3351",
+    "bytes": 44608
+  },
+  "UI/menubtnpress.mp3": {
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/sounds/menubtnpress.mp3",
+    "sha256": "5fde7c6d96ae9028270a4f308090fd9582fdc01f9267e74d23af63ca4d14e0e2",
+    "bytes": 33455
+  },
+  "UI/menuselect.mp3": {
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/sounds/menuselect.mp3",
+    "sha256": "3bf89b3b4549cdbe14fef953c992b17920a6a648f1b8c4f5568ca39efa0a9c4c",
+    "bytes": 2442
+  },
+  "UI/openmenu.mp3": {
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/sounds/openmenu.mp3",
+    "sha256": "65c74d2f49028a33ec7779157fe8c0011d292e335ba9ff027b717103a01dbdd2",
+    "bytes": 5802
+  },
+  "UI/victory.mp3": {
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/sounds/victory.mp3",
+    "sha256": "2f048dfcdad87c5ab6fcbc1a0af454a44d90ec37d018bc076c2cb303b66f6276",
+    "bytes": 433856
+  },
+  "UI/whoosh.ogg": {
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/sounds/whoosh.ogg",
+    "sha256": "26e2a97deb4bc5a8e847341d5420141cd057a42fc8aaca80f6cd1dafd54a0997",
+    "bytes": 33236
+  },
+  "UI/innkeeper_1.mp3": {
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/voiceovers/innkeeper_1.mp3",
+    "sha256": "6afec454b6781d848d385805c249c1b2056633f6219cbacffafa9b105ee9c4d9",
+    "bytes": 28758
+  },
+  "UI/innkeeper_2.mp3": {
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/voiceovers/innkeeper_2.mp3",
+    "sha256": "e8ecb76d200ee57bbd5ce1951155e5b7849d2e6cbc508c7541988b2852de5c78",
+    "bytes": 33584
+  },
+  "UI/innkeeper_3.mp3": {
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/voiceovers/innkeeper_3.mp3",
+    "sha256": "34ff12ae595e62511a5c263ea1bfa2a14eceae069276b194327a39b47b9b7732",
+    "bytes": 48282
+  },
+  "Music/mainmenu.mp3": {
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/ost/mainmenu.mp3",
+    "sha256": "235d4d784d55e3ec9083d9e355ccaeed673afa0759179ca05731df0c93a24b33",
+    "bytes": 5445165
+  },
+  "Music/mulligan.mp3": {
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/ost/mulligan.mp3",
+    "sha256": "a56d0f96491bd332c133350341f793fe9df0e3e2013bce7d5a35e1ac4ae35e17",
+    "bytes": 730794
+  },
+  "Music/duel.mp3": {
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/ost/duel.mp3",
+    "sha256": "a37815332f590b30fd36822156c2feb328204b89a0b31ffba121873b240364e9",
+    "bytes": 2423706
+  }
+}

@@ -1,0 +1,16 @@
+card_id,hook,trigger,cond,ops,flags,notes
+CS2_084,spell,,,"SetHealth(target, 1)",,Hunter's Mark - Health to 1
+DS1_185,spell,,,"Damage(target, 2)",,Arcane Shot
+GVG_017,spell,,,"Draw(1); If(LastDrawnIsBeast){CostChange(lastDrawn, -4)}",,"Call Pet - a drawn Beast costs (4) less"
+GVG_043,battlecry,,,"Buff(friendly.minion~1, 1, 0)",,Glaivezooka - weapon battlecry
+EX1_531,trigger,MINION_DIED,PayloadIsMine and PayloadHasRace(beast),"Buff(self, 2, 1)",,Scavenging Hyena
+EX1_609,secret,AFTER_MINION_PLAYED,,"Damage(payload, 4)",,Snipe
+EX1_617,spell,,,Destroy(enemy.minion~1),,Deadly Shot
+EX1_536,trigger,SECRET_REVEALED,PayloadIsMine,"Buff(self, 0, 1)",,Eaglehorn Bow - durability lives in the health layer
+EX1_539,spell,,,"If(Count(friendly.beast, 1)){Damage(target, 5)}{Damage(target, 3)}",,Kill Command
+GVG_048,battlecry,,,"Buff(friendly.mech!self, 2, 0)",,Metaltooth Leaper - OTHER Mechs
+DS1_070,battlecry,,,"Buff(target, 2, 2, taunt)",,Houndmaster - Beast target from reqs
+DS1_183,spell,,,"Damage(enemy.minion~2, 3)",,Multi-Shot
+GVG_073,spell,,,"Damage(target, 3); Damage(enemy.hero, 3)",,Cobra Shot
+DS1_178,aura,,,"Aura(friendly.beast, 0, 0, charge)",,Tundra Rhino - includes itself
+EX1_534,deathrattle,,,"Summon(EX1_534t, 2)",,Savannah Highmane -> two Hyenas

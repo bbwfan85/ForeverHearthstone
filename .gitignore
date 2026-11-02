@@ -1,0 +1,13 @@
+tools/art-cache/
+tools/install-backups/
+tools/__pycache__/
+tools/.python-runtime/
+tools/menu-tests.log
+ForeverHearthstone/Art/*-preview.png
+tools/review/
+tools/board-audit/
+dist/
+__pycache__/
+
+# screenshot-tour runs: 50 full-resolution JPGs each (docs/39)
+tools/tour/

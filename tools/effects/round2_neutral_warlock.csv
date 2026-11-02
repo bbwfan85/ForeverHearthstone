@@ -1,0 +1,29 @@
+card_id,hook,trigger,cond,ops,flags,notes
+EX1_066,battlecry,,,"SetHealth(enemy.weapon, 0)",,Acidic Swamp Ooze - durability IS the weapon health layer and weapons are exempt from the floor-at-1 so 0 durability breaks it in ProcessDeaths. DestroyWeapon(enemy) compiles WITHOUT side= and would disarm ME.
+NEW1_025,battlecry,,,"Buff(enemy.weapon, 0, -1)",,Bloodsail Corsair - -1 durability; breaks the weapon if that was its last point
+EX1_558,battlecry,,,Draw(healthOf(enemy.weapon)); DestroyWeapon(enemy),,"Harrison Jones - draws a card per point of the weapon's remaining Durability (a weapon's durability is its health layer), THEN destroys it."
+NEW1_024,battlecry,,,"Buff(friendly.weapon, 1, 1)",,Captain Greenskin - +1 Attack and +1 Durability
+CS2_221,aura,,SelfDamaged,"Aura(friendly.weapon, 2, 0)",,Spiteful Smith - the enrage hook can only self-aura so this is an aura gated on SelfDamaged; gameplay is right but e.enraged stays false for the UI
+GVG_013,aura,,"Count(friendly.mech, 1)","Aura(self, 2, 0)",,Cogmaster - conditional self-aura; Cogmaster has no printed race so it cannot satisfy its own condition
+CS2_146,aura,,HasWeapon,"Aura(self, 0, 0, charge)",,Southsea Deckhand
+GVG_095,aura,,"Count(enemy.hand, 6)","Aura(self, 4, 0)",,Goblin Sapper - 6 or more cards in the opponent's hand
+EX1_616,aura,,,"AuraCost(any.hand.minion, 1)",,Mana Wraith - ALL minions so both players' hands
+GVG_006,aura,,,"AuraCost(friendly.hand.mech, -1)",,Mechwarper
+CS2_227,aura,,,"AuraCost(friendly.hand.minion, 3)",,Venture Co. Mercenary
+GVG_065,aura,,,"Aura(self, 0, 0, forgetful)",,Ogre Brute - FORGETFUL is not in its printed mechanics so the aura grants it
+GVG_112,aura,,,"Aura(any.minion, 0, 0, forgetful)",,Mogor the Ogre - ALL minions both sides including itself
+EX1_412,enrage,,,"Aura(self, 1, 0, windfury)",,Raging Worgen
+EX1_089,battlecry,,,"Mana(1, enemy)",,Arcane Golem - Charge is printed data
+EX1_014,battlecry,,,"AddCard(EX1_014t, 2, enemy)",,King Mukla
+EX1_014t,spell,,,"Buff(target, 1, 1)",,Bananas - King Mukla's token; not a pool card but Mukla is dead weight without it
+EX1_590,battlecry,,,"ForEach(any.minion+divineshield){Buff(self, 3, 3)}; RemoveKeyword(any.minion, divineshield)",,Blood Knight - count the shields BEFORE stripping them
+FP1_003,battlecry,,,AtEndOfTurn{CopyToBoard(self)},,Echoing Ooze - CopyToBoard not CopyPrinted so buffs gained this turn are copied
+GVG_089,trigger,TURN_END,"PayloadIsMine and Count(friendly.secret, 1)","Heal(friendly.hero, 4)",,Illuminator
+GVG_078,deathrattle,,,AddCardEntourage(); AddCardEntourage(enemy),,Mechanical Yeti - EACH player gets a random Spare Part (rolled separately).
+PRO_001,battlecry,,,AddCardEntourage(); AddCardEntourage(enemy),,Elite Tauren Chieftain - EACH player gets a random Power Chord (rolled separately).
+EX1_076,aura,,NoMinionPlayedThisTurn,"AuraCost(friendly.hand.minion, -1)",,"Pint-Sized Summoner - an aura: the first minion you play each turn costs (1) less, only while it is on the board"
+EX1_315,aura,,,"AuraCost(friendly.hand.minion, -2, 1)",,"Summoning Portal - (2) less, but not less than (1): the AuraCost floor. A 0-cost minion stays 0."
+EX1_303,spell,,,"Damage(enemy.minion, attackOf(target)); Destroy(target)",,Shadowflame - read the attack before the destroy resolves
+EX1_596,spell,,,"If(TargetHasRace(demon) and TargetIsFriendly){Buff(target, 2, 2)}{Damage(target, 2)}",,Demonfire - only a FRIENDLY Demon is buffed; an enemy Demon takes the damage
+GVG_019,spell,,,"If(TargetHasRace(demon) and TargetIsFriendly){Buff(target, 5, 5)}{Damage(target, 5)}",,Demonheart - only a FRIENDLY Demon is buffed; an enemy Demon takes the damage
+GVG_100,trigger,DAMAGE_DEALT,PayloadIsMine and PayloadTargetIsHero and MyTurn,"Buff(self, 2, 2)",,Floating Watcher - only on your OWN turn (MyTurn): damage to your hero on the opponent's turn does nothing

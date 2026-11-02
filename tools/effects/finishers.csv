@@ -1,0 +1,21 @@
+card_id,hook,trigger,cond,ops,flags,notes
+EX1_323,battlecry,,,"ReplaceHero(EX1_323h, EX1_tk33); Equip(EX1_323w)",,"Lord Jaraxxus - a 15-health hero, INFERNO! and Blood Fury. Nothing of the old hero survives the swap: not its damage, Armor or Freeze"
+EX1_625,spell,,,"If(HeroPowerIs(EX1_625t)){SetHeroPower(EX1_625t2)}{If(HeroPowerIs(EX1_625t2)){}{SetHeroPower(EX1_625t)}}",,"Shadowform - three states: Lesser Heal -> Mind Spike -> Mind Shatter, and a third cast does nothing. The new power is FRESH that turn (Game:SetHeroPower clears the used flag): Lesser Heal, Shadowform, Mind Spike is legal in one turn, as in Hearthstone"
+EX1_411,property,,,"WeaponAttackCost()",,Gorehowl - spends 1 Attack instead of durability against a MINION only; a hero swing still costs durability
+DS1_188,property,,,"ImmuneWhileAttacking()",,"Gladiator's Longbow - cannot be a trigger: only secrets resolve inline, so a queued Immune would land after the retaliation"
+GVG_063,trigger,MINION_DIED,PayloadIsMine,"Buff(self, 1, 0)",hand,Bolvar Fordragon - grows while held in HAND; the only card in the pool that triggers from there
+EX1_136,secret,MINION_DIED,PayloadIsMine,"Resurrect(payload, 1)",,Redemption - only on the opponent's turn, like every secret
+EX1_533,secret,PRE_ATTACK,PayloadTargetIsMyHero,"RetargetAttack(any.char!attacker!defender~1)",,Misdirection - another RANDOM character, so neither the attacker nor the original target
+tt_010,secret,SPELL_CAST,"not PayloadIsMine and PayloadSpellHasMinionTarget and not BoardFull","Summon(tt_010a); RetargetSpell(lastSummoned)",,Spellbender - the 1/3 becomes the spell's new target
+GVG_092,battlecry,,,"Draw(1); If(LastDrawnIsMinion){Transform(lastDrawn, GVG_092t)}",,"Gnomish Experimenter - PayloadIsMinion is always FALSE in a battlecry (no payload), so it needs the drawn card read directly"
+CS2_034,heropower,,,"Damage(target, 1)",,Fireblast (Mage) - REQ_TARGET_TO_PLAY is printed, so Targeting demands the target
+CS1h_001,heropower,,,"Heal(target, 2)",,Lesser Heal (Priest) - Auchenai Soulpriest turns this into damage via Game:Heal
+CS2_101,heropower,,,"Summon(CS2_101t)",,Reinforce (Paladin) - CS2_101t Silver Hand Recruit; Quartermaster buffs them by this id
+CS2_102,heropower,,,"GainArmor(friendly.hero, 2)",,Armor Up! (Warrior) - raises ARMOR_GAINED, which Siege Engine reads
+CS2_056,heropower,,,"Draw(1); Damage(friendly.hero, 2)",,"Life Tap (Warlock) - the draw comes FIRST, so a Life Tap that kills you still drew the card; Ice Block can also save you mid-power"
+CS2_083b,heropower,,,"Equip(CS2_082)",,Dagger Mastery (Rogue) - CS2_082 Wicked Knife 1/2
+CS2_049,heropower,,,"SummonEntourage(unique)",,"Totemic Call (Shaman) - the four Totems are printed entourage. REQ_ENTIRE_ENTOURAGE_NOT_IN_PLAY stops it once all four are out, and the roll re-picks until it finds one not already on board"
+DS1h_292,heropower,,,"If(Count(target, 1)){Damage(target, 2)}{Damage(enemy.hero, 2)}",,"Steady Shot (Hunter) - untargeted by default and hits the enemy hero; Steamwheedle Sniper is what makes a minion a legal target, via REQ_MINION_OR_ENEMY_HERO"
+GVG_087,property,,,"HeroPowerTargetsMinions()",,Steamwheedle Sniper - read by Targeting's REQ_MINION_OR_ENEMY_HERO
+EX1_560,property,,,"TurnSeconds(15)",,"Nozdormu - the rule is Game:TurnSeconds() = 15 for both players; the turn clock and rope (Client/FX/Director.lua) consume it (tests/test_director.lua, tests/test_heropowers.lua)."
+DS1_184,spell,,,"LookAtTop(3)",,"Tracking - the three cards leave the DECK immediately and sit in a pending choice, which is what Hearthstone does: while you are looking at them nothing else can draw or steal them"

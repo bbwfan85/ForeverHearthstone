@@ -1,0 +1,17 @@
+card_id,hook,trigger,cond,ops,flags,notes
+CS2_041,spell,,,"Heal(target, 99); GiveKeyword(target, taunt)",,"Ancestral Healing - Game:Heal clamps to damage taken, so a large heal IS ""restore to full"""
+EX1_244,spell,,,"Buff(friendly.totem, 0, 2)",,Totemic Might
+EX1_245,spell,,,"Silence(target); Damage(target, 1)",,Earth Shock - silence first
+EX1_251,spell,,,"Damage(enemy.minion~2, 2)",,Forked Lightning
+CS2_037,spell,,,"Damage(target, 1); Freeze(target)",,Frost Shock
+CS2_038,spell,,,"Deathrattle(target){CopyPrinted(self)}",,Ancestral Spirit - resummon at printed stats
+EX1_565,aura,,,"Aura(adjacent, 2, 0)",,Flametongue Totem
+GVG_039,trigger,TURN_END,PayloadIsMine,"Heal(friendly.hero, 4)",,Vitality Totem
+CS2_039,spell,,,"GiveKeyword(target, windfury)",,Windfury
+CS2_053,spell,,,"Draw(1); CostChange(lastDrawn, -3)",,Far Sight - the drawn card costs (3) less
+EX1_248,spell,,,"Summon(EX1_tk11, 2)",,Feral Spirit -> two Spirit Wolves
+EX1_241,spell,,,"Damage(target, 5)",,Lava Burst
+EX1_575,trigger,TURN_END,PayloadIsMine,Draw(1),,Mana Tide Totem
+GVG_036,deathrattle,,,"Buff(friendly.mech~1, 2, 2)",,Powermace - weapon deathrattle
+GVG_040,trigger,MINION_DIED,PayloadIsMine and PayloadHasRace(murloc),Draw(1),,Siltfin Spiritwalker
+EX1_587,battlecry,,,"GiveKeyword(target, windfury)",,Windspeaker

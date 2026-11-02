@@ -1,0 +1,93 @@
+card_id,hook,trigger,cond,ops,flags,notes
+EX1_009,enrage,,,"Aura(self, 5)",,Angry Chicken
+EX1_508,aura,,,"Aura(any.murloc!self, 1, 0)",,Grimscale Oracle - ALL other Murlocs both sides
+NEW1_017,battlecry,,,"If(Count(target,1)){Destroy(target); Buff(self, 2, 2)}",,Hungry Crab - only gains if a Murloc was actually destroyed
+EX1_029,deathrattle,,,"Damage(enemy.hero, 2)",,Leper Gnome
+EX1_001,trigger,HEALED,,"Buff(self, 2, 0)",,Lightwarden - ANY character healed either side
+EX1_509,trigger,MINION_SUMMONED,PayloadHasRace(murloc) and not PayloadIsSelf,"Buff(self, 1, 0)",,Murloc Tidecaller - not on its own summon
+EX1_011,battlecry,,,"Heal(target, 2)",,Voodoo Doctor
+EX1_004,trigger,TURN_END,PayloadIsMine,"Buff(friendly.minion!self~1, 0, 1)",,Young Priestess - another random friendly
+FP1_001,deathrattle,,,"Heal(enemy.hero, 5)",,Zombie Chow
+EX1_012,deathrattle,,,Draw(1),,Bloodmage Thalnos - Spell Damage +1 is printed data
+EX1_059,battlecry,,,Swap(target),,Crazed Alchemist
+NEW1_021,trigger,TURN_BEGIN,PayloadIsMine,Destroy(any.minion),,Doomsayer - ALL minions both sides
+GVG_076,deathrattle,,,"Damage(any.minion, 2)",,Explosive Sheep - all minions
+FP1_002,deathrattle,,,"Summon(FP1_002t, 2)",,Haunted Creeper -> two Spectral Spiders
+CS2_203,battlecry,,,Silence(target),,Ironbeak Owl
+EX1_082,battlecry,,,"MissileSplit(any.char!self, 3)",,Mad Bomber - all OTHER characters
+NEW1_037,trigger,TURN_END,PayloadIsMine,"Buff(friendly.minion!self~1, 1, 0)",,Master Swordsmith - another random friendly
+GVG_103,trigger,TURN_BEGIN,,"Buff(self, 1, 0)",,Micro Machine - start of EACH turn so no PayloadIsMine
+EX1_506,battlecry,,,Summon(EX1_506a),,Murloc Tidehunter -> Murloc Scout
+FP1_007,deathrattle,,,Summon(FP1_007t),,Nerubian Egg -> Nerubian
+EX1_015,battlecry,,,Draw(1),,Novice Engineer
+GVG_075,trigger,MINION_SUMMONED,PayloadSummonedByMe and PayloadHasRace(pirate),"Damage(enemy.char~1, 2)",,Ship's Cannon - random enemy incl hero
+GVG_067,trigger,SPELL_CAST,not PayloadIsMine,"Buff(self, 1, 0)",,Stonesplinter Trogg - opponent's spells only
+FP1_024,deathrattle,,,"Damage(any.minion, 1)",,Unstable Ghoul - Taunt is printed data
+NEW1_020,trigger,SPELL_RESOLVED,PayloadIsMine,"Damage(any.minion, 1)",,Wild Pyromancer - drains after the spell resolves
+EX1_049,battlecry,,,ReturnToHand(target),,Youthful Brewmaster
+EX1_007,trigger,DAMAGE_DEALT,PayloadIsSelf,Draw(1),,Acolyte of Pain
+EX1_005,battlecry,,,Destroy(target),,Big Game Hunter - min attack 7 comes from printed reqs
+EX1_050,battlecry,,,Draw(2); DrawEnemy(2),,Coldlight Oracle - each player draws 2
+EX1_103,battlecry,,,"Buff(any.murloc!self, 0, 2)",,Coldlight Seer - ALL other Murlocs both sides
+FP1_029,deathrattle,,,DrawEnemy(1),,Dancing Swords
+EX1_102,trigger,TURN_BEGIN,PayloadIsMine,"Damage(enemy.char~1, 2)",,Demolisher - random enemy incl hero
+CS2_117,battlecry,,,"Heal(target, 3)",,Earthen Ring Farseer
+tt_004,trigger,MINION_DIED,,"Buff(self, 1, 0)",,Flesheating Ghoul - ANY minion dies either side
+EX1_556,deathrattle,,,Summon(skele21),,Harvest Golem -> Damaged Golem
+EX1_597,trigger,TURN_END,PayloadIsMine,"Damage(self, 1); Summon(EX1_598)",,Imp Master -> Imp
+CS2_181,battlecry,,,"Damage(self, 4)",,Injured Blademaster - damages HIMSELF
+CS2_141,battlecry,,,"Damage(target, 1)",,Ironforge Rifleman
+EX1_085,battlecry,,"Count(enemy.minion, 4)",TakeControl(enemy.minion~1),,Mind Control Tech
+EX1_507,aura,,,"Aura(any.murloc!self, 2, 1)",,Murloc Warleader - ALL other Murlocs both sides
+EX1_044,trigger,CARD_PLAYED,PayloadIsMine and not PayloadIsSelf,"Buff(self, 1, 1)",,Questing Adventurer - not on its own play
+CS2_122,aura,,,"Aura(friendly.minion!self, 1, 0)",,Raid Leader - your OTHER minions
+CS2_196,battlecry,,,Summon(CS2_boar),,Razorfen Hunter -> Boar
+FP1_005,trigger,TURN_BEGIN,PayloadIsMine,"Buff(self, 1, 1)",,Shade of Naxxramas - Stealth is printed data
+EX1_019,battlecry,,,"Buff(target, 1, 1)",,Shattered Sun Cleric
+NEW1_027,aura,,,"Aura(friendly.pirate!self, 1, 1)",,Southsea Captain - your OTHER Pirates
+FP1_027,trigger,TURN_BEGIN,PayloadIsMine,"Heal(self, 99)",,Stoneskin Gargoyle - full heal; Game:Heal caps at current damage
+EX1_390,enrage,,,"Aura(self, 3)",,Tauren Warrior - Taunt is printed data
+GVG_102,battlecry,,"Count(friendly.mech, 1)","Buff(self, 1, 1); AddCardEntourage()",,Tinkertown Technician - Spare Part from printed entourage
+EX1_057,battlecry,,,ReturnToHand(target),,Ancient Brewmaster
+GVG_068,trigger,SPELL_CAST,not PayloadIsMine,"Buff(self, 2, 0)",,Burly Rockjaw Trogg - opponent's spells only
+EX1_595,trigger,MINION_DIED,PayloadIsMine and not PayloadIsSelf,Draw(1),,Cult Master - your OTHER minions
+EX1_025,battlecry,,,Summon(EX1_025t),,Dragonling Mechanic -> Mechanical Dragonling
+CS2_147,battlecry,,,Draw(1),,Gnomish Inventor
+EX1_048,battlecry,,,Silence(target),,Spellbreaker
+NEW1_026,trigger,SPELL_CAST,PayloadIsMine,Summon(NEW1_026t),,Violet Teacher -> Violet Apprentice
+FP1_016,battlecry,,,Silence(friendly.minion!self),,Wailing Soul - your OTHER minions
+GVG_069,battlecry,,,"Heal(friendly.hero, 8)",,Antique Healbot
+EX1_284,battlecry,,,Draw(1),,Azure Drake - Spell Damage +1 is printed data
+GVG_099,battlecry,,,"Damage(enemy.minion~1, 4)",,Bomb Lobber - random enemy MINION not hero
+DS1_055,battlecry,,,"Heal(friendly.char, 2)",,Darkscale Healer - all friendly CHARACTERS incl hero
+GVG_120,battlecry,,,Destroy(target),,Hemet Nesingwary - Beast restriction from printed reqs
+GVG_106,trigger,MINION_DIED,PayloadIsMine and PayloadHasRace(mech),"Buff(self, 2, 2)",,Junkbot - friendly Mech dies
+GVG_090,battlecry,,,"MissileSplit(any.char!self, 6)",,Madder Bomber - all OTHER characters
+GVG_111,trigger,TURN_BEGIN,"PayloadIsMine and Count(friendly.mech, 3)","Destroy(friendly.mech); SettleDeaths(); Summon(GVG_111t)",,Mimiron's Head -> V-07-TR-0N
+EX1_593,battlecry,,,"Damage(enemy.hero, 3)",,Nightblade
+CS2_151,battlecry,,,Summon(CS2_152),,Silver Hand Knight -> Squire
+FP1_012,deathrattle,,,Summon(FP1_012t),,Sludge Belcher -> Slime with Taunt
+NEW1_041,battlecry,,,Destroy(enemy.minion<2~1),,Stampeding Kodo - random enemy minion with 2 or less Attack
+CS2_150,battlecry,,,"Damage(target, 2)",,Stormpike Commando
+EX1_283,battlecry,,,Freeze(target),,Frost Elemental - a CHARACTER; targeting from printed reqs
+EX1_095,trigger,SPELL_CAST,PayloadIsMine,Draw(1),,Gadgetzan Auctioneer
+EX1_112,battlecry,,,SummonEntourage(),,Gelbin Mekkatorque - Mekka1..4 from printed entourage
+NEW1_040,trigger,TURN_END,PayloadIsMine,Summon(NEW1_040t),,Hogger -> 2/2 Gnoll with Taunt
+EX1_614,trigger,CARD_PLAYED,PayloadIsMine and not PayloadIsSelf,Summon(EX1_614t),,Illidan Stormrage -> Flame of Azzinoth
+EX1_583,battlecry,,,"Heal(friendly.hero, 4)",,Priestess of Elune
+EX1_002,battlecry,,,Destroy(target),,The Black Knight - enemy Taunt restriction from printed reqs
+GVG_115,battlecry,,,AddCardEntourage(),,Toshley - Spare Part from printed entourage
+GVG_115,deathrattle,,,AddCardEntourage(),,Toshley - Spare Part from printed entourage
+EX1_249,trigger,TURN_END,PayloadIsMine,"Damage(any.char!self, 2)",,Baron Geddon - ALL OTHER characters
+GVG_110,battlecry,,,"Summon(GVG_110t, 2, flank)",,"Dr. Boom -> two Boom Bots, right one first, then left (hearthstone.wiki.gg/wiki/Dr._Boom)"
+CS2_222,aura,,,"Aura(friendly.minion!self, 1, 1)",,Stormwind Champion - your OTHER minions
+GVG_118,trigger,SPELL_CAST,not PayloadIsMine,Summon(GVG_068),,Troggzor -> Burly Rockjaw Trogg on opponent's spell
+NEW1_038,trigger,TURN_END,,"Buff(self, 1, 1)",,Gruul - end of EACH turn so no PayloadIsMine
+EX1_298,trigger,TURN_END,PayloadIsMine,"Damage(enemy.char~1, 8)",,Ragnaros - random enemy incl hero; Can't Attack is printed data
+EX1_561,battlecry,,,"SetHealth(target, 15)",,Alexstrasza - hero target from printed reqs
+GVG_116,trigger,MINION_DIED,not PayloadIsMine,Summon(EX1_029),,Mekgineer Thermaplugg -> Leper Gnome
+EX1_572,trigger,TURN_END,PayloadIsMine,AddCardEntourage(),,Ysera - DREAM_01..05 from printed entourage
+NEW1_030,battlecry,,,Destroy(any.minion!self); Discard(10),,Deathwing - all OTHER minions then discard whole hand (HAND_LIMIT)
+CS2_226,battlecry,,,"ForEach(friendly.minion!self){Buff(self, 1, 1)}",,Frostwolf Warlord - +1/+1 per OTHER friendly minion
+EX1_043,battlecry,,,"ForEach(friendly.hand){Buff(self, 0, 1)}",,Twilight Drake - +1 Health per card in hand; it has already left the hand
+EX1_562,battlecry,,,"Summon(ds1_whelptoken, 7, flank)",,"Onyxia - Whelps alternate right then left of her (hearthstone.wiki.gg/wiki/Onyxia); Game:Summon stops at BOARD_SLOTS so this fills the board"

@@ -1,0 +1,20 @@
+card_id,hook,trigger,cond,ops,flags,notes
+NEW1_003,spell,,,"Destroy(target); Heal(friendly.hero, 5)",,Sacrificial Pact - Demon target from REQ_TARGET_WITH_RACE
+CS2_059,trigger,TURN_END,PayloadIsMine,"Buff(friendly.minion!self~1, 0, 1)",,Blood Imp - ANOTHER random friendly minion
+CS2_063,spell,,,AtNextTurn{Destroy(target)},,Corruption - schedule captures the chosen target
+EX1_319,battlecry,,,"Damage(friendly.hero, 3)",,Flame Imp
+EX1_316,spell,,,"BuffTurn(target, 4, 4); AddTrigger(target, TURN_END){Destroy(self)}",,Power Overwhelming - dies at END of this turn so it cannot be a schedule
+EX1_308,spell,,,"Damage(target, 4); Discard(1)",,Soulfire
+GVG_015,spell,,,"Damage(target, 3)",,Darkbomb
+EX1_306,battlecry,,,Discard(1),,Succubus
+CS2_061,spell,,,"Damage(target, 2); Heal(friendly.hero, 2)",,Drain Life
+CS2_057,spell,,,"Damage(target, 4)",,Shadow Bolt
+CS2_062,spell,,,"Damage(any.char, 3)",,Hellfire - ALL characters including your own hero
+EX1_313,battlecry,,,"Damage(friendly.hero, 5)",,Pit Lord
+EX1_310,battlecry,,,Discard(2),,Doomguard
+GVG_077,trigger,TURN_END,"not Count(friendly.minion!self, 1)",Destroy(self),,Anima Golem - end of EACH turn so no PayloadIsMine gate
+CS2_064,battlecry,,,"Damage(any.char!self, 1)",,Dread Infernal - all OTHER characters
+EX1_309,spell,,,"Destroy(target); Heal(friendly.hero, 3)",,Siphon Soul
+EX1_312,spell,,,Destroy(any.minion),,Twisting Nether
+GVG_021,aura,,,"Aura(friendly.demon!self, 2, 2)",,Mal'Ganis - other Demons +2/+2
+GVG_021,property,,,HeroImmune(),,Mal'Ganis - your hero is Immune (a second aura; Aura.Recalc)

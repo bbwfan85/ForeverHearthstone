@@ -1,0 +1,18 @@
+card_id,hook,trigger,cond,ops,flags,notes
+EX1_105,aura,,,"AuraCost(self, -count(friendly.hand!self))",,"Mountain Giant - EVERY other card in hand, not just minions"
+EX1_620,aura,,,"AuraCost(self, -damageOf(friendly.hero))",,"Molten Giant - damage TAKEN, so armor does not count and healing gives it back"
+EX1_586,aura,,,"AuraCost(self, -count(any.minion))",,"Sea Giant - every other minion on the battlefield, both sides"
+GVG_121,aura,,,"AuraCost(self, -count(enemy.hand))",,Clockwork Giant - cards in the OPPONENT's hand
+NEW1_022,aura,,,"AuraCost(self, -attackOf(friendly.weapon))",,Dread Corsair - one less per Attack of your weapon
+EX1_062,aura,,,"Aura(self, count(any.murloc!self), 0)",,Old Murk-Eye - +1 per OTHER Murloc, either side
+GVG_038,spell,,,"Damage(target, 3-6)",,Crackle - Overload is printed and applied automatically
+EX1_259,spell,,,"ForEach(enemy.minion){Damage(target, 2-3)}",,"Lightning Storm - a separate 2-3 roll for each enemy minion"
+EX1_302,spell,,,"Damage(target, 1); If(DamageKilled){Draw(1)}",,"Mortal Coil - a Divine Shield that absorbs the hit is a SURVIVAL, so no draw"
+EX1_391,spell,,,"Damage(target, 2); If(DamageSurvived){Draw(1)}",,Slam - the inverse of Mortal Coil
+EX1_408,spell,,,"If(MyHeroHealthAtMost(12)){Damage(target, 6)}{Damage(target, 4)}",,Mortal Strike
+CS2_236,spell,,,"DoubleHealth(target)",,Divine Spirit - adds current health once; it does not keep multiplying
+EX1_355,spell,,,"DoubleAttack(target)",,Blessed Champion
+GVG_014,battlecry,,,"SwapHealth(target)",,Vol'jin - swaps CURRENT health and clears damage on both sides
+GVG_101,battlecry,,,"Damage(any.minion.deathrattle, 2)",,Scarlet Purifier - granted deathrattles count too
+GVG_020,trigger,TURN_END,MyTurn,"Damage(any.minion-mech~1, 2)",,"Fel Cannon - YOUR turn only; -mech is a negative race"
+GVG_049,trigger,DAMAGE_DEALT,PayloadIsSelf,"DoubleAttack(self)",,Gahz'rilla - doubles on each instance of damage it takes

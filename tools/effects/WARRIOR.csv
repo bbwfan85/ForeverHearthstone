@@ -1,0 +1,18 @@
+card_id,hook,trigger,cond,ops,flags,notes
+EX1_607,spell,,,"Damage(target, 1); Buff(target, 2, 0)",,Inner Rage
+CS2_108,spell,,,Destroy(target),,Execute - damaged enemy req is printed
+GVG_051,enrage,,,"Aura(self, 1)",,Warbot - enrage is a self-aura gated on damaged
+EX1_400,spell,,,"Damage(any.minion, 1)",,Whirlwind - ALL minions
+EX1_402,trigger,DAMAGE_DEALT,PayloadIsMinion and PayloadIsMine,"GainArmor(friendly.hero, 1)",,Armorsmith - once per damage instance
+CS2_114,spell,,,"Damage(enemy.minion~2, 2)",,Cleave
+EX1_603,battlecry,,,"Damage(target, 1); Buff(target, 2, 0)",,Cruel Taskmaster
+CS2_104,spell,,,"Buff(target, 3, 3)",,Rampage - damaged req is printed
+CS2_103,spell,,,"Buff(target, 2, 0, charge)",,Charge
+EX1_606,spell,,,"GainArmor(friendly.hero, 5); Draw(1)",,Shield Block
+EX1_398,battlecry,,,Equip(EX1_398t),,Arathi Weaponsmith -> Battle Axe
+FP1_021,deathrattle,,,"Damage(any.minion, 1)",,Death's Bite - weapon deathrattle
+GVG_055,battlecry,,,"Buff(target, 2, 2)",,Screwjank Clunker - Mech target from reqs
+GVG_053,battlecry,,,"GainArmor(friendly.hero, 5)",,Shieldmaiden
+GVG_052,spell,,,Destroy(target),,Crush
+GVG_052,aura,,"Count(friendly.minion dmg, 1)","AuraCost(self, -4)",,"Crush - costs (4) less while you have a damaged minion (a self-cost aura, read in hand)"
+EX1_414,enrage,,,"Aura(self, 6)",,Grommash Hellscream - Charge is printed

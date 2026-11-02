@@ -1,0 +1,30 @@
+card_id,hook,trigger,cond,ops,flags,notes
+EX1_169,spell,,,"Mana(2, temporary)",,Innervate - two crystals this turn only; maxMana untouched
+EX1_578,spell,,,"Damage(target, attackOf(friendly.hero))",,Savagery - damage equal to your hero's Attack
+CS2_013,spell,,,"If(ManaFull){AddCard(CS2_013t)}{Mana(1, empty)}",,Wild Growth - an empty crystal; at 10 crystals the Excess Mana card instead
+CS2_012,spell,,,"Damage(target, 4); Damage(enemy.char!target, 1)",,Swipe - 4 to the chosen enemy then 1 to every OTHER enemy incl the hero
+EX1_544,spell,,,"RemoveKeyword(any.minion, stealth); Destroy(enemy.secret); Draw(1)",,"Flare - ProcessDeaths clears destroyed secrets from the secret zone, so Destroy(enemy.secret) works (tests/test_partials.lua). Stealth removal and the draw as printed."
+EX1_537,spell,,,"Damage(target, 5); Damage(adjacent@target, 2)",,Explosive Shot - DealDamage does not process deaths so the target is still on the board when adjacency resolves
+GVG_046,battlecry,,,"ForEach(friendly.beast!self){Buff(self, 1, 0)}",,King of Beasts - +1 Attack per OTHER friendly Beast; it is itself a Beast
+GVG_002,trigger,DAMAGE_DEALT,PayloadSourceIsSelf,Freeze(payload),,Snowchugger - freezes only what IT damaged (same shape as Water Elemental)
+EX1_608,aura,,,"AuraCost(friendly.hand.spell, -1)",,Sorcerer's Apprentice - your spells in hand cost (1) less
+EX1_275,spell,,,"Freeze(target); Freeze(adjacent@target); Damage(target, 1); Damage(adjacent@target, 1)",,Cone of Cold - freeze all three first then 1 damage to each
+EX1_274,trigger,TURN_END,"PayloadIsMine and Count(friendly.secret, 1)","Buff(self, 2, 2)",,Ethereal Arcanist - end of YOUR turn while you control a Secret
+GVG_122,aura,,,"Aura(adjacent, 0, 0, nospell+nopower)",,Wee Spellstopper - adjacent minions untargetable by spells and hero powers
+CS2_003,spell,,,CopyEnemyHandCard(),,Mind Vision
+CS2_235,trigger,HEALED,not PayloadTargetIsHero,Draw(1),,"Northshire Cleric - the HEALED payload carries `target` not `entity`, so PayloadIsMinion cannot gate it; negating PayloadTargetIsHero does"
+EX1_345,spell,,,"If(Count(enemy.deck.minion, 1)){CopyPrinted(enemy.deck.minion~1)}{Summon(EX1_345t)}",,Mindgames - printed copy onto YOUR board; no minion in their deck summons Shadow of Nothing
+GVG_008,spell,,,"ForEach(any.minion){Damage(target, attackOf(target))}",,Lightbomb - ForEach rebinds ctx.target so each minion takes damage equal to its OWN Attack
+CS2_074,spell,,,"Buff(friendly.weapon, 2, 0)",,Deadly Poison
+EX1_126,spell,,,"DamageFrom(target, adjacent@target, attackOf(target))",,"Betrayal - the damage is dealt BY the betrayed minion (DamageFrom): Spell Damage does not boost it, and its Poisonous applies."
+CS2_233,spell,,,"Damage(enemy.char, attackOf(friendly.weapon)); DestroyWeapon()",,Blade Flurry - read the weapon's Attack BEFORE destroying it; printed text is all enemies incl the hero
+GVG_023,battlecry,,,"Buff(friendly.weapon, 1, 0)",,Goblin Auto-Barber
+GVG_022,spell,,,"Buff(friendly.weapon, 3, 0)",,Tinker's Sharpsword Oil - base
+GVG_022,combo,,,"Buff(friendly.weapon, 3, 0); Buff(friendly.minion~1, 3, 0)",,Tinker's Sharpsword Oil - combo REPLACES the spell so it repeats the weapon buff
+GVG_088,aura,,,"Aura(self, 0, 0, forgetful)",,Ogre Ninja - FORGETFUL is read by Game:ApplyForgetful; Stealth is printed data
+FP1_025,spell,,,"Destroy(target); SettleDeaths(); Resurrect(target, , owner)",,"Reincarnate - destroyed (its own deathrattle fires) and returned fresh on its controller's side. Not a granted deathrattle, so Baron Rivendare does not double it"
+EX1_410,spell,,,"Damage(target, armorOf(friendly.hero))",,Shield Slam - 1 damage per point of Armor
+EX1_409,spell,,,"If(HasWeapon){Buff(friendly.weapon, 1, 1)}{Equip(EX1_409t)}",,Upgrade! - EX1_409t is Heavy Axe 1/3
+EX1_392,spell,,,"Draw(count(friendly.char dmg))",,Battle Rage - damaged friendly CHARACTERS incl the hero; a dynamic zero draws nothing
+EX1_084,trigger,MINION_SUMMONED,PayloadSummonedByMe and PayloadAttackAtMost(3) and not PayloadIsSelf,"GiveKeyword(payload, charge)",,Warsong Commander - other minions only (it sees its own summon)
+CS2_013t,spell,,,Draw(1),,Excess Mana - Wild Growth at 10 crystals

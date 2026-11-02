@@ -1,0 +1,18 @@
+{
+  "source": "tools/menu-assets/openpacksbackground.png (Rymedy/hearthstone-web; Art/menu-media-report.json)",
+  "canvas": [
+    512,
+    128
+  ],
+  "u": [
+    0,
+    0.296875,
+    0.453125,
+    0.75
+  ],
+  "v": [
+    0,
+    0.859375
+  ],
+  "cap_aspect": 1.3818181818181818
+}

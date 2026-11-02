@@ -1,0 +1,150 @@
+{
+  "source": "https://raw.githubusercontent.com/HearthSim/sunwell/master/",
+  "license": "MIT (HearthSim/sunwell LICENSE, copied to Art/rarity-gems-LICENSE.txt)",
+  "files": {
+    "rarity-minion-common": {
+      "source": "https://raw.githubusercontent.com/HearthSim/sunwell/master/assets/rarity-minion-common.png",
+      "sha256": "b950db4294d32e9c9893c5f6e96be278f9d942087fabfa29ded70c283d7ee625",
+      "source_size": [
+        148,
+        81
+      ],
+      "texture_size": [
+        128,
+        64
+      ]
+    },
+    "rarity-minion-rare": {
+      "source": "https://raw.githubusercontent.com/HearthSim/sunwell/master/assets/rarity-minion-rare.png",
+      "sha256": "4ad4fe020279085945bb1da73e75f572f394cd3b78b93f22a2e79c18d4fce90a",
+      "source_size": [
+        148,
+        81
+      ],
+      "texture_size": [
+        128,
+        64
+      ]
+    },
+    "rarity-minion-epic": {
+      "source": "https://raw.githubusercontent.com/HearthSim/sunwell/master/assets/rarity-minion-epic.png",
+      "sha256": "9857e6a34f401cfb2ff3ca09d32dc1855e0f9495be74520fed0d9c7f370d229a",
+      "source_size": [
+        148,
+        81
+      ],
+      "texture_size": [
+        128,
+        64
+      ]
+    },
+    "rarity-minion-legendary": {
+      "source": "https://raw.githubusercontent.com/HearthSim/sunwell/master/assets/rarity-minion-legendary.png",
+      "sha256": "dc94464eb59530230d99adc0005c559353761235e6b5f29750596d83b4a3040f",
+      "source_size": [
+        148,
+        81
+      ],
+      "texture_size": [
+        128,
+        64
+      ]
+    },
+    "rarity-spell-common": {
+      "source": "https://raw.githubusercontent.com/HearthSim/sunwell/master/assets/rarity-spell-common.png",
+      "sha256": "3708d3602da1c6db610b3360bcb5a6a5d0c4b3e9bc48e1fbfccc371068af3ba0",
+      "source_size": [
+        116,
+        77
+      ],
+      "texture_size": [
+        128,
+        64
+      ]
+    },
+    "rarity-spell-rare": {
+      "source": "https://raw.githubusercontent.com/HearthSim/sunwell/master/assets/rarity-spell-rare.png",
+      "sha256": "6f247d065d5a5b4857bf68de6cdc4b9c55799b485d7a825a588744f0a8eb1ed7",
+      "source_size": [
+        116,
+        78
+      ],
+      "texture_size": [
+        128,
+        64
+      ]
+    },
+    "rarity-spell-epic": {
+      "source": "https://raw.githubusercontent.com/HearthSim/sunwell/master/assets/rarity-spell-epic.png",
+      "sha256": "951fe29b88e229487fb18f59b48a76dda7d3c6c3a538d366805717e5dca5f492",
+      "source_size": [
+        116,
+        78
+      ],
+      "texture_size": [
+        128,
+        64
+      ]
+    },
+    "rarity-spell-legendary": {
+      "source": "https://raw.githubusercontent.com/HearthSim/sunwell/master/assets/rarity-spell-legendary.png",
+      "sha256": "3d762f5ff3654bd010b3654cf099cd1e200d91a4aa13638d3ff3112d8dbb9f26",
+      "source_size": [
+        116,
+        78
+      ],
+      "texture_size": [
+        128,
+        64
+      ]
+    },
+    "rarity-weapon-common": {
+      "source": "https://raw.githubusercontent.com/HearthSim/sunwell/master/assets/rarity-weapon-common.png",
+      "sha256": "006062923b0103da7856d11b3ff2bfe9aa6aa6032c1733ecd25685e245c1ab8f",
+      "source_size": [
+        96,
+        90
+      ],
+      "texture_size": [
+        128,
+        128
+      ]
+    },
+    "rarity-weapon-rare": {
+      "source": "https://raw.githubusercontent.com/HearthSim/sunwell/master/assets/rarity-weapon-rare.png",
+      "sha256": "ee540e384a0b4a2c9768fab7f27d3660c4b1ad590e3199dbd2ec5ad66482e3f0",
+      "source_size": [
+        96,
+        90
+      ],
+      "texture_size": [
+        128,
+        128
+      ]
+    },
+    "rarity-weapon-epic": {
+      "source": "https://raw.githubusercontent.com/HearthSim/sunwell/master/assets/rarity-weapon-epic.png",
+      "sha256": "371cb8b2dad4475475c0d761f1047a709ec734c168d88e291584e24ceb6dd6d7",
+      "source_size": [
+        96,
+        90
+      ],
+      "texture_size": [
+        128,
+        128
+      ]
+    },
+    "rarity-weapon-legendary": {
+      "source": "https://raw.githubusercontent.com/HearthSim/sunwell/master/assets/rarity-weapon-legendary.png",
+      "sha256": "f103a00b95182356b7a49eaa698a7e6e47d1a3ed0610d65a7f44bad857f525ec",
+      "source_size": [
+        96,
+        90
+      ],
+      "texture_size": [
+        128,
+        128
+      ]
+    }
+  }
+}

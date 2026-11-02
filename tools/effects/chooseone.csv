@@ -1,0 +1,27 @@
+card_id,hook,trigger,cond,ops,flags,notes
+EX1_154a,spell,,,"Damage(target, 3)",,Wrath mode 1 -- deal $3 damage to a minion
+EX1_154b,spell,,,"Damage(target, 1); Draw(1)",,Wrath mode 2 -- $1 damage and draw a card
+EX1_155a,spell,,,"Buff(target, 4, 0)",,Mark of Nature mode 1 -- +4 Attack
+EX1_155b,spell,,,"Buff(target, 0, 4, taunt)",,Mark of Nature mode 2 -- +4 Health and Taunt
+EX1_160a,spell,,,"Summon(EX1_160t)",,Power of the Wild mode 2 -- summon a 3/2 Panther
+EX1_160b,spell,,,"Buff(friendly.minion, 1, 1)",,Power of the Wild mode 1 -- give your minions +1/+1
+EX1_164a,spell,,,Mana(2),,"Nourish mode 1 -- gain 2 Mana Crystals, FULL: unlike Wild Growth, the text does not say empty"
+EX1_164b,spell,,,"Draw(3)",,Nourish mode 2 -- draw 3 cards
+EX1_165a,battlecry,,,"Transform(self, EX1_165t1)",,"Druid of the Claw Cat Form -- the ONLY mode in the pool that transforms; the pin carries 4/4 Charge and 4/6 Taunt tokens for it, while every other Choose One minion carries mode ENCHANTMENTs instead"
+EX1_165b,battlecry,,,"Transform(self, EX1_165t2)",,Druid of the Claw Bear Form -- 4/6 Taunt token
+EX1_166a,battlecry,,,"Damage(target, 2)",,"Keeper of the Grove Moonfire -- a BATTLECRY, so no Spell Damage; the printed text carries no $ sigil, unlike Wrath's"
+EX1_166b,battlecry,,,"Silence(target)",,Keeper of the Grove Dispel
+EX1_178a,battlecry,,,"Buff(self, 0, 5, taunt)",,"Ancient of War Rooted -- an enchantment, not a transform, so Silence reverts it to a 5/5"
+EX1_178b,battlecry,,,"Buff(self, 5, 0)",,Ancient of War Uproot -- +5 Attack
+EX1_573a,battlecry,,,"Buff(friendly.minion!self, 2, 2)",,Cenarius Demigod's Favor -- your OTHER minions
+EX1_573b,battlecry,,,"Summon(EX1_573t, 2, flank)",,"Cenarius Shan'do's Lesson -- two 2/2 Treants with Taunt, the first on his right, the second on his left (hearthstone.wiki.gg/wiki/Cenarius)"
+GVG_030a,battlecry,,,"Buff(self, 1, 0)",,Anodized Robo Cub Attack Mode
+GVG_030b,battlecry,,,"Buff(self, 0, 1)",,Anodized Robo Cub Tank Mode
+GVG_032a,battlecry,,,"Mana(1); Mana(1, enemy)",,"Grove Tender Gift of Mana -- a FILLED crystal for EACH player, usable this turn (hearthstone.wiki.gg/wiki/Grove_Tender); it used to give empty ones"
+GVG_032b,battlecry,,,"Draw(1); DrawEnemy(1)",,Grove Tender Gift of Cards -- each player draws
+GVG_041a,spell,,,"Buff(target, 5, 5, taunt)",,Dark Wispers mode 2 -- give a minion +5/+5 and Taunt
+GVG_041b,spell,,,"Summon(CS2_231, 5)",,Dark Wispers mode 1 -- summon 5 Wisps
+NEW1_007a,spell,,,"Damage(enemy.minion, 2)",,Starfall mode 2 -- $2 damage to all enemy minions
+NEW1_007b,spell,,,"Damage(target, 5)",,Starfall mode 1 -- $5 damage to a minion
+NEW1_008a,battlecry,,,"Draw(2)",,Ancient of Lore Ancient Teachings
+NEW1_008b,battlecry,,,"Heal(target, 5)",,Ancient of Lore Ancient Secrets -- restore 5 Health

@@ -1,0 +1,37 @@
+{
+  "Vollkorn-Black.ttf": {
+    "source": "https://raw.githubusercontent.com/FAlthausen/Vollkorn-Typeface/master/fonts/ttf/Vollkorn-Black.ttf",
+    "sha256": "a0576d905b182e039ebb771d725de060d2a01c9ced40f78afdc93bcb9bd16d09",
+    "bytes": 427860
+  },
+  "LibreFranklin-SemiBold.ttf": {
+    "source": "https://raw.githubusercontent.com/impallari/Libre-Franklin/master/fonts/TTF/LibreFranklin-SemiBold.ttf",
+    "sha256": "d9bc4e45291495f350d0653e3250cfadfe2fd2f3f166c6f6ee2d68cab7fc9692",
+    "bytes": 143020
+  },
+  "LibreFranklin-ExtraBold.ttf": {
+    "source": "https://raw.githubusercontent.com/impallari/Libre-Franklin/master/fonts/TTF/LibreFranklin-ExtraBold.ttf",
+    "sha256": "e14e48d8c0ad279318b6fbbc172d0ffee57af2e66db088eb4e0e43ff66a5e2e6",
+    "bytes": 143668
+  },
+  "Coustard-Black.ttf": {
+    "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/coustard/Coustard-Black.ttf",
+    "sha256": "6a7c7019eaf2a96ac6ef242f537a583800687a1e95786e02601f498538c5a24b",
+    "bytes": 78444
+  },
+  "Vollkorn-OFL.txt": {
+    "source": "https://raw.githubusercontent.com/FAlthausen/Vollkorn-Typeface/master/OFL.txt",
+    "sha256": "53f9c99fa3d47f7d632a42ee7bab4a834a60a744f6026d676c3a223cef2b2ef3",
+    "bytes": 4489
+  },
+  "LibreFranklin-OFL.txt": {
+    "source": "https://raw.githubusercontent.com/impallari/Libre-Franklin/master/OFL.txt",
+    "sha256": "ea80c9fcfc279cc306910cf5a21133320276ced31d3929e3c025519f3ed28b50",
+    "bytes": 4451
+  },
+  "Coustard-OFL.txt": {
+    "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/coustard/OFL.txt",
+    "sha256": "9db9983bb803b5a12d635f24f9a07aab91beaa53499c1036d6aeb79599b03f7b",
+    "bytes": 4394
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "Cards/Fuse_Underlay_Play.wav": {
+    "source": "https://hearthstonesounds.s3.amazonaws.com/Fuse_Underlay_Play.wav",
+    "sha256": "6570cf1b70e1bca289ebe2c01559854bbba491546beff82ed412e41b40dfb6bf",
+    "bytes": 409358
+  },
+  "Cards/UNG_Egg_Cracks.wav": {
+    "source": "https://hearthstonesounds.s3.amazonaws.com/UNG_Egg_Cracks.wav",
+    "sha256": "46e9f3e361305c374a7ff1cea71a6308a44c69d711a2038ca0c9a00283b93757",
+    "bytes": 70604
+  },
+  "Cards/GlassShatter_Underlay_Death.wav": {
+    "source": "https://hearthstonesounds.s3.amazonaws.com/GlassShatter_Underlay_Death.wav",
+    "sha256": "f8b3184d0f53a16c6962db094ef559e062ef3cae3eb0eb6ead8c317164a59e28",
+    "bytes": 105842
+  },
+  "Cards/Dagger_Underlay_Play.wav": {
+    "source": "https://hearthstonesounds.s3.amazonaws.com/Dagger_Underlay_Play.wav",
+    "sha256": "ffa9889fb7a8880c548c9604e062bb536e3be4cb1e8e62627063609e770fa5d2",
+    "bytes": 75396
+  },
+  "UI/heropower.mp3": {
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/sounds/heropower.mp3",
+    "sha256": "3599864a00f3056525affa5663924d9076abef42515b74e81b8fd8e7d88a268c",
+    "bytes": 27042
+  },
+  "UI/bigattack.mp3": {
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/sounds/bigattack.mp3",
+    "sha256": "86dcd8d5d074c37fa6ebc20c6d5afc382c5210374395b63dca96b4ed182ff01e",
+    "bytes": 64579
+  }
+}

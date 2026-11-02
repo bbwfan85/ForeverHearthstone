@@ -1,0 +1,18 @@
+card_id,hook,trigger,cond,ops,flags,notes
+EX1_621,spell,,,"Heal(any.minion, 4)",,Circle of Healing - ALL minions both sides
+EX1_332,spell,,,Silence(target),,Silence
+CS2_004,spell,,,"Buff(target, 0, 2); Draw(1)",,Power Word: Shield
+GVG_009,battlecry,,,"Damage(any.hero, 3)",,Shadowbomber - each hero including your own
+EX1_341,trigger,TURN_BEGIN,PayloadIsMine,"Heal(friendly.char dmg ~1, 3)",,Lightwell - one random damaged friendly character
+DS1_233,spell,,,"Damage(enemy.hero, 5)",,Mind Blast
+CS2_234,spell,,,Destroy(target),,Shadow Word: Pain - 3-or-less attack is REQ_TARGET_MAX_ATTACK
+GVG_072,trigger,HEALED,,"Damage(enemy.char~1, 1)",,Shadowboxer - any character healed
+FP1_023,deathrattle,,,"Buff(friendly.minion~1, 0, 3)",,Dark Cultist
+EX1_622,spell,,,Destroy(target),,Shadow Word: Death - 5-or-more attack is REQ_TARGET_MIN_ATTACK
+GVG_010,spell,,,"Buff(target, 2, 4); GiveSpellDamage(target, 1)",,Velen's Chosen - +2/+4 and Spell Damage +1
+EX1_626,spell,,,"Silence(enemy.minion); Draw(1)",,Mass Dispel
+CS1_112,spell,,,"Damage(enemy.char, 2); Heal(friendly.char, 2)",,Holy Nova
+GVG_083,battlecry,,,"Buff(target, 0, 4)",,Upgraded Repair Bot - friendly Mech from REQ_TARGET_WITH_RACE
+EX1_091,battlecry,,,TakeControl(target),,Cabal Shadow Priest - 2-or-less attack from reqs
+EX1_624,spell,,,"Damage(target, 5); Heal(friendly.hero, 5)",,Holy Fire
+EX1_623,battlecry,,,"Buff(target, 0, 3)",,Temple Enforcer

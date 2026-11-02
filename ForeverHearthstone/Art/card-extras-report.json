@@ -1,0 +1,48 @@
+{
+  "source": "https://raw.githubusercontent.com/HearthSim/sunwell/master/",
+  "license": "MIT (HearthSim/sunwell LICENSE, copied to Art/rarity-gems-LICENSE.txt)",
+  "files": {
+    "inhand_hero_power": {
+      "source": "assets/hero-power-player.png",
+      "sha256": "787687f7d38344a083296d6ec7b70722b5a43c1a7f2519de3c75309251fc7997",
+      "original_size": [
+        564,
+        841
+      ],
+      "texture_size": [
+        512,
+        1024
+      ]
+    },
+    "inhand_hero_power_premium": {
+      "source": "assets/hero-power-premium-player.png",
+      "sha256": "708f497b9cd48b517ef095990f41afb899c4fbef6d7193b59a6af291f806cbf8",
+      "original_size": [
+        564,
+        850
+      ],
+      "texture_size": [
+        512,
+        1024
+      ]
+    },
+    "race-banner": {
+      "source": "assets/race-banner.png",
+      "sha256": "5125b6f22de34f33f18546ff26e579a6699d92417b59424bf15173e346716293",
+      "original_size": [
+        408,
+        69
+      ],
+      "placed": [
+        0.0,
+        0.16015625,
+        1.0,
+        0.6796875
+      ],
+      "texture_size": [
+        512,
+        128
+      ]
+    }
+  }
+}

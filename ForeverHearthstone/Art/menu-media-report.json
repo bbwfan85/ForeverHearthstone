@@ -1,0 +1,86 @@
+{
+  "menu-parchment": {
+    "source": "https://raw.githubusercontent.com/Manacost-Labs/HeartPulse/main/public/wallpaper/arena-parchment.jpg",
+    "sha256": "276dc4061277dab3274f56bda3929a4fd83132895e68341f27daf1836af30b8e",
+    "original_size": [
+      865,
+      878
+    ],
+    "texture_size": [
+      1024,
+      1024
+    ]
+  },
+  "menu-leather": {
+    "source": "https://raw.githubusercontent.com/Manacost-Labs/HeartPulse/main/public/wallpaper/arena-rail-red.jpg",
+    "sha256": "1d5e20cf5876c63f7e36d416522472c42af7078e96e8c04d6b0ec927771348f0",
+    "original_size": [
+      375,
+      172
+    ],
+    "texture_size": [
+      512,
+      256
+    ]
+  },
+  "menu-border": {
+    "source": "https://raw.githubusercontent.com/Manacost-Labs/HeartPulse/main/public/wallpaper/deck-border.png",
+    "sha256": "759732bfbb3d9fc6cae001902de22ecd7c2cad4d42b08c7ab97711de43fb9fb3",
+    "original_size": [
+      239,
+      95
+    ],
+    "texture_size": [
+      256,
+      128
+    ]
+  },
+  "menu-nav": {
+    "source": "https://raw.githubusercontent.com/Manacost-Labs/HeartPulse/main/public/wallpaper/nav-bg.png",
+    "sha256": "4b619757e73d88c3487b058204c7d7841e154028d08b7413ad5de8546a7ee236",
+    "original_size": [
+      1160,
+      98
+    ],
+    "texture_size": [
+      2048,
+      128
+    ]
+  },
+  "menu-pack-room": {
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/images/openpacksbackground.png",
+    "sha256": "42c1c17f176a30fc248ede091e2f89a4e1ed91414e0b6bfda1414882ac81d363",
+    "original_size": [
+      1293,
+      899
+    ],
+    "texture_size": [
+      2048,
+      1024
+    ]
+  },
+  "menu-pack": {
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/images/pack.png",
+    "sha256": "4abc495e18c1680d8547a1eb2df0ceb9a2ca2de79391043e4e4266804dc8a9d3",
+    "original_size": [
+      150,
+      208
+    ],
+    "texture_size": [
+      256,
+      256
+    ]
+  },
+  "menu-chest": {
+    "source": "https://raw.githubusercontent.com/Rymedy/hearthstone-web/master/src/images/mainmenubackground.jpg",
+    "sha256": "760e3acde3f5d5090fbbef9bf07700e7ec98cface0e0b230d6bd1aa70e667cad",
+    "original_size": [
+      950,
+      594
+    ],
+    "texture_size": [
+      1024,
+      1024
+    ]
+  }
+}

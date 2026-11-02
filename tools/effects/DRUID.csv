@@ -1,0 +1,13 @@
+card_id,hook,trigger,cond,ops,flags,notes
+EX1_161,spell,,,"Destroy(target); DrawEnemy(2)",,Naturalize
+CS2_009,spell,,,"Buff(target, 2, 2, taunt)",,Mark of the Wild
+CS2_007,spell,,,"Heal(target, 8)",,Healing Touch
+EX1_158,spell,,,"Deathrattle(friendly.minion){Summon(EX1_158t, rightmost)}",,"Soul of the Forest - EX1_158t is the 2/2 Treant. ""Unlike most Deathrattles, the new minions are summoned on the far right, not where the dead minion died"" (hearthstone.wiki.gg/wiki/Soul_of_the_Forest)"
+GVG_080,battlecry,,"Count(friendly.beast, 1)","Transform(self, GVG_080t)",,Druid of the Fang - GVG_080t is the 7/7; the Druid itself has no race
+EX1_571,spell,,,"Summon(EX1_tk9, 3)",,Force of Nature - EX1_tk9 is the 2/2 Charge Treant
+EX1_tk9,trigger,TURN_END,,Destroy(self),,Force of Nature Treant token - 'at the end of the turn destroy this minion'
+GVG_034,trigger,DAMAGE_DEALT,PayloadIsSelf,AddCardEntourage(),,Mech-Bear-Cat - Spare Part entourage is printed data
+GVG_031,spell,,,ShuffleIn(target),,Recycle - ShuffleIn uses the entity's owner so it lands in the opponent's deck
+EX1_173,spell,,,"Damage(target, 5); Draw(1)",,Starfire
+GVG_035,deathrattle,,,ShuffleIn(self),,Malorne - ShuffleIn takes it out of the graveyard and ignores a second (Baron) run once it is in the deck
+GVG_033,spell,,,"Heal(any.char, 999)",,Tree of Life - Heal clamps to current damage so an over-large amount is a full restore

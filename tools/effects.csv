@@ -1,0 +1,70 @@
+card_id,hook,trigger,cond,ops,flags,notes
+CS2_189,battlecry,,,"Damage(target, 1)",,Elven Archer
+EX1_058,battlecry,,,"GiveKeyword(adjacent, taunt)",,Sunfury Protector
+EX1_093,battlecry,,,"Buff(adjacent, 1, 1, taunt)",,Defender of Argus
+CS2_042,battlecry,,,"Damage(target, 3)",,Fire Elemental
+EX1_096,deathrattle,,,Draw(1),,Loot Hoarder
+EX1_110,deathrattle,,,Summon(EX1_110t),,Cairne -> Baine 4/5
+EX1_097,deathrattle,,,"Damage(any.char, 2)",,Abomination - ALL characters
+EX1_016,deathrattle,,,TakeControl(enemy.minion~1),,Sylvanas
+EX1_162,aura,,,"Aura(adjacent, 1, 0)",,Dire Wolf Alpha
+DS1_175,aura,,,"Aura(friendly.beast!self, 1, 0)",,Timber Wolf - other Beasts
+EX1_393,enrage,,,"Aura(self, 3)",,Amani Berserker
+EX1_610,secret,PRE_ATTACK,PayloadTargetIsHero,"Damage(enemy.char, 2)",,Explosive Trap
+EX1_554,secret,PRE_ATTACK,not PayloadTargetIsHero and not BoardFull,"Summon(EX1_554t, 3)",,Snake Trap
+EX1_294,secret,AFTER_MINION_PLAYED,not BoardFull,CopyPrinted(payload),,Mirror Entity
+NEW1_019,trigger,MINION_SUMMONED,PayloadSummonedByMe and not PayloadIsSelf,"Damage(enemy.char~1, 1)",,Knife Juggler
+EX1_604,trigger,DAMAGE_DEALT,PayloadIsMinion,"Buff(self, 1, 0)",,Frothing Berserker
+CS1_113,spell,,,TakeControl(target),,Mind Control
+EX1_277,spell,,,"MissileSplit(enemy.char, 3)",,Arcane Missiles - rerolls per missile
+NEW1_031,spell,,,SummonEntourage(),,Animal Companion - entourage from printed data
+CS2_029,spell,,,"Damage(target, 6)",,Fireball
+CS2_032,spell,,,"Damage(enemy.minion, 4)",,Flamestrike
+CS2_025,spell,,,"Damage(enemy.minion, 1)",,Arcane Explosion
+CS2_023,spell,,,Draw(2),,Arcane Intellect
+CS2_026,spell,,,Freeze(enemy.minion),,Frost Nova
+CS2_024,spell,,,"Damage(target, 3); Freeze(target)",,Frostbolt - two ops one row
+CS2_008,spell,,,"Damage(target, 1)",,Moonfire
+CS1_130,spell,,,"Damage(target, 2)",,Holy Smite
+CS2_022,spell,,,"Transform(target, CS2_tk1)",,Polymorph -> Sheep 1/1
+CS2_027,spell,,,"Summon(CS2_mirror, 2)",,Mirror Image -> two 0/2 Taunt
+EX1_246,spell,,,"Transform(target, hexfrog)",,Hex -> Frog 0/1 Taunt
+EX1_287,secret,SPELL_CAST,,,cancels,"Counterspell - counters the spell, mana still spent"
+EX1_611,secret,PRE_ATTACK,PayloadAttackerIsMinion and PayloadAttackerIsEnemy,"ReturnToHand(attacker, 2)",cancels,Freezing Trap - returned card costs (2) more
+CS2_237,trigger,MINION_SUMMONED,PayloadSummonedByMe and PayloadHasRace(beast) and not PayloadIsSelf,Draw(1),,Starving Buzzard - not for itself (it is on the board when its own summon is raised)
+EX1_399,trigger,DAMAGE_DEALT,PayloadIsSelf,"Buff(self, 3, 0)",,Gurubashi Berserker - +3 not +1
+GVG_007,ondraw,,,"Damage(any.char, 2)",,Flame Leviathan - TOPDECK, ALL characters
+CS1_129,spell,,,InnerFire(target),,Inner Fire - attack := current health
+PART_006,spell,,,Swap(target),,Reversing Switch - Spare Part
+PART_001,spell,,,"Buff(target, 0, 1)",,Armor Plating - Spare Part
+PART_007,spell,,,"Buff(target, 1, 0)",,Whirling Blades - Spare Part
+PART_003,spell,,,"GiveKeyword(target, taunt)",,Rusty Horn - Spare Part
+PART_005,spell,,,Freeze(target),,Emergency Coolant - Spare Part
+PART_002,spell,,,ReturnToHand(target),,Time Rewinder - Spare Part
+GVG_082,deathrattle,,,AddCardEntourage(),,Clockwork Gnome - random Spare Part to hand
+EX1_238,spell,,,"Damage(target, 3)",,Lightning Bolt - overload from printed data
+CS2_045,spell,,,"BuffTurn(target, 3, 0)",,Rockbiter Weapon - friendly character +3 this turn
+CS2_011,spell,,,"BuffTurn(friendly.char, 2, 0)",,Savage Roar - your CHARACTERS (hero too)
+CS2_046,spell,,,"BuffTurn(friendly.minion, 3, 0)",,Bloodlust - your minions only
+CS2_105,spell,,,"BuffTurn(friendly.hero, 4, 0)",,Heroic Strike
+CS2_005,spell,,,"BuffTurn(friendly.hero, 2, 0); GainArmor(friendly.hero, 2)",,Claw - timed attack + PERMANENT armor
+EX1_570,spell,,,"BuffTurn(friendly.hero, 4, 0); GainArmor(friendly.hero, 4)",,Bite
+GVG_057,spell,,,"Heal(friendly.hero, 4); BuffTurn(friendly.hero, 2, 0)",,Seal of Light
+EX1_549,spell,,,"BuffTurn(target, 2, 0, immune)",,Bestial Wrath - +2 and Immune this turn
+CS2_188,battlecry,,,"BuffTurn(target, 2, 0)",,Abusive Sergeant
+EX1_046,battlecry,,,"BuffTurn(target, 2, 0)",,Dark Iron Dwarf
+GVG_011,battlecry,,,"BuffTurn(target, -2, 0)",,Shrinkmeister - NEGATIVE timed buff
+EX1_055,trigger,SPELL_CAST,PayloadIsMine,"BuffTurn(self, 2, 0)",,Mana Addict - +2 per spell this turn
+EX1_128,spell,,,"KeywordNextTurn(friendly.minion, stealth)",,Conceal - your minions
+PART_004,spell,,,"KeywordNextTurn(target, stealth)",,Finicky Cloakfield - Spare Part
+CS2_017,heropower,,,"BuffTurn(friendly.hero, 1, 0); GainArmor(friendly.hero, 1)",,Shapeshift (Druid)
+EX1_145,spell,,,"CostDelta(self.spell, -3, 1, turn)",,Preparation - next spell this turn -3
+EX1_612,battlecry,,,"CostSet(self.secret, 0, 1, turn)",,Kirin Tor Mage - next Secret free
+NEW1_029,battlecry,,,"CostSet(enemy.spell, 0, -, nextturn)",,Millhouse - enemy spells free next turn
+FP1_030,battlecry,,,"CostDelta(enemy.spell, 5, -, nextturn)",,Loatheb - enemy spells +5 next turn
+NEW1_036,spell,,,"ClampHealth(self, 1, turn); Draw(1)",,Commanding Shout
+EX1_295,secret,PRE_DAMAGE,PayloadFatalToMyHero,"KeywordTurn(friendly.hero, immune)",cancels,Ice Block - like every secret only on the opponent's turn
+EX1_137,spell,,,"Damage(enemy.hero, 2)",,Headcrack - base
+EX1_137,combo,,,"Damage(enemy.hero, 2); AtNextTurn{AddCard(EX1_137)}",,Headcrack - combo returns it
+DREAM_05,spell,,,"Buff(target, 5, 5); AtNextTurn{Destroy(target)}",,Nightmare - +5/+5 then destroy
+FP1_013,trigger,TURN_END,,ResummonDied(),,Kel'Thuzad - end of EACH turn

@@ -1,0 +1,28 @@
+{
+  "tavern-cabinet": {
+    "source": "tools/menu-assets/tavern-cabinet.png",
+    "provenance": "OpenAI image generation, September 23 2026; original Hearthstone-inspired artwork",
+    "sha256": "0539d1468f8c66c911e64cc25a0ad829e04e8c352c5123f8843f5d877f987d12",
+    "original_size": [
+      1536,
+      1024
+    ],
+    "texture_size": [
+      2048,
+      1024
+    ]
+  },
+  "tavern-button": {
+    "source": "tools/menu-assets/tavern-button.png",
+    "provenance": "OpenAI image generation, September 23 2026; original Hearthstone-inspired artwork",
+    "sha256": "740916933c9d80c4bb8948dacfcb6aabcfc16142804e3b7fcb12bf179fc6c1a7",
+    "original_size": [
+      1983,
+      793
+    ],
+    "texture_size": [
+      1024,
+      256
+    ]
+  }
+}
