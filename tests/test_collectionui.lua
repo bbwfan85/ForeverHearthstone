@@ -395,6 +395,32 @@ H.suite("collection ui: the deck builder refuses an illegal card and says why", 
   end)
 end)
 
+H.suite("collection ui: a card with no copy left to add greys out in the deck builder", function(ns, H)
+  withUI(ns, function(Main, ns)
+    local ui = Main:Collection()
+    local deck, index = Main.collection:NewDeck("Test", "MAGE")
+    ui:EditDeck(index)
+    local function slotFor(id)
+      for _, slot in ipairs(ui.slots) do if slot.entry.cardId == id then return slot end end
+    end
+    local id
+    for _, slot in ipairs(ui.slots) do
+      if Main.collection:Count(slot.entry.cardId) > 0 then id = slot.entry.cardId; break end
+    end
+    H.ok(id, "an owned card is on the page")
+    H.notOk(slotFor(id).widget.ghost, "it starts in full colour")
+    local room = math.min(Main.collection:Count(id), Main.collection:MaxCopies(id))
+    for _ = 1, room - 1 do ui:AddToDeck(id) end
+    if room > 1 then H.notOk(slotFor(id).widget.ghost, "a copy still to add keeps it in colour") end
+    ui:AddToDeck(id)
+    H.ok(slotFor(id).widget.ghost, "the last copy in the deck greys it out")
+    ui:RemoveFromDeck(id)
+    H.notOk(slotFor(id).widget.ghost, "taking one back out restores it")
+    ui:EditDeck(nil)
+    H.notOk(slotFor(id) and slotFor(id).widget.ghost, "browsing outside a deck never greys an owned card")
+  end)
+end)
+
 H.suite("collection ui: a deck is only duelled with once it is legal", function(ns, H)
   withUI(ns, function(Main, ns)
     local deck, index = Main.collection:NewDeck("Half", "MAGE")

@@ -1140,9 +1140,15 @@ end
      Range needs a unit token (CheckInteractDistance cannot take a name), so the
      other player has to be one: your target, focus or mouseover, in your party
      or raid, or showing a nameplate. Someone who is none of those is not
-     somewhere this client can see, and "target them" is the way forward. ]]
-function Main:FindPlayerUnit(name)
-  if not name or name == "" then return nil end
+     somewhere this client can see, and "target them" is the way forward.
+
+     The character GUID is tried before the name. Forever characters have a
+     first and last name, and the name a challenge arrives under need not be
+     the one UnitName shows for the character beside you -- so matching by
+     name alone turned away a player you were targeting. ]]
+function Main:FindPlayerUnit(name, guid)
+  if guid == "" then guid = nil end
+  if (not name or name == "") and not guid then return nil end
   local units = { "target", "focus", "mouseover", "targettarget", "focustarget" }
   for i = 1, 4 do units[#units + 1] = "party" .. i end
   for i = 1, 40 do units[#units + 1] = "raid" .. i end
@@ -1158,10 +1164,11 @@ function Main:FindPlayerUnit(name)
   for _, unit in ipairs(units) do
     -- ns.Plain: in instances another player's name can be secret (Rewards.lua)
     if UnitExists(unit) and ns.Plain(UnitIsPlayer(unit)) then
+      if guid and ns.Plain(UnitGUID(unit)) == guid then return unit end
       local n, realm = UnitName(unit)
       n, realm = ns.Plain(n), ns.Plain(realm)
       if n and realm and realm ~= "" then n = n .. "-" .. realm end
-      if n and ns.Transport.SameName(n, name) then return unit end
+      if n and name and ns.Transport.SameName(n, name) then return unit end
     end
   end
   return nil
@@ -1179,10 +1186,13 @@ function Main:WorldPosition()
 end
 
 --- Is `name` close enough to sit down with? Returns ok, the reason if not.
-function Main:NearEnough(name)
-  local unit = self:FindPlayerUnit(name)
+function Main:NearEnough(name, guid)
+  local s = self.session
+  -- the player we are in a session with sent their GUID in their HELLO
+  if not guid and s and ns.Transport.SameName(s.peer.name, name) then guid = s.peer.guid end
+  local unit = self:FindPlayerUnit(name, guid)
   if not unit then
-    local s, here = self.session, self:WorldPosition()
+    local here = self:WorldPosition()
     local there = s and ns.Transport.SameName(s.peer.name,name) and s.peer.position
     if s and s.state == ns.Session.STATE.INVITED and here and there
        and (s.clock or 0) - there.at <= 5 then
@@ -1197,19 +1207,27 @@ function Main:NearEnough(name)
   return true
 end
 
-function Main:Challenge(name)
+--- `unit` and `guid` come from a right-click menu: the unit it was opened on
+--- is the player, whatever name the menu carries.
+function Main:Challenge(name, unit, guid)
   if self.session and self.session:IsActive() then
     self:Print("you are already in a duel. /fh concede to leave it.")
     return false
   end
-  if name then
-    local near, why = self:NearEnough(name)
+  if unit and not (UnitExists(unit) and ns.Plain(UnitIsPlayer(unit))) then unit = nil end
+  if name and not unit then
+    local near, why = self:NearEnough(name, guid)
     if not near then self:Print(why); return false end
   else
-    local ok, why = ns.Transport.InRange("target")
+    unit = unit or "target"
+    local ok, why = ns.Transport.InRange(unit)
     if not ok then self:Print(why or "no target"); return false end
+    --[[ Whisper the name the game shows for that unit: it is what /fh duel
+         has always sent to, and it reaches Forever's first-and-last names. ]]
     local realm
-    name, realm = UnitName("target")
+    local shown, shownRealm = UnitName(unit)
+    shown, shownRealm = ns.Plain(shown), ns.Plain(shownRealm)
+    if shown then name, realm = shown, shownRealm end
     if not name then self:Print("no target"); return false end
     -- a player from another realm is whispered as Name-Realm, or not at all
     if realm and realm ~= "" then name = name .. "-" .. realm end
@@ -1218,7 +1236,9 @@ function Main:Challenge(name)
        them. Starting a second challenge instead threw theirs away and, once
        the two crossed, left both clients thinking they were player 1. ]]
   local s = self.session
-  if s and s.state == ns.Session.STATE.INVITED and sameCharacter(s.peer.name, name) then
+  local sameGuid = unit and s and s.peer.guid and s.peer.guid ~= ""
+                   and ns.Plain(UnitGUID(unit)) == s.peer.guid
+  if s and s.state == ns.Session.STATE.INVITED and (sameGuid or sameCharacter(s.peer.name, name)) then
     self:Accept()
     return true
   end
@@ -2527,7 +2547,9 @@ function Main:AddContextMenu()
     -- a player on another realm is addressed as Name-Realm
     local server = contextData.server
     if server and server ~= "" and not name:find("-", 1, true) then name = name .. "-" .. server:gsub("%s", "") end
-    root:CreateButton("Challenge to Hearthstone", function() Main:Challenge(name) end)
+    -- a portrait's menu knows its unit; a name in chat may know the GUID
+    local unit, guid = contextData.unit, ns.Plain(contextData.guid)
+    root:CreateButton("Challenge to Hearthstone", function() Main:Challenge(name, unit, guid) end)
   end
   for _, tag in ipairs(Main.CHALLENGE_MENUS) do pcall(Menu.ModifyMenu, tag, add) end
 end

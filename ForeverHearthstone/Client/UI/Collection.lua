@@ -947,7 +947,18 @@ function CollectionUI:DecorateSlot(widget, entry)
   widget.ownedCount:SetSize(plateW,tabH)
   W.ApplyStyle(widget.ownedCount,"count",nil,size)
   widget.ownedCount:SetText(label); widget.ownedCount:Show()
-  W.SetGhost(widget, count == 0)
+  --[[ While editing a deck, a card with no copy left to add greys out as in
+       Hearthstone: every owned copy is in the deck, or it is at the limit
+       (two, one for a legendary). A full deck greys nothing -- that is a
+       deck limit, not this card's. ]]
+  local spent = false
+  local deck = self:CurrentDeck()
+  if deck and count > 0 then
+    local used = 0
+    for _, id in ipairs(deck.cards or {}) do if id == entry.cardId then used = used + 1 end end
+    spent = used >= math.min(self.collection:Count(entry.cardId), self.collection:MaxCopies(entry.cardId))
+  end
+  W.SetGhost(widget, count == 0 or spent)
   if self.selected and self.selected.cardId == entry.cardId then
     widget.glow:Show()
     widget.glow:SetVertexColor(1, 0.9, 0.4, 0.6)

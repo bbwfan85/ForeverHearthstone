@@ -917,6 +917,39 @@ H.suite("privacy: settings undo an accidental block immediately",function(ns,H)
   end)
 end)
 
+--[[ Forever characters have a first and last name, and the name a challenge
+     arrives under need not be the one UnitName shows for them. The player
+     beside you is found by GUID (or by the menu's unit), not by name. ]]
+H.suite("proximity: a first-and-last name that differs from the sender still duels",function(ns,H)
+  withAddon(ns,function(Main)
+    Main:SetChallengePolicy("anyone")
+    Stub.units.target={name="Pagpag Halohalo",class="PRIEST",isPlayer=true,guid="Player-Pagpag"}
+    arrive(ns.Protocol.Encode(1,ns.Protocol.KIND.HELLO,ns.Protocol.VERSION,
+      ns.Protocol.ADDON_VERSION,"PRIEST","Pagpag Halohalo",30,"Player-Pagpag",1,0,0,"c"),"Pagpag-Realm")
+    H.eq(Main.session.state,ns.Session.STATE.INVITED,"we were challenged")
+    H.ok(Main:NearEnough("Pagpag-Realm"),"the targeted challenger is found by GUID")
+    H.ok(Main:Accept(),"so Accept goes ahead")
+    H.eq(Main.session.state,ns.Session.STATE.SYNC)
+  end)
+end)
+
+H.suite("proximity: a portrait's menu challenges the unit it was opened on",function(ns,H)
+  withAddon(ns,function(Main)
+    Stub.units.target={name="Pagpag Halohalo",class="PRIEST",isPlayer=true,guid="Player-Pagpag"}
+    local made={}
+    local root={CreateButton=function(_,label,fn) made[#made+1]={label=label,fn=fn} end}
+    Stub.menuMods["MENU_UNIT_PLAYER"](nil,root,{name="Pagpag",unit="target"})
+    made[1].fn()
+    H.eq(Main.session and Main.session.state,ns.Session.STATE.OFFERED,"the menu's name did not have to match")
+    H.eq(Main.session.peer.name,"Pagpag Halohalo","and the challenge goes to the name the game shows")
+    Main.session=nil
+    made={}
+    Stub.menuMods["MENU_UNIT_PLAYER"](nil,root,{name="Someone Else"})
+    made[1].fn()
+    H.eq(Main.session,nil,"a name nobody nearby has is still refused")
+  end)
+end)
+
 H.suite("proximity: fresh world coordinates allow acceptance without targeting",function(ns,H)
   withAddon(ns,function(Main)
     Main:SetChallengePolicy("anyone")
