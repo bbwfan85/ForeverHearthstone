@@ -933,6 +933,32 @@ H.suite("proximity: a first-and-last name that differs from the sender still due
   end)
 end)
 
+--[[ Forever's UnitName gives (first, last), so the challenge goes to
+     "Femboy-President" while the answer comes from their real address. The
+     challenger recognises it by GUID and talks to that address from then on;
+     before, every reply was dropped and the challenge timed out as "no addon". ]]
+H.suite("proximity: the answer from another address than the challenge's is recognised",function(ns,H)
+  withAddon(ns,function(Main)
+    local saved=UnitName
+    _G.UnitName=function(u) if u=="target" then return "Femboy","President" end return saved(u) end
+    Stub.units.target.guid="Player-Femboy"
+    H.ok(Main:Challenge())
+    H.eq(Main.transport.peer,"Femboy-President","the challenge went to first-last")
+    local function answer(guid,from)
+      arrive(ns.Protocol.Encode(1,ns.Protocol.KIND.HELLO,ns.Protocol.VERSION,
+        ns.Protocol.ADDON_VERSION,"PRIEST","Femboy",30,guid,1,0,0,"a","","","","",
+        Main.session.challengeId),from)
+    end
+    answer("Player-Stranger","Femboy-Realm")
+    H.eq(Main.session.state,ns.Session.STATE.OFFERED,"a HELLO with another GUID is not their answer")
+    answer("Player-Femboy","Femboy-Realm")
+    H.eq(Main.session.state,ns.Session.STATE.SYNC,"theirs moves us on to choosing a deck")
+    H.eq(Main.transport.peer,"Femboy-Realm","and we talk to the address they answered from")
+    H.eq(Main.session.peer.name,"Femboy-Realm")
+    _G.UnitName=saved
+  end)
+end)
+
 H.suite("proximity: a portrait's menu challenges the unit it was opened on",function(ns,H)
   withAddon(ns,function(Main)
     Stub.units.target={name="Pagpag Halohalo",class="PRIEST",isPlayer=true,guid="Player-Pagpag"}

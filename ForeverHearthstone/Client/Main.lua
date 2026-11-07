@@ -944,6 +944,12 @@ end
      The transport exists for the whole session, not just during a duel,
      because a challenge has to be able to ARRIVE. An addon that only listens
      while it is already duelling can never be challenged. ]]
+-- "Femboy-President", "Femboy President", "Femboy-Realm": the same first name
+local function sameFirstName(a, b)
+  local function first(n) return tostring(n or ""):lower():match("^[^%s%-]+") end
+  return first(a) ~= nil and first(a) == first(b)
+end
+
 function Main:EnsureTransport()
   if self.transport then return self.transport end
   self.transport = ns.Transport.New({
@@ -967,6 +973,25 @@ function Main:EnsureTransport()
         or self.session.state == ns.Session.STATE.INVITED
         or self.session.state == ns.Session.STATE.OFFERED
         or self.session.state == ns.Session.STATE.REJOINING))
+    end,
+    --[[ Our challenge's answer, from an address other than the one we sent it
+         to (Transport:OnReceive). A HELLO is theirs if it carries the GUID of
+         the player we challenged; anything else (the "invited" ping, a
+         decline) if the sender's first name is theirs. ]]
+    claim = function(raw, sender)
+      local s = self.session
+      if not (s and s.state == ns.Session.STATE.OFFERED) then return false end
+      local m = ns.Protocol.Decode(raw)
+      if not m then return false end
+      local want = s.peer.expectGuid
+      if want == "" then want = nil end
+      if m.kind == ns.Protocol.KIND.HELLO and want and m[6] and m[6] ~= "" then
+        if m[6] ~= want then return false end
+      elseif not sameFirstName(sender, s.peer.name) then
+        return false
+      end
+      s.peer.name = sender
+      return true
     end,
     onTick=function(dt)
       if self.session then self.session:Tick(dt) end
@@ -1246,6 +1271,9 @@ function Main:Challenge(name, unit, guid)
   self:EnsureTransport():SetPeer(name)
   self.freshFrom, self.autoAccept = nil, nil   -- their reply belongs to THIS session
   local session = self:NewSession(name)
+  -- who we challenged, for recognising their answer from another address
+  local seen = unit or self:FindPlayerUnit(name, guid)
+  session.peer.expectGuid = guid or (seen and ns.Plain(UnitGUID(seen))) or nil
   session:Challenge(name)
   self:Debug(("challenged %s. %s"):format(name, ns.Transport.SIT_PROMPT))
   self:ShowDuelPrompt("offered", { name = name })

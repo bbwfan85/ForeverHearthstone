@@ -107,6 +107,9 @@ function Transport.New(opts)
        what to do with the duel (Main ends it). ]]
   t.onFault   = opts.onFault   or t.onError
   t.strangersWelcome = opts.strangersWelcome
+  --[[ (raw, sender) -> true when a line from an address we are not talking to
+       is the player we challenged answering from their real one (OnReceive). ]]
+  t.claim = opts.claim
   t.onTick=opts.onTick
   t.peer      = nil          -- who we are talking to, verbatim from the wire
   t.sent, t.received, t.dropped = 0, 0, 0
@@ -288,6 +291,15 @@ function Transport:OnReceive(raw, sender)
   end
   if not self.peer or (self.strangersWelcome and self.strangersWelcome()) then
     self:Deliver(raw, sender, true)   -- `true`: from someone we are not yet talking to
+    return
+  end
+  --[[ The address a challenge went to need not be the one the answer comes
+       from: Forever's UnitName gives a first and last name, and "First-Last"
+       reaches them but their replies arrive as their real address. Once the
+       owner recognises the player, that address is the peer from then on. ]]
+  if self.claim and self.claim(raw, sender) then
+    self.peer = sender
+    self:Deliver(raw, sender)
     return
   end
   self.dropped = self.dropped + 1
