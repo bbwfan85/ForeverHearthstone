@@ -359,7 +359,7 @@ function Rewards:NagIfUnsaved()
 end
 
 function Rewards:PrintUnsaved()
-  self.onPrint(("%d rewards are still only in memory. WoW writes them to disk on logout or /reload -- /fh save does it now.")
+  self.onPrint(("%d rewards are still only in memory. WoW writes them to disk on logout or /reload -- /fh save reloads your UI to save now.")
                :format(self.unsaved))
 end
 

@@ -256,7 +256,15 @@ function Board.Create(opts)
     b:BeginTargetDrag({ kind = "CLICK_HERO" })
   end)
   b.hero.frame:SetScript("OnDragStop", function() b:DropOnTarget() end)
-  b.foeHero.frame:SetScript("OnClick", function()
+  --[[ Right-click their hero to squelch their emotes, as in Hearthstone: a
+       defence against someone spamming the wheel. Again to hear them. ]]
+  b.foeHero.frame:RegisterForClicks("LeftButtonUp","RightButtonUp")
+  b.foeHero.frame:SetScript("OnClick", function(_, button)
+    if button == "RightButton" then
+      -- a right-click that cancelled an aim at their face is only that
+      if b.cancelledAt and (GetTime and GetTime() or 0) - b.cancelledAt < 0.5 then return end
+      return b:ToggleSquelch()
+    end
     b:TargetClick({ kind = "CLICK_FOE_HERO" })
   end)
   --[[ THE HERO POWER IS AIMED BY DRAGGING IT.
@@ -380,6 +388,9 @@ function Board.Create(opts)
   W.ApplyStyle(b.manaText, "number", nil, 14)
   b.foeManaText = b.manaHolder:CreateFontString(nil, "OVERLAY")
   W.ApplyStyle(b.foeManaText, "number", nil, 14)
+  -- Overload owed NEXT turn, beside each readout: locked crystals only show it once it lands
+  b.overloadText = b.manaHolder:CreateFontString(nil, "OVERLAY")
+  b.foeOverloadText = b.manaHolder:CreateFontString(nil, "OVERLAY")
 
   --[[ One OnUpdate for the whole board: particles, the shake, and the tweens
        that make the hand slide instead of teleport. It STOPS ITSELF when
@@ -1199,7 +1210,8 @@ function Board:SetPostGame(state, name)
   local p = self.postGame
   local who = tostring(name or "Your opponent")
   local message = ({
-    ready = "", asked = "Waiting for " .. who .. "...",
+    -- "ready": the line Main left about the result (the record, why it ended)
+    ready = self.postGameNote or "", asked = "Waiting for " .. who .. "...",
     invited = who .. " would like a rematch!", declined = who .. " declined the rematch.",
     closed = "Rematch declined.", starting = "Starting the rematch...",
   })[state] or ""
@@ -1750,7 +1762,7 @@ function Board:ResetMatch()
   self.outOfCards = nil
   self.bannerUntil = nil; self.banner:Hide(); self:HideTooltip()
   self:HideResult(); self.resultStart = nil; self.resultKind = nil
-  self.postGameAt = nil; self:SetPostGame(nil)
+  self.postGameAt = nil; self.postGameNote = nil; self:SetPostGame(nil)
   self.resultSoundAt, self.resultSound = nil, nil; self:StopResultSound(); self:ClearHeroDeath(); self:ClearSprites()
   self.historyPreview:Hide()
   self.dragging, self.hoverIndex = nil, nil
@@ -2039,6 +2051,8 @@ function Board:Relayout()
     if not snap.over and (playable or snap.selectedHand == i) then
       wdg.glow:Show()
       if snap.selectedHand == i then wdg.glow:SetVertexColor(1, 0.95, 0.45, 0.8)
+      -- Hearthstone's gold: playing it now triggers its Combo or condition
+      elseif snap.poweredUp and snap.poweredUp[i] then wdg.glow:SetVertexColor(1, 0.72, 0.05, 1)
       else wdg.glow:SetVertexColor(0.08, 1, 0.12, 1) end
     else
       wdg.glow:Hide()
@@ -2069,7 +2083,8 @@ function Board:Relayout()
     hit.frame:SetScript("OnClick", function(_, button)
       if self.cancelledDrag or self.suppressHandClick then return end
       if button == "RightButton" then
-        return self:ShowInspect(snap.hand and snap.hand[i], snap.handStats and snap.handStats[i])
+        return self:ShowInspect(snap.hand and snap.hand[i], snap.handStats and snap.handStats[i],
+                                snap.handCost and snap.handCost[i])
       end
       self.onIntent({ kind = "CLICK_HAND", handIndex = i, button = button })
     end)
@@ -2336,6 +2351,16 @@ function Board:Relayout()
   else
     self.manaText:Hide()
   end
+  local function owed(text, n, r, above)
+    if not (r and n and n > 0) then text:Hide(); return end
+    W.ApplyStyle(text, "caption", nil, math.max(9, math.floor(r.h * 0.6)), { 1, .55, .3 })
+    text:ClearAllPoints()
+    text:SetPoint(above and "BOTTOM" or "TOP", f, "BOTTOMLEFT", r.x + r.w / 2, above and (r.y + r.h + 2) or (r.y - 2))
+    text:SetText(("Overloaded: %d next turn"):format(n))
+    text:Show()
+  end
+  owed(self.overloadText, snap.pendingOverload, L.manaReadout, true)
+  owed(self.foeOverloadText, snap.foePendingOverload, L.foeManaReadout, false)
 
   -- --------------------------------------------------------- end turn
   local e = L.endTurn
@@ -2608,9 +2633,11 @@ function Board:LayoutMulligan(L, snap)
   self.mulliganTitle:ClearAllPoints()
   self.mulliganTitle:SetPoint("BOTTOMLEFT", f, "BOTTOMLEFT", ml.title.x, ml.title.y)
   self.mulliganTitle:SetWidth(ml.title.w)
+  -- who goes first, said where the hand is chosen: The Coin is not a hint everyone reads
   self.mulliganTitle:SetText(m.waiting
-    and "waiting for your opponent..."
-    or "Choose cards to replace")
+    and "Waiting for your opponent..."
+    or (snap.goesFirst and "You go first -- choose cards to replace"
+        or "You go second and get The Coin -- choose cards to replace"))
   self.mulliganTitle:Show()
 
   self.mulliganConfirm:ClearAllPoints()
@@ -2736,6 +2763,8 @@ function Board:LayoutChoosePrompt(L)
       cardApplyRect(wdg, r)
       if self.resolver then
         cardSetDescriptor(wdg, self.resolver:Card(opt.cardId))
+        -- the mode's text with Spell Damage, as the card in hand shows it
+        if opt.liveText then W.SetLiveStats(wdg, { rulesText = opt.liveText }) end
       end
       -- above the dimmer, which sits at 300
       wdg.frame:SetFrameLevel(310 + i)
@@ -2964,6 +2993,7 @@ function Board:PollCancel()
   local down = IsMouseButtonDown and IsMouseButtonDown("RightButton") or false
   if down and not self.rightWasDown then
     self.rightWasDown = true
+    self.cancelledAt = GetTime and GetTime() or 0   -- the same click's release is not a squelch
     self.cancelledDrag = self.dragging
     if self.dragging then self.dragging.frame:SetAlpha(1) end
     W.HideArrow(self.arrow)
@@ -3889,7 +3919,10 @@ function Board:ShowDeckCount(deck, where)
   local n = deck.count or 0
   self:HideTooltip()
   self.tooltip.text:SetJustifyH("CENTER")
-  self.tooltip:SetContent(nil, n == 0 and ("No cards " .. where)
+  -- an empty deck says what the next draw costs (fatigue: 1, then 2, ...)
+  local snap = self.snapshot or {}
+  local hit = deck == self.foeDeckPip and snap.foeNextFatigue or snap.nextFatigue
+  self.tooltip:SetContent(nil, n == 0 and ("No cards " .. where .. (hit and ("\nNext draw: %d fatigue damage"):format(hit) or ""))
     or (("%d card%s %s"):format(n, n == 1 and "" or "s", where)), 200)
   self.tooltip:ClearAllPoints()
   self.tooltip:SetPoint("RIGHT", deck.frame, "LEFT", -8, 0)
@@ -3904,7 +3937,11 @@ Board.KeywordsOf = W.KeywordsOf
 --[[ THE TABLE STATUS: a parchment notice across the top of the board while the
      duel is paused, the connection is in trouble, or the opponent is stalling.
      nil clears it. ]]
-function Board:ShowStatus(text)
+function Board:ShowStatus(text, action)
+  --[[ `action` = { label, onClick }: the notice's one thing to do (Claim
+       Victory over a staller), a button under it -- "/fh claim" in a line of
+       text was a dead end for anyone who does not type commands. ]]
+  if self.statusAction then self.statusAction:Hide() end
   if not text or text == "" then
     if self.statusPanel then self.statusPanel:Hide() end
     return
@@ -3919,6 +3956,17 @@ function Board:ShowStatus(text)
   p:ClearAllPoints()
   p:SetPoint("TOP", self.frame, "TOP", 0, -self.frame:GetHeight() * 0.28)
   p:Show()
+  if action then
+    local b = self.statusAction
+    if not b then
+      b = W.MenuButton(self.frame, action.label, function() if b.onAction then b.onAction() end end)
+      b:SetFrameLevel(490); b:SetSize(190, 38)
+      self.statusAction = b
+    end
+    b.text:SetText(action.label); b.onAction = action.onClick
+    b:ClearAllPoints(); b:SetPoint("TOP", p, "BOTTOM", 0, -6)
+    b:Show()
+  end
 end
 
 function Board:HideTooltip()
@@ -4007,7 +4055,7 @@ function Board:RefreshDescription()
   self:HideTooltip()
 end
 
-function Board:ShowInspect(cardId, stats)
+function Board:ShowInspect(cardId, stats, cost)
   if not (cardId and self.resolver and self.L) then return end
   local identity = stats and stats.instanceId or cardId
   if self.inspectIdentity == identity then return self:HideInspect() end
@@ -4021,6 +4069,8 @@ function Board:ShowInspect(cardId, stats)
   })
   cardSetDescriptor(self.inspect.card, self.resolver:Card(cardId))
   W.SetLiveStats(self.inspect.card, stats)
+  -- a card from hand keeps the cost it has now (Sorcerer's Apprentice, Loatheb, ...)
+  if cost then self.inspect.card.cost:SetText(tostring(cost)) end
   self.inspect.effects:ClearAllPoints()
   self.inspect.effects:SetPoint("TOPLEFT", self.inspect.card.frame, "TOPRIGHT", 16, -20)
   self.inspect.effects:SetSize(math.max(100, (self.frame:GetWidth()-w)/2-30), h-40)
@@ -4149,6 +4199,11 @@ end
 -- The balloon's round body in its 512x256 canvas (tools/build_speech_bubble.py).
 Board.SPEECH_BODY = { x0 = 34/512, y0 = 10/256, x1 = 502/512, y1 = 190/256 }
 local SPEECH_HOLD, SPEECH_POP, SPEECH_FADE = 3, 0.12, 0.25
+function Board:ToggleSquelch()
+  self.squelched = not self.squelched
+  self:ShowSpeech("self", self.squelched and "Opponent's emotes squelched." or "Opponent's emotes on.")
+end
+
 function Board:ShowSpeech(side, text)
   self.speech = self.speech or {}
   local bubble = self.speech[side]

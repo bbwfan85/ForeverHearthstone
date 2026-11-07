@@ -125,3 +125,25 @@ H.suite("vault: the saved level cannot grant cards", function(ns, H)
   end
   H.eq(legendary, 0, "no level-60 class cards at level 12")
 end)
+
+H.suite("vault: a vault that opens again clears the tampered mark", function(ns, H)
+  local db = { cards = {}, dust = 100, packs = {}, stats = {} }
+  ns.Vault.Store(db, nil)
+  db.tampered = true
+  ns.Vault.Restore(db, nil)
+  H.eq(db.tampered, nil, "a good vault is good again")
+  H.eq(db.dust, 100)
+end)
+
+H.suite("vault: fields a newer version sealed survive an older one", function(ns, H)
+  local db = { cards = {}, dust = 5, packs = {}, stats = {}, futureThing = { x = 1 } }
+  local saved = ns.Vault.ACCOUNT_FIELDS
+  ns.Vault.ACCOUNT_FIELDS = { "cards", "dust", "packs", "stats", "futureThing" }   -- the newer version
+  ns.Vault.Store(db, nil)
+  ns.Vault.ACCOUNT_FIELDS = saved                                                 -- the older one
+  ns.Vault.Restore(db, nil); ns.Vault.Store(db, nil)
+  ns.Vault.ACCOUNT_FIELDS = { "cards", "dust", "packs", "stats", "futureThing" }   -- newer again
+  ns.Vault.Restore(db, nil)
+  ns.Vault.ACCOUNT_FIELDS = saved
+  H.ok(db.futureThing and db.futureThing.x == 1, "still there")
+end)

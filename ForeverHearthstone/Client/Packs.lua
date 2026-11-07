@@ -266,7 +266,9 @@ Packs.COLLECTION_TRIGGERS = {
     describe = "collect every Murloc",
     met = function(collection)
       for id, p in pairs(collection.printed) do
-        if p.collectible and p.race == "MURLOC" and id ~= "EX1_062" then
+        -- neutral Murlocs only: a class Murloc (Siltfin Spiritwalker) lives with
+        -- one class's characters, so every other class could never earn him
+        if p.collectible and p.race == "MURLOC" and p.class == "NEUTRAL" and id ~= "EX1_062" then
           if collection:Count(id) == 0 then return false end
         end
       end

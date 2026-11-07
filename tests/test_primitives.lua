@@ -649,6 +649,33 @@ H.suite("amounts: payloadAmount reads the EVENT, which `dealt` cannot", function
   H.noEngineErrors(g)
 end)
 
+--============================================== powered up (the gold glow)
+
+H.suite("powered up: a card glows gold only when its extra effect would happen", function(ns, H)
+  local g = H.NewGame({ class1 = "HUNTER" })
+  g.activePlayer = 1
+  local function card(id) return g.players[1].hand[H.Hand(g, 1, id)] end
+  local PU = ns.Targeting.PoweredUp
+  local kill = card("EX1_539")
+  H.notOk(PU(g, kill, 1), "Kill Command without a Beast")
+  H.Put(g, 1, "CS2_120")                                   -- River Crocolisk, a Beast
+  H.ok(PU(g, kill, 1), "with one it glows")
+  H.ok(PU(g, card("GVG_080"), 1), "so does Druid of the Fang's battlecry")
+  local evis = card("EX1_124")
+  H.notOk(PU(g, evis, 1), "Combo before any card this turn")
+  g.players[1].cardsPlayedThisTurn = 1
+  H.ok(PU(g, evis, 1), "Combo after one")
+  local strike = card("EX1_408")
+  H.notOk(PU(g, strike, 1), "Mortal Strike at full Health")
+  g.players[1].hero.damage = (g.players[1].hero:Health() - 12)
+  H.ok(PU(g, strike, 1), "and at 12")
+  H.notOk(PU(g, card("EX1_345"), 1), "Mindgames never: it would reveal the opponent's deck")
+  H.notOk(PU(g, card("CS2_031"), 1), "Ice Lance never: it depends on the target")
+  g.players[1].hand = {}                                   -- the hand is full by now
+  H.notOk(PU(g, card("CS2_013"), 1), "Wild Growth never, as in Hearthstone")
+  H.noEngineErrors(g)
+end)
+
 --============================================== board-state play requirements
 
 H.suite("play reqs: board-state requirements are enforced ON THE WAY IN", function(ns, H)

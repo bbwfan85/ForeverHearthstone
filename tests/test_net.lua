@@ -998,6 +998,7 @@ end)
 H.suite("net: rejoining peers can restart their hover sequence",function(ns,H)
   local A,B,pump,events=connect(ns)
   A.peerHoverSerial=100
+  A.rejoinOffered=true   -- the acceptance answers an open offer
   A:Receive(ns.Protocol.Encode(0,ns.Protocol.KIND.REJOIN_ACCEPT,"Brann"))
   H.eq(A.peerHoverSerial,nil)
   A:Receive(ns.Protocol.Encode(0,ns.Protocol.KIND.HOVER,0,"b1","E",1,A.game.turn,A.game.bus.seq))
@@ -1091,4 +1092,137 @@ H.suite("net: mutual end requires consent and a current challenge",function(ns,H
   H.ok(a:AskEndDuel()); pump(); b:AnswerEndDuel(true); pump()
   H.eq(a.abortReason,"agreed"); H.eq(b.abortReason,"agreed")
   H.notOk(a.game.winner); H.notOk(b.game.winner)
+end)
+
+--================================================ disconnects (docs/43 judge)
+
+--[[ An independent review of how the duel ends when things go wrong found
+     these; each suite is its reproduction, kept so the fix stays fixed. ]]
+
+H.suite("net: a BYE takes no sequence number, so a rematch after a claim is heard", function(ns, H)
+  local A, B, pump, events = connect(ns)
+  B:Pause("away"); pump()
+  A:ClaimWin("test"); pump()
+  H.eq(A.state, "OVER"); H.eq(B.state, "OVER")
+  B:AskRematch(); pump()
+  H.ok(#eventsOf(events.a, "REMATCH_ASKED") > 0, "the winner hears the rematch ask")
+  A:AskRematch(); pump()
+  H.ok(B.rematch == "agreed" or #eventsOf(events.b, "REMATCH_ASKED") > 0, "and the loser hears the answer")
+end)
+
+H.suite("net: an abort on one side ends the other with no result", function(ns, H)
+  local A, B, pump = connect(ns)
+  B:Abort("desync", "x"); pump()
+  H.eq(A.state, "ABORTED", "the other side is told")
+  H.eq(A.abortReason, "aborted")
+  H.notOk(A.game.winner, "and nobody is handed a win for a bug")
+end)
+
+H.suite("net: both players away past their grace ends the duel with no winner", function(ns, H)
+  local A, B, pump = connect(ns)
+  A:Pause("combat"); B:Pause("combat"); pump()
+  A:Tick(61); B:Tick(61); pump()
+  H.eq(A.state, "ABORTED"); H.eq(B.state, "ABORTED")
+  H.notOk(A.game.winner); H.notOk(B.game.winner)
+end)
+
+H.suite("net: changing why you are away does not restart only your own clock", function(ns, H)
+  local A, B, pump = connect(ns)
+  A:Pause("combat"); pump()
+  A:Tick(50)
+  A:Pause("away"); pump()
+  H.eq(A.paused.meSince, B.paused.peerSince, "both clients count from the first pause")
+end)
+
+H.suite("net: a lost rejoin acceptance is answered again, and waiting has an end", function(ns, H)
+  local A, B, pump, events, wire = connect(ns)
+  A:Tick(ns.Session.PROBLEM_AFTER)
+  for k in pairs(wire.b) do wire.b[k] = nil end
+  local lostFirst = true
+  local B2 = ns.Session.New({ send = function(raw)
+      if raw:find(";RA;") and lostFirst then lostFirst = false; return end
+      wire.a[#wire.a + 1] = raw
+    end, onEvent = function() end,
+    name = "Brann", class = "PRIEST", deck = ns.Controller.BasicDeck("PRIEST"), nonce = "fresh" })
+  B2:RequestRejoin("Ayla")
+  for _ = 1, 4 do
+    A:Tick(5); B2:Tick(5)
+    while #wire.b > 0 do B2:Receive(table.remove(wire.b, 1)) end
+    while #wire.a > 0 do A:Receive(table.remove(wire.a, 1)) end
+  end
+  H.eq(B2.state, "PLAYING", "the next offer was answered and the duel came back")
+  local B3 = ns.Session.New({ send = function() end, onEvent = function() end,
+    name = "Brann", class = "PRIEST", deck = ns.Controller.BasicDeck("PRIEST"), nonce = "alone" })
+  B3:RequestRejoin("Ayla")
+  B3:Tick(ns.Session.REJOIN_TIMEOUT)
+  H.eq(B3.state, "ABORTED", "a client nobody answers stops waiting")
+end)
+
+H.suite("net: a heartbeat from before the rejoin cannot abort the host", function(ns, H)
+  local A, B, pump, events, wire = connect(ns)
+  for _ = 1, 6 do A:Tick(5) end
+  for k in pairs(wire.b) do wire.b[k] = nil end
+  local B2 = ns.Session.New({ send = function(raw) wire.a[#wire.a + 1] = raw end, onEvent = function() end,
+    name = "Brann", class = "PRIEST", deck = ns.Controller.BasicDeck("PRIEST"), nonce = "fresh" })
+  B2:RequestRejoin("Ayla")
+  A:Tick(5)
+  local stale = wire.b[#wire.b]
+  for k in pairs(wire.b) do wire.b[k] = nil end
+  B2:Receive(stale)
+  for _ = 1, 80 do
+    if #wire.a == 0 and #wire.b == 0 then break end
+    if #wire.a > 0 then A:Receive(table.remove(wire.a, 1)) end
+    if #wire.b > 0 then B2:Receive(table.remove(wire.b, 1)) end
+  end
+  H.eq(A.state, "PLAYING", "the host plays on")
+  H.eq(B2.state, "PLAYING", "and the returning player is back in")
+end)
+
+H.suite("net: a second rejoin acceptance cannot reset a duel that has resumed", function(ns, H)
+  local A, B, pump, events, wire = connect(ns)
+  A:Tick(ns.Session.PROBLEM_AFTER)
+  for k in pairs(wire.b) do wire.b[k] = nil end
+  local B2 = ns.Session.New({ send = function(raw) wire.a[#wire.a + 1] = raw end, onEvent = function() end,
+    name = "Brann", class = "PRIEST", deck = ns.Controller.BasicDeck("PRIEST"), nonce = "fresh" })
+  B2:RequestRejoin("Ayla")
+  while #wire.a > 0 do A:Receive(table.remove(wire.a, 1)) end
+  local hostOut = A.out
+  -- an acceptance that crossed the host's next offer arrives after play resumed
+  A:Receive(ns.Protocol.Encode(0, ns.Protocol.KIND.REJOIN_ACCEPT, "Brann"))
+  H.ok(A.out == hostOut, "the resumed streams are not reset")
+  -- and the returning client does not answer an offer just behind its first yes
+  local before = #wire.a
+  B2:Receive(ns.Protocol.Encode(0, ns.Protocol.KIND.REJOIN, "Brann"))
+  H.eq(#wire.a, before, "no second yes inside the interval")
+end)
+
+H.suite("net: an older client is never sent the 1.0.4 'aborted' notice", function(ns, H)
+  local A, B, pump, events, wire = connect(ns)
+  A.peer.version = "1.0.3"
+  local before = #wire.b
+  A:Abort("desync", "x")
+  H.eq(#wire.b, before, "1.0.3 would read it as our forfeit")
+end)
+
+H.suite("net: nothing is played while the duel is resyncing", function(ns, H)
+  local A, B, pump = connect(ns)
+  local active = (A.game.activePlayer == A.myIndex) and A or B
+  active.resyncing = true
+  local ok, why = active:LocalAction({ kind = "END_TURN" })
+  H.notOk(ok, "an action now would be lost from one game")
+  H.eq(why, "the duel is resyncing")
+  H.ok(active:LocalAction({ kind = "CONCEDE" }), "conceding still works")
+end)
+
+H.suite("net: hostile numbers are refused, not errors", function(ns, H)
+  local P = ns.Protocol
+  for _, v in ipairs({ "nan", "inf", "-inf", "1e999" }) do
+    H.eq(P.Num({ v }, 1, 7), 7, v .. " reads as the default")
+  end
+  local A, B, pump = connect(ns)
+  A:Receive(("%d;%s;nan;1"):format(A.inbox.expected, P.KIND.ACTION_HASH))
+  A:Receive(("0;%s;0"):format(P.KIND.NAK))
+  H.eq(A.state, "PLAYING", "a NaN hash and a request for message 0 leave the duel alone")
+  local _, why = P.Collect({}, P.Decode("1;CK;1;1;1.5;frag"))
+  H.eq(why, "chunk out of range", "a fractional chunk count is refused at once")
 end)

@@ -357,6 +357,22 @@ H.suite("collection ui: resizing reflows rather than breaking", function(ns, H)
   end)
 end)
 
+H.suite("collection ui: a Legendary craft is asked about before the dust goes", function(ns, H)
+  withUI(ns, function(Main, ns)
+    local ui = Main:Collection()
+    Main.collection.account.dust = 5000
+    local entry
+    for _, e in ipairs(Main.collection:Browse({ all = true })) do if e.cardId == "EX1_016" then entry = e end end
+    ui.selected = entry
+    ui:CraftSelected()
+    H.ok(ui.craftDialog and ui.craftDialog:IsShown(), "1600 dust is confirmed first")
+    H.eq(Main.collection:Dust(), 5000, "and nothing is spent yet")
+    ui.craftDialog.buttons[1]:Click()
+    H.eq(Main.collection:Dust(), 3400, "Craft spends it")
+    H.ok(Main.collection:Count("EX1_016") > 0)
+  end)
+end)
+
 H.suite("collection ui: crafting from the screen spends dust and keeps the page", function(ns, H)
   withUI(ns, function(Main, ns)
     local ui = Main:Collection()
@@ -418,6 +434,33 @@ H.suite("collection ui: a card with no copy left to add greys out in the deck bu
     H.notOk(slotFor(id).widget.ghost, "taking one back out restores it")
     ui:EditDeck(nil)
     H.notOk(slotFor(id) and slotFor(id).widget.ghost, "browsing outside a deck never greys an owned card")
+  end)
+end)
+
+H.suite("collection ui: a card in the deck can be chosen as its art", function(ns, H)
+  withUI(ns, function(Main, ns)
+    local ui = Main:Collection()
+    local deck, index = Main.collection:NewDeck("Art", "MAGE")
+    ui:EditDeck(index)
+    ui:AddToDeck("CS2_182")
+    local entry
+    for _, e in ipairs(Main.collection:Browse({ all = true })) do if e.cardId == "CS2_182" then entry = e end end
+    ui:OnCardClick(entry, "RightButton")
+    H.ok(ui.inspectArt:IsShown(), "the inspected deck card offers itself as art")
+    H.eq(ui.inspectArt.text:GetText(), "Use as Deck Art")
+    ui.inspectArt:Click()
+    H.eq(deck.art, "CS2_182", "chosen")
+    H.eq(ns.Widgets.DeckArtCard(deck), "CS2_182", "and the deck box shows it")
+    H.eq(ui.inspectArt.text:GetText(), "Automatic Art", "the button now undoes it")
+    ui.inspectArt:Click()
+    H.eq(deck.art, nil, "back to the automatic pick")
+    ui.inspect.frame:Hide()
+    for _, e in ipairs(Main.collection:Browse({ all = true })) do
+      if e.cardId ~= "CS2_182" and Main.collection:Count(e.cardId) > 0 then entry = e; break end
+    end
+    ui:OnCardClick(entry, "RightButton")
+    H.notOk(ui.inspectArt:IsShown(), "a card not in the deck cannot stand for it")
+    H.notOk(Main.collection:SetDeckArt(deck, entry.cardId))
   end)
 end)
 
@@ -1672,5 +1715,92 @@ H.suite("reward track: scroll bounds current level and tabs preserve progress",f
     d.tabs.odds:Click(); H.notOk(t:IsShown()); H.ok(d.body:IsShown())
     d.tabs.track:Click(); H.eq(t.first,1); H.ok(t:IsShown())
     d:Hide(); Main:RewardHelp(); H.eq(t.first,15)
+  end)
+end)
+
+H.suite("collection ui: a deck can be copied, and the copy opens for editing", function(ns, H)
+  withUI(ns, function(Main, ns)
+    local ui = Main:Collection()
+    local deck, index = Main.collection:NewDeck("Tempo", "MAGE")
+    ui:EditDeck(index); ui:AddToDeck("CS2_182"); deck.art = "CS2_182"
+    local before = #Main.collection.character.decks
+    local copy
+    for _, item in pairs(ui.menuItems) do if item:IsShown() and item.text and item.text:GetText() == "Copy" then copy = item end end
+    H.ok(copy, "the editor offers Copy")
+    copy:Click()
+    local decks = Main.collection.character.decks
+    H.eq(#decks, before + 1)
+    H.eq(decks[#decks].name, "Tempo (copy)")
+    H.eq(#decks[#decks].cards, 1); H.eq(decks[#decks].art, "CS2_182")
+    H.ok(decks[#decks].cards ~= deck.cards, "its own list, not the original's")
+    H.eq(ui.deckIndex, #decks, "and it is the one being edited")
+  end)
+end)
+
+H.suite("collection ui: a pack card being read is not swapped for an old selection", function(ns, H)
+  withUI(ns, function(Main, ns)
+    local ui = Main:Collection()
+    local entry
+    for _, e in ipairs(Main.collection:Browse({ all = true })) do if e.cardId == "CS2_182" then entry = e end end
+    ui.selected = entry
+    ui:ShowPackRoom()
+    H.eq(ui.selected, nil, "the pack room starts with nothing selected")
+    ui.selected = entry
+    ui:InspectCard("EX1_016", false)
+    ui:Relayout()
+    H.notOk(ui.inspectCraft:IsShown(), "a pack card's view stays a view, with no Craft")
+  end)
+end)
+
+H.suite("collection ui: closing the window puts a craft confirmation away", function(ns, H)
+  withUI(ns, function(Main, ns)
+    local ui = Main:Collection()
+    Main.collection.account.dust = 5000
+    for _, e in ipairs(Main.collection:Browse({ all = true })) do if e.cardId == "EX1_016" then ui.selected = e end end
+    ui:CraftSelected()
+    H.ok(ui.craftDialog:IsShown())
+    ui.frame:Hide()
+    H.notOk(ui.craftDialog:IsShown())
+  end)
+end)
+
+H.suite("collection ui: a full deck that is not legal says why", function(ns, H)
+  withUI(ns, function(Main, ns)
+    local ui = Main:Collection()
+    local deck, index = Main.collection:NewDeck("Broken", "MAGE")
+    for i = 1, 30 do deck.cards[i] = "CS2_182" end   -- 30 Yetis: more than owned and over the limit
+    ui:EditDeck(index)
+    H.ok(ui.deckText:GetText():find("Yeti", 1, true), "the count line names the problem")
+    local said
+    local real = ui.Toast
+    ui.Toast = function(_, msg) said = msg end
+    for _, item in pairs(ui.menuItems) do
+      if item:IsShown() and item.text:GetText() == "Use Deck" then item:Click() end
+    end
+    H.ok(said and said:find("Yeti", 1, true), "and pressing the greyed Use Deck says it too")
+    ui.Toast = real
+  end)
+end)
+
+H.suite("collection ui: disenchanting a card a deck needs says which deck", function(ns, H)
+  withUI(ns, function(Main, ns)
+    local ui = Main:Collection()
+    Main.collection:Add("EX1_016", 1)
+    local deck = Main.collection:NewDeck("Sylvanas Deck", "MAGE")
+    deck.cards[1] = "EX1_016"
+    for _, e in ipairs(Main.collection:Browse({ all = true })) do if e.cardId == "EX1_016" then ui.selected = e end end
+    ui:DisenchantSelected()
+    H.ok(ui.disenchantDialog.message:GetText():find("Sylvanas Deck", 1, true))
+  end)
+end)
+
+H.suite("collection: typing a rarity or a set into search filters by it", function(ns, H)
+  withUI(ns, function(Main, ns)
+    for _, e in ipairs(Main.collection:Browse({ all = true, text = "legendary" })) do
+      H.eq(e.printed.rarity, "LEGENDARY")
+    end
+    local gvg = Main.collection:Browse({ all = true, text = "GvG" })
+    H.ok(#gvg > 0)
+    for _, e in ipairs(gvg) do H.eq(e.printed.set, "GVG") end
   end)
 end)

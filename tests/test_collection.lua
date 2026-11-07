@@ -550,9 +550,12 @@ H.suite("drops: granting a card completes a collection trigger", function(ns, H)
   local c = newCollection(ns)
   local murlocs = {}
   for id, p in pairs(ns.PrintedCards) do
-    if p.collectible and p.race == "MURLOC" and id ~= "EX1_062" then murlocs[#murlocs+1] = id end
+    -- the neutral ones: a class Murloc (Siltfin Spiritwalker) belongs to one
+    -- class's characters, and requiring it locked every other class out
+    if p.collectible and p.race == "MURLOC" and p.class == "NEUTRAL" and id ~= "EX1_062" then murlocs[#murlocs+1] = id end
   end
   table.sort(murlocs)
+  H.notOk(ns.PrintedCards.GVG_040 and ns.PrintedCards.GVG_040.class == "NEUTRAL", "Siltfin is a class card")
   H.ok(#murlocs > 0, ("the pool has %d other Murlocs"):format(#murlocs))
 
   for i = 1, #murlocs - 1 do c:Add(murlocs[i], 1) end

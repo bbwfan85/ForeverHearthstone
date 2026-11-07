@@ -162,8 +162,9 @@ end
 --[[ One Naxxramas card on the boss odds, WITH DUPLICATE PROTECTION.
 
      The adventure is 21 neutral cards (nine commons, four rares, two epics,
-     six legendaries: 36 copies for a full set), and it can only be had from
-     bosses. So a boss card is never one you already hold the maximum of:
+     six legendaries: 36 copies for a full set). Packs carry it too now (the
+     combined pool, Packs.lua), but bosses are where it is aimed: a boss card
+     is never one you already hold the maximum of:
      the roll picks the rarity, then a card of that rarity you can still use.
      If that rarity is complete it moves to the nearest one that is not,
      rarer first. This used to re-roll ONCE and then hand over the spare

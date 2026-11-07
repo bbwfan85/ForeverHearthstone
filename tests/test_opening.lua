@@ -459,7 +459,7 @@ H.suite("mulligan: the board draws the opening hand and takes the answer", funct
     c:HandleIntent(intents[#intents])
     H.notOk(g:AwaitingMulligan(1), "confirming submits it")
     H.ok(g:AwaitingMulligan(), "and we wait for the opponent")
-    H.eq(board.mulliganTitle:GetText(), "waiting for your opponent...",
+    H.eq(board.mulliganTitle:GetText(), "Waiting for your opponent...",
          "which the board says rather than leaving a dead button")
     H.notOk(board.mulliganConfirm:IsShown(), "and the button is gone, as in Hearthstone")
   end)

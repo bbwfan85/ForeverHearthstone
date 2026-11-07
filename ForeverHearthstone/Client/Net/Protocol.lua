@@ -80,7 +80,7 @@ Protocol.VERSION = 10
 --[[ The addon's own version, reported in HELLO so a mismatch can be described
      to the player ("they are on 0.2.0, you are on 0.1.0") even when the
      protocol number happens to agree. ]]
-Protocol.ADDON_VERSION = "0.2.4"   -- replaced from the .toc at load (Main.lua)
+Protocol.ADDON_VERSION = "1.0.4"   -- replaced from the .toc at load (Main.lua)
 
 --[[ 255 is the hard cap on an addon message. The margin covers the chunk header
      and leaves room for the prefix and channel bookkeeping the client adds, so
@@ -209,7 +209,8 @@ end
 function Protocol.Num(msg, i, default)
   local v = msg and msg[i]
   local n = v and tonumber(v)
-  if not n then return default end
+  -- "nan" and "inf" parse as numbers, and indexing a table with NaN is an error
+  if not n or n ~= n or n == math.huge or n == -math.huge then return default end
   return n
 end
 
@@ -271,10 +272,12 @@ end
      session ends, which is the only lifetime that matters -- a half-received
      deck is worthless a second later anyway. ]]
 function Protocol.Collect(state, msg)
-  local group = tonumber(msg[1])
-  local index = tonumber(msg[2])
-  local count = tonumber(msg[3])
+  local group = Protocol.Num(msg, 1)
+  local index = Protocol.Num(msg, 2)
+  local count = Protocol.Num(msg, 3)
   if not (group and index and count) then return nil, "bad chunk header" end
+  -- whole numbers only: a count of 1.5 could never complete, and its message was lost in silence
+  if index ~= math.floor(index) or count ~= math.floor(count) then return nil, "chunk out of range" end
 
   --[[ The fragment is everything past the fifth separator of the RAW line
        (seq;CK;group;index;count;<fragment>). Taking it from the decoded fields

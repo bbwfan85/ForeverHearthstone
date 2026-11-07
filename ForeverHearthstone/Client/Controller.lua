@@ -95,19 +95,30 @@ end
 function Controller.SpellText(game, card)
   if card.printed.type ~= "SPELL" then return nil end
   local text = card.printed.text or ""
+  --[[ A spell that hands you a new Hero Power (Shadowform) quotes ITS numbers:
+       hero powers take no Spell Damage, so scaling them told the player a
+       Mind Spike would hit harder than it does. ]]
+  if text:find("Hero Power", 1, true) then return text end
+  -- Prophet Velen doubles a spell's healing as well as its damage
+  local mult = game:SpellMultiplier(card.controller)
+  if mult ~= 1 then
+    text = text:gsub("([Rr]estore )(%d+)", function(word, n) return word .. tostring(tonumber(n) * mult) end)
+  end
   local function scale(n)
     if text:find("damage randomly split", 1, true) then
       return tostring((tonumber(n) + game:SpellPower(card.controller)) * game:SpellMultiplier(card.controller))
     end
     return tostring(game:ScaleSpellDamage(tonumber(n), card, true))
   end
-  return (text:gsub("(%d+)([%d%s%-]*)( damage)", function(lo, rest, tail)
+  text = text:gsub("(%d+)([%d%s%-]*)( damage)", function(lo, rest, tail)
     if rest:match("^%s*%-%s*%d+$") then
       return scale(lo) .. rest:gsub("%d+", scale) .. tail
     end
     if rest == "" then return scale(lo) .. tail end
     return lo .. rest .. tail
-  end))
+  end)
+  -- Mortal Strike's second number: "deal 6 instead" names no damage word
+  return (text:gsub("([Dd]eal )(%d+)( instead)", function(word, n, tail) return word .. scale(n) .. tail end))
 end
 
 function Controller:Snapshot()
@@ -191,6 +202,14 @@ function Controller:Snapshot()
     foeMaxMana    = foe.maxMana,
     foeMana       = g:AvailableMana(g:Opponent(self.me)),
     foeLockedMana = foe.lockedMana or 0,
+    -- Overload owed NEXT turn, and the next fatigue hit: both public, both
+    -- things a player should not have to remember
+    pendingOverload    = me.pendingOverload or 0,
+    foePendingOverload = foe.pendingOverload or 0,
+    nextFatigue        = (me.fatigue or 0) + 1,
+    foeNextFatigue     = (foe.fatigue or 0) + 1,
+    -- during the mulligan the active player is the one who goes first
+    goesFirst    = g.activePlayer == self.me,
     hasWeapon    = me.weapon ~= nil,
     foeHasWeapon = foe.weapon ~= nil,
     myTurn       = (g.activePlayer == self.me),
@@ -281,6 +300,11 @@ function Controller:Snapshot()
   for i, card in ipairs(me.hand) do
     snap.playable[i] = (g.activePlayer == self.me)
                        and ns.Targeting.CanPlay(g, card, self.me) or false
+  end
+  -- and which of those would do their extra thing now (the gold glow)
+  snap.poweredUp = {}
+  for i, card in ipairs(me.hand) do
+    snap.poweredUp[i] = snap.playable[i] and ns.Targeting.PoweredUp(g, card, self.me) or false
   end
   snap.handNeedsTarget = {}
   snap.handLegalTargets = {}
@@ -377,7 +401,8 @@ function Controller:Snapshot()
     local printed = g:Printed(e.cardId)
     snap.secrets[i] = { cardId = e.cardId,
                         name = printed and printed.name or e.cardId,
-                        text = printed and printed.text or "" }
+                        -- the live numbers, as on the card in hand (Explosive Trap with Spell Damage)
+                        text = Controller.SpellText(g, e) or (printed and printed.text) or "" }
   end
   snap.foeSecretCount = #foe.secrets
 
@@ -461,6 +486,17 @@ function Controller:BeginPlay(handIndex, position, mode)
       handIndex = handIndex, position = position,
       options   = T.ModeOptions(g, card, self.me),
     }
+    --[[ Each mode card's text with Spell Damage in it, as the card in hand shows
+         it: Starfall read 6 and 3 in hand and 5 and 2 in the prompt. Only for a
+         SPELL being played: a minion's modes are battlecries, which take no
+         Spell Damage and no Velen (Keeper of the Grove still deals 2). ]]
+    for _, opt in ipairs(self.pending.options or {}) do
+      local printed = g:Printed(opt.cardId)
+      if printed and printed.type == "SPELL" and card.printed.type == "SPELL" then
+        local ok, text = pcall(Controller.SpellText, g, { printed = printed, controller = self.me, cardId = opt.cardId })
+        if ok and text and text ~= printed.text then opt.liveText = text end
+      end
+    end
     self:Changed()
     return true, "awaiting mode"
   end

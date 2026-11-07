@@ -99,6 +99,7 @@ function Main:StartPractice(myClass, foeClass, selectedDeck, foeDeck, difficulty
   if self.session and self.session:IsActive() then
     self:Print("Finish or concede your player duel before starting a bot game."); return false
   end
+  if self.agreedDialog then self.agreedDialog:Hide() end   -- a duel's ending is not this game's
   if selectedDeck then
     local found=false
     for _,deck in ipairs(self.collection and self.collection.character.decks or {}) do
@@ -242,13 +243,15 @@ function Main:OnIntent(intent)
   if not self.controller then return end
   local wasMulligan = self.game and self.game:AwaitingMulligan()
   local ok, why = self.controller:HandleIntent(intent)
-  if not ok and why and why ~= "not your turn" then
-    self:Print(why)
-  end
-  -- ...and your hero says it aloud, as Hearthstone's does.
+  --[[ A refusal is said ON THE TABLE, in your hero's words, as Hearthstone's
+       is -- chat sits behind the window. Your hero also says it aloud. What
+       has no line goes to chat, except clicks that simply did nothing. ]]
   if not ok then
     local voice = self.controller:RefusalVoice(why)
     if voice then ns.Sounds.PlayHero(self:HeroCardId(self.controller.me), voice) end
+    local line = voice and Main.REFUSAL_LINES[voice]
+    if line and self.board then self.board:ShowSpeech("self", line)
+    elseif why and not Main.QUIET_REFUSALS[why] then self:Print(why) end
   end
 
   --[[ Confirming the mulligan is what starts the game, so the clock only begins
@@ -651,6 +654,11 @@ function Main:AnnounceResult()
   if self.mode == "practice" and g.winner ~= 0 then
     local record = self:PracticeRecord()
     if won then record.wins = record.wins + 1 else record.losses = record.losses + 1 end
+    -- what the game counted for, under the result
+    if self.board then
+      self.board.postGameNote = ("Practice record: %d-%d"):format(record.wins, record.losses)
+      if self.board.postGameState == "ready" then self.board:SetPostGame("ready") end
+    end
   end
 end
 
@@ -975,23 +983,28 @@ function Main:EnsureTransport()
         or self.session.state == ns.Session.STATE.REJOINING))
     end,
     --[[ Our challenge's answer, from an address other than the one we sent it
-         to (Transport:OnReceive). A HELLO is theirs if it carries the GUID of
-         the player we challenged; anything else (the "invited" ping, a
-         decline) if the sender's first name is theirs. ]]
+         to (Transport:OnReceive). Only their ACCEPTANCE moves the duel to that
+         address, and only when it carries the GUID of the player we
+         challenged -- a first name alone let anyone sharing it take the
+         challenge over. Their "invited" ping or a decline is still heard
+         ("deliver"), but changes nobody's address. ]]
     claim = function(raw, sender)
       local s = self.session
       if not (s and s.state == ns.Session.STATE.OFFERED) then return false end
       local m = ns.Protocol.Decode(raw)
       if not m then return false end
+      if not sameFirstName(sender, s.peer.name) then return false end
       local want = s.peer.expectGuid
       if want == "" then want = nil end
-      if m.kind == ns.Protocol.KIND.HELLO and want and m[6] and m[6] ~= "" then
-        if m[6] ~= want then return false end
-      elseif not sameFirstName(sender, s.peer.name) then
-        return false
+      if m.kind == ns.Protocol.KIND.HELLO then
+        if want then
+          if m[6] ~= want then return false end
+        end
+        s.peer.name = sender
+        return "adopt"
       end
-      s.peer.name = sender
-      return true
+      if m.kind == ns.Protocol.KIND.PING or m.kind == ns.Protocol.KIND.BYE then return "deliver" end
+      return false
     end,
     onTick=function(dt)
       if self.session then self.session:Tick(dt) end
@@ -1004,6 +1017,21 @@ function Main:EnsureTransport()
          and not (self.session and (self.session:IsActive() or self.session.state == ns.Session.STATE.OFFERED))
          and not self.autoAccept and not self.pendingAutoAccept
          and not self:AllowChallengeFrom(sender, incoming[6]) then
+        --[[ A refused challenge is answered -- but not endlessly. Every answer
+             went ahead of our own duel's lines, so a stranger repeating
+             challenges could hold back everything we sent. So one decline per
+             player per half minute (enough to close their pop-up, blocked or
+             not), and only a handful may wait at once. ]]
+        local now = GetTime and GetTime() or 0
+        self.declinedAt = self.declinedAt or {}
+        local key = tostring(sender):lower()
+        if now - (self.declinedAt[key] or -math.huge) < 30 then return end
+        local waiting = 0
+        for _, r in ipairs(self.transport.replies or {}) do
+          if r.raw:find(";BY;declined", 1, true) then waiting = waiting + 1 end
+        end
+        if waiting >= 4 then return end
+        self.declinedAt[key] = now
         self.transport:SendTo(ns.Protocol.Encode(0, ns.Protocol.KIND.BYE, "declined", incoming[15] or ""), sender)
         return
       end
@@ -1032,11 +1060,28 @@ function Main:EnsureTransport()
           return
         end
         if not message or message.kind~=ns.Protocol.KIND.HELLO then return end
+        --[[ A finished duel whose rematch is still being settled is not given
+             up for a stranger's line -- one garbage HELLO used to wipe it --
+             and a challenge has to name a class this game has. ]]
+        local old = self.session
+        local settling = { asked = true, invited = true, agreed = true }
+        -- only while that post-game board is still up: a board closed any way
+        -- at all has given its rematch up
+        if old and old.state == ns.Session.STATE.OVER and settling[old.rematch or ""]
+           and self.board and self.board.frame:IsShown() then return end
+        if not ns.Session.KnownClass(message[3]) then return end
         -- who may challenge you (Main:AllowChallengeFrom); the rest are ignored in silence
         if not self:AllowChallengeFrom(sender, message[6]) then return end
         -- someone this client can see standing far off cannot be challenging
         -- you from beside you: dropped in silence, like any refused challenge
+        --[[ The GUID in a challenge is the challenger's own claim: quoting a
+             bystander's would pass the range check as them. So a unit found
+             by GUID counts only when its first name is the sender's too. ]]
         local unit = self:FindPlayerUnit(sender)
+        if not unit then
+          local byGuid = self:FindPlayerUnit(nil, message[6])
+          if byGuid and sameFirstName(ns.Plain(UnitName(byGuid)), sender) then unit = byGuid end
+        end
         if unit and not ns.Transport.InRange(unit) then return end
         self:NewSession(sender)
         self.transport:SetPeer(sender)
@@ -1192,8 +1237,13 @@ function Main:FindPlayerUnit(name, guid)
       if guid and ns.Plain(UnitGUID(unit)) == guid then return unit end
       local n, realm = UnitName(unit)
       n, realm = ns.Plain(n), ns.Plain(realm)
-      if n and realm and realm ~= "" then n = n .. "-" .. realm end
-      if n and name and ns.Transport.SameName(n, name) then return unit end
+      if n and name then
+        -- the second value is a realm elsewhere, a last name on Forever: try both
+        if ns.Transport.SameName(n, name) then return unit end
+        if realm and realm ~= "" and ns.Transport.SameName(n .. "-" .. realm, name) then return unit end
+        -- typed as Forever shows it: "First Last"
+        if realm and realm ~= "" and ns.Transport.SameName(n .. " " .. realm, name) then return unit end
+      end
     end
   end
   return nil
@@ -1225,7 +1275,7 @@ function Main:NearEnough(name, guid)
       if here.instance == there.instance and d2 <= ns.Transport.DUEL_RANGE_YARDS^2 then return true end
       return false, "too far away to sit down together"
     end
-    return false, ("target %s -- duels are only between players standing together"):format(tostring(name))
+    return false, ("can't find %s nearby -- stand next to them and target them"):format(tostring(name))
   end
   local ok, why = ns.Transport.InRange(unit)
   if not ok then return false, why or "too far away to sit down together" end
@@ -1236,24 +1286,25 @@ end
 --- is the player, whatever name the menu carries.
 function Main:Challenge(name, unit, guid)
   if self.session and self.session:IsActive() then
-    self:Print("you are already in a duel. /fh concede to leave it.")
-    return false
+    local why = "you are already in a duel. /fh concede to leave it."
+    self:Print(why)
+    return false, why
   end
   if unit and not (UnitExists(unit) and ns.Plain(UnitIsPlayer(unit))) then unit = nil end
   if name and not unit then
     local near, why = self:NearEnough(name, guid)
-    if not near then self:Print(why); return false end
+    if not near then self:Print(why); return false, why end
   else
     unit = unit or "target"
     local ok, why = ns.Transport.InRange(unit)
-    if not ok then self:Print(why or "no target"); return false end
+    if not ok then self:Print(why or "no target"); return false, why or "no target" end
     --[[ Whisper the name the game shows for that unit: it is what /fh duel
          has always sent to, and it reaches Forever's first-and-last names. ]]
     local realm
     local shown, shownRealm = UnitName(unit)
     shown, shownRealm = ns.Plain(shown), ns.Plain(shownRealm)
     if shown then name, realm = shown, shownRealm end
-    if not name then self:Print("no target"); return false end
+    if not name then self:Print("no target"); return false, "no target" end
     -- a player from another realm is whispered as Name-Realm, or not at all
     if realm and realm ~= "" then name = name .. "-" .. realm end
   end
@@ -1278,6 +1329,48 @@ function Main:Challenge(name, unit, guid)
   self:Debug(("challenged %s. %s"):format(name, ns.Transport.SIT_PROMPT))
   self:ShowDuelPrompt("offered", { name = name })
   return true
+end
+
+Main.REFUSAL_LINES = {
+  mana = "I don't have enough mana.",
+  full_board = "I can't have any more minions.",
+  taunt = "A minion with Taunt is in the way.",
+  target = "I can't target that.",
+  cant_play = "I can't play that.",
+  summon_sick = "That minion needs a turn to get ready.",
+  minion_attacked = "That minion has already attacked.",
+  hero_attacked = "I already attacked this turn.",
+  need_weapon = "I need a weapon to attack.",
+  generic = "I can't do that.",
+}
+-- clicks that did nothing, which a player does not need explained
+Main.QUIET_REFUSALS = { ["not your turn"] = true, ["nothing selected"] = true, ["no game"] = true,
+                        ["no intent"] = true, ["animation in progress"] = true }
+
+--[[ THE MENU'S DUEL. Duelling is the point of the addon, and it lived only in
+     /fh duel and a portrait's right-click menu. With a player targeted this
+     challenges them; otherwise -- or when they are out of reach -- it says how,
+     on the window, where chat behind it would not be seen. ]]
+function Main:DuelFromMenu()
+  local hint = "Stand next to another player who has Forever Hearthstone, target them, then press Duel a Player.\n\nYou can also right-click their portrait and choose Challenge to Hearthstone."
+  local targeted = UnitExists and UnitExists("target") and ns.Plain(UnitIsPlayer("target"))
+                   and not (UnitIsUnit and ns.Plain(UnitIsUnit("target", "player")))
+  local ok, why = false, nil
+  if targeted then ok, why = self:Challenge() end
+  if ok then return true end
+  local hub = self.hub
+  if not hub then return false end
+  local d = self.duelHint
+  if not d then
+    d = ns.Widgets.Dialog(hub, nil, { { "OK", function() d:Hide() end } }, { paper = true, h = 250 })
+    -- never left armed under the hub for its next opening (over the deck picker)
+    hub:HookScript("OnHide", function() d:Hide() end)
+    self.duelHint = d
+  end
+  local reason = why and (tostring(why):gsub("%.$", ""))
+  d.message:SetText(targeted and reason and (("Could not challenge them: %s.\n\n"):format(reason) .. hint) or hint)
+  d:Show()
+  return false
 end
 
 function Main:Accept()
@@ -1440,6 +1533,16 @@ function Main:NoteDeclined(name)
   end
 end
 
+--[[ The hub put aside for another screen, not closed: while it is the duel's
+     deck picker, hiding it to look at your collection must not call the duel
+     off (its OnHide), and the picker returns when the collection closes. ]]
+function Main:SetHubAside()
+  if not (self.hub and self.hub:IsShown()) then return end
+  self.hubAside = true
+  self.hub:Hide()
+  self.hubAside = nil
+end
+
 --- Withdraw our own challenge before it is answered.
 function Main:CancelChallenge()
   self:HideDuelPrompt()
@@ -1520,7 +1623,12 @@ end
 
 function Main:HideDuelPrompt()
   if self.duelPrompt then self.duelPrompt:Hide() end
-  if self.duelDeckPicker then self.duelDeckPicker:Hide(); self.duelDeckPicker.duelSession=false; self.duelDeckPicker.botMode=false end
+  --[[ The hub is only the duel's deck picker while a duel is choosing decks.
+       Keyed on that, not on having once been it: after the first duel every
+       decline elsewhere closed the main menu under the player. ]]
+  local f = self.duelDeckPicker
+  if f and f.duelSession then f:Hide(); f.duelSession=false; f.botMode=false end
+  self.duelDeckPicker = nil
 end
 
 --[[ Everything the duel can tell us. This is the whole UI of networking: a
@@ -1577,7 +1685,7 @@ function Main:OnSessionEvent(event, data)
   elseif event == "EMOTE" then
     local index = tonumber(data.index)
     local label = ns.Board.EMOTES[index]
-    if label and self.board then
+    if label and self.board and not self.board.squelched then
       -- Their character emotes (and speaks) in the world; this is the bubble.
       self.board:ShowSpeech("foe", label)
     end
@@ -1605,8 +1713,11 @@ function Main:OnSessionEvent(event, data)
   elseif event == "TIMED_OUT" then
     self:Print("you were away from the table too long -- the duel is forfeited.")
 
+  elseif event == "STALL_CLEARED" then
+    self:UpdateTableStatus()
+
   elseif event == "STALLING" then
-    self:Print(("%s has run far past the rope. /fh claim to take the win."):format(tostring(data.name)))
+    self:Print(("%s has run far past the rope. Press Claim Victory on the board to take the win."):format(tostring(data.name)))
     self:UpdateTableStatus()
 
   elseif event == "OVER" then
@@ -1614,6 +1725,7 @@ function Main:OnSessionEvent(event, data)
     if self.exitDialog then self.exitDialog:Hide() end
     if self.endDuelDialog then self.endDuelDialog:Hide() end
     if self.concedeDialog then self.concedeDialog:Hide() end
+    if self.board then self.board:ShowStatus(nil) end   -- nobody is away from a finished game
     self:Music(nil)
     self:Print((data.winner == data.me) and "you win." or "you lose.")
     -- The duel record, once per game. Practice games do not count.
@@ -1626,6 +1738,14 @@ function Main:OnSessionEvent(event, data)
       session:Send(ns.Protocol.KIND.PROFILE, UnitLevel("player"), UnitGUID("player") or "",
                    record.wins, record.losses)
     end
+    -- under the result: why it ended, if it was not played out, and the record
+    if self.board then
+      local record = self:Record()
+      self.board.postGameNote = ((self.resultReason and (self.resultReason .. "  ")) or "")
+        .. ("Duel record: %d-%d"):format(record.wins, record.losses)
+      if self.board.postGameState == "ready" then self.board:SetPostGame("ready") end
+    end
+    self.resultReason = nil
     self.freshFrom = self.transport and self.transport.peer
     if self.controller then self.controller:Changed() end
     self:RefreshProfiles()
@@ -1649,9 +1769,18 @@ function Main:OnSessionEvent(event, data)
     end
 
   elseif event == "FORFEIT" then
-    if data.by == "me" then self:Print("your opponent claimed the win.")
-    elseif data.claimed then self:Print(("%s -- you win."):format(tostring(data.reason or "they are gone")))
-    else self:Print("your opponent left the duel -- you win.") end
+    local who = tostring(self.session and self.session.peer.name or "Your opponent")
+    if data.by == "me" then
+      self:Print("your opponent claimed the win.")
+      self.resultReason = who .. " claimed the win."
+    elseif data.claimed then
+      local why = tostring(data.reason or "they are gone")
+      self:Print(("%s -- you win."):format(why))
+      self.resultReason = (why:gsub("^%l", string.upper)) .. "."
+    else
+      self:Print("your opponent left the duel -- you win.")
+      self.resultReason = who .. " left the duel."
+    end
     if self.board then self.board:ShowStatus(nil) end
 
   elseif event == "END_SENT" then
@@ -1675,7 +1804,20 @@ function Main:OnSessionEvent(event, data)
     if ForeverHearthstoneCharDB then ForeverHearthstoneCharDB.activeDuel = nil end
     --[[ Say what happened AND what it means. "desync" on its own is a word
          nobody outside this project can act on. ]]
-    self:Print("the duel ended: " .. tostring(data.detail or data.reason))
+    --[[ Only a duel that is ON THE TABLE takes the table down with it. A
+         challenge that failed before it started (a stranger's wrong version,
+         a setup that timed out) used to stop whatever was being played --
+         a practice game left frozen, its controller gone. ]]
+    local owned = self.mode == "duel" and self.session and self.game ~= nil
+                  and self.session.game == self.game
+    if not owned then
+      self:Print("the duel could not start: " .. tostring(data.detail or data.reason))
+      self.session = nil
+      if self.transport then self.transport:SetPeer(nil) end
+      return
+    end
+    self:Print(data.reason == "agreed" and "the duel ended by agreement -- nothing recorded."
+               or ("the duel ended: " .. tostring(data.detail or data.reason)))
     self:StopDirector()
     self.controller=nil; self.running={}
     -- queued animations of a duel that is over would play on its board
@@ -1690,11 +1832,27 @@ function Main:OnSessionEvent(event, data)
            presentation and anything an animation left half-done all go, and
            the board says why it stopped. ]]
       self.board:ClearRope()
+      self.board:ShowStatus(nil)   -- a pause notice must not outlive the duel
       self.board:EndPresentation()
       ns.Widgets.StopShake(self.board.shake)
       ns.Widgets.SetVignette(self.board.vignette, 0)
       self.board.concede:Hide()
       self.board:ShowSpeech("foe",data.reason=="agreed" and "Duel ended by agreement" or "Duel interrupted")
+      --[[ An agreed end is a decision both players made, not a fault: say so
+           on the table, then take both back to the menu. ]]
+      if data.reason=="agreed" then
+        local d=self.agreedDialog
+        if not d then
+          d=ns.Widgets.Dialog(self.board.frame,nil,{
+            {"Back to Menu",function() d:Hide(); self:LeaveGame() end},
+          },{paper=true})
+          -- closing the board any other way must not leave it up for the next match
+          self.board.frame:HookScript("OnHide",function() d:Hide() end)
+          self.agreedDialog=d
+        end
+        d.message:SetText("You both agreed to end the duel.\n\nNo win, loss or forfeit was recorded.")
+        d:Show()
+      end
     end
     self.session = nil
     if self.transport then self.transport:SetPeer(nil) end
@@ -1703,7 +1861,13 @@ end
 
 function Main:BeginDuel(data)
   self.freshFrom, self.autoAccept, self.pendingAutoAccept = nil, nil, nil
+  self.rejoinOffer = nil   -- an offer from before this duel is not about it
+  if self.agreedDialog then self.agreedDialog:Hide() end   -- the last duel's ending is not this one's
+  self.resultReason = nil
+  if self.board and not data.resumed then self.board.squelched = nil end   -- a new opponent is heard
   if not data.resumed then self.tableAnchor = nil end
+  -- a notice left from the last duel ("you left the table") is not about this one
+  if self.board then self.board:ShowStatus(nil) end
   self.running = {}
   self.presentQueue, self.presentBusy = {}, false
   if self.fxFrame then self.fxFrame:SetScript("OnUpdate", nil) end
@@ -1789,13 +1953,24 @@ end
 function Main:WhyAway()
   if UnitIsDeadOrGhost and UnitIsDeadOrGhost("player") then return "dead" end
   if (UnitAffectingCombat and UnitAffectingCombat("player")) then return "combat" end
-  local y, x = nil, nil
-  if UnitPosition then y, x = UnitPosition("player") end
-  if y and x then
-    if not self.tableAnchor then self.tableAnchor = { x = x, y = y } end
+  local y, x, z, map = nil, nil, nil, nil
+  if UnitPosition then y, x, z, map = UnitPosition("player") end
+  -- in an instance the position can be secret: unknown, so only death and combat count
+  y, x, map = ns.Plain(y), ns.Plain(x), ns.Plain(map)
+  local current = self.session and self.session.paused and self.session.paused.me
+  local inside = IsInInstance and ns.Plain(IsInInstance()) and true or false
+  if self.tableAnchor and self.tableAnchor.inside == false and inside then
+    -- sat down in the open world and zoned into a dungeon: that is leaving
+    return "away"
+  end
+  if type(y) == "number" and type(x) == "number" then
+    if not self.tableAnchor then self.tableAnchor = { x = x, y = y, map = map, inside = inside } end
+    -- another continent or instance: its coordinates are another frame entirely
+    if self.tableAnchor.map and map and map ~= self.tableAnchor.map then return "away" end
     local d = math.sqrt((x - self.tableAnchor.x) ^ 2 + (y - self.tableAnchor.y) ^ 2)
-    local current = self.session and self.session.paused and self.session.paused.me
     if d > Main.TABLE_RANGE or (current == "away" and d > Main.TABLE_RETURN) then return "away" end
+  elseif current == "away" then
+    return "away"   -- nothing says they came back, so they have not
   end
   return nil
 end
@@ -1820,7 +1995,7 @@ function Main:UpdateTableStatus()
   local s = self.session
   if not (self.board and s) then return end
   local p = s.paused
-  local text
+  local text, action
   if p and p.me then
     local what = (Main.AWAY_TEXT[p.me] or "left the table"):gsub("^is ", "are ")
     what = what:gsub("^has ", "have ")
@@ -1831,9 +2006,14 @@ function Main:UpdateTableStatus()
   elseif s.connectionProblem then
     text = ("Connection problem with %s -- waiting..."):format(tostring(s.peer.name or "your opponent"))
   elseif s.stalling then
-    text = ("%s's turn is long overdue -- /fh claim to take the win"):format(tostring(s.peer.name or "Your opponent"))
+    text = ("%s's turn is long overdue. You can claim the win."):format(tostring(s.peer.name or "Your opponent"))
+    action = { label = "Claim Victory", onClick = function()
+      local ok, why
+      if self.session then ok, why = self.session:ClaimVictory() end
+      if not ok and why then self:Print("you cannot claim the win: " .. tostring(why)) end
+    end }
   end
-  self.board:ShowStatus(text)
+  self.board:ShowStatus(text, action)
 end
 
 --[[ A REJOIN OFFER from someone we are not talking to: our duel with them
@@ -1848,8 +2028,10 @@ function Main:OnRejoinOffer(sender)
   if open and time and (time() - (open.at or 0)) > 2 * ns.Session.ABANDON_AFTER then
     ForeverHearthstoneCharDB.activeDuel, open = nil, nil
   end
-  local function same(a, b) return tostring(a or ""):lower():gsub("%-.*$", "") == tostring(b or ""):lower():gsub("%-.*$", "") end
-  if open and same(open.peer, sender) then return self:Rejoin(sender) end
+  --[[ The whole address, realm included: comparing only what comes before
+       "-" let anyone sharing your opponent's first name pull you into a
+       rejoin with them. ]]
+  if open and ns.Transport.SameName(open.peer, sender) then return self:Rejoin(sender) end
   -- anyone else's offer is a stranger's message, and obeys who may challenge you
   if not self:AllowChallengeFrom(sender) then return end
   if self.rejoinOffer ~= sender then
@@ -1859,6 +2041,11 @@ function Main:OnRejoinOffer(sender)
 end
 
 function Main:Rejoin(sender)
+  -- an old offer must not silently replace the duel being played now
+  if self.session and self.session:IsActive() then
+    self:Print("you are already in a duel. /fh concede to leave it first.")
+    return
+  end
   sender = sender or self.rejoinOffer
   if not sender then self:Print("no duel is waiting for you."); return end
   self.rejoinOffer = nil
@@ -1976,6 +2163,12 @@ end
 
 function Main:LeaveGame()
   if self.session and self.session.rematch == "invited" then self.session:AnswerRematch(false) end
+  --[[ Walking away from a rematch we asked for, or one agreed but never
+       started, gives it up here: left settling, it turned every later
+       challenger away in silence until a reload. ]]
+  if self.session and (self.session.rematch == "asked" or self.session.rematch == "agreed") then
+    self.session.rematch = "refused"
+  end
   self.leavingToHub = true
   if self.board then self.board:Hide() end
   self.leavingToHub = false
@@ -1984,7 +2177,9 @@ end
 
 function Main:Concede()
   if not (self.session and self.session.state == ns.Session.STATE.PLAYING) then
-    self:Print("no duel in progress.")
+    -- a practice game on the board concedes like its button does
+    if self.mode == "practice" and self.game and not self.game.over then return self:ConcedeMatch() end
+    self:Print("no game in progress.")
     return
   end
   ns.Sounds.PlayHero(self:HeroCardId(self.controller and self.controller.me), "concede", true)
@@ -2039,7 +2234,7 @@ Main.SCHEMA = 1
 
 function Main:LoadCollection()
   local db, cdb = ForeverHearthstoneDB, ForeverHearthstoneCharDB
-  db.schema = db.schema or Main.SCHEMA
+  db.schema = tonumber(db.schema) or Main.SCHEMA
   if db.schema > Main.SCHEMA then
     self:Print(("your saved collection was written by a NEWER version (schema %d, this addon reads %d). It has been left untouched -- update the addon.")
                :format(db.schema, Main.SCHEMA))
@@ -2058,7 +2253,8 @@ function Main:LoadCollection()
         or ("your %s collection file was modified outside the game and could not be restored."):format(problem.what))
     end
   end
-  self.collection = ns.Collection.New(db, cdb)
+  -- the character's GUID keys its pack milestones in the account file (Collection:GrantPacksForLevel)
+  self.collection = ns.Collection.New(db, cdb, { characterKey = ns.Plain(UnitGUID and UnitGUID("player")) })
 
   --[[ Grants are a FUNCTION of level, applied on every login. A character that
        levelled with the addon disabled catches up here; one that did not gets
@@ -2067,13 +2263,21 @@ function Main:LoadCollection()
   local level = UnitLevel and UnitLevel("player") or 1
   local granted = self.collection:GrantForLevel(class, level)
   self.collection:EnsureDefaultDeck(class)
+  -- the first login ever: what this is and how to start, before anything it was given
+  if not ForeverHearthstoneDB.seenWelcome then
+    ForeverHearthstoneDB.seenWelcome = true
+    self:Print("welcome! Click the minimap button or type /fh to open the main menu.")
+    self:Print("packs come from levelling and from killing creatures that give experience -- bosses always pay one the first time you beat them.")
+    self:Print("to duel, stand next to a player who has the addon, target them and press Duel a Player.")
+  end
   if #granted > 0 then
-    self:Debug(("%d new cards for reaching level %d. /fh collection to see them.")
-               :format(#granted, level))
+    -- said aloud: a character that levelled before installing is owed these
+    self:Print(level <= 1 and ("your starting collection: %d cards. /fh collection to see them."):format(#granted)
+               or ("%d new cards for reaching level %d. /fh collection to see them."):format(#granted, level))
   end
   local packs = self.collection:GrantPacksForLevel(level)
   if packs > 0 then
-    self:Debug(("%d Hearthstone pack%s for your character's progress. /fh open to open one.")
+    self:Print(("%d Hearthstone pack%s for your character's progress. /fh open to open one.")
                :format(packs, packs == 1 and "" or "s"))
   end
   return self.collection
@@ -2098,12 +2302,15 @@ end
      and tested before any of this existed, and this only decides which sequence
      and hands it the facts. ]]
 function Main:OnReward(reward)
+  -- the menu's "Open Packs (N)" counts what is waiting
+  if reward.kind == "PACK" and self.hub and self.hub:IsShown() then self.hub:Layout() end
   if reward.kind == "PACK" then
     self:PlayDropToast(ns.Choreography.PackDropToast, {
       set = reward.set, total = reward.total, fromLevel = reward.fromLevel, count=reward.count,
     })
     if not reward.fromLevel then
-      self:Print(("Pack found! Added automatically (%d packs waiting). /fh open to open packs."):format(reward.total or 1))
+      local n = reward.total or 1
+      self:Print(("pack found! %d pack%s waiting -- /fh open to open them."):format(n, n == 1 and "" or "s"))
     end
   else
     local printed = ns.PrintedCards[reward.cardId]
@@ -2202,7 +2409,7 @@ function Main:OpenPackRoom()
   if not self.collection then return end
   local ok = pcall(function()
     if not self.collectionUI then self:Collection() end
-    if self.hub then self.hub:Hide() end
+    self:SetHubAside()
     self.collectionUI:Show()
     self.collectionUI:ShowPackRoom()
   end)
@@ -2283,10 +2490,18 @@ function Main:Collection(openCollection)
       onPrint    = function(msg) self:Print(msg) end,
     })
     self.collectionUI.frame:HookScript("OnShow", function() self:SyncMusicSoon() end)
-    self.collectionUI.frame:HookScript("OnHide", function() self:SyncMusicSoon() end)
+    self.collectionUI.frame:HookScript("OnHide", function()
+      self:SyncMusicSoon()
+      -- stepped out of the duel's deck picker to look at decks: back to it
+      local s = self.session
+      if s and s.state == ns.Session.STATE.SYNC and not s.committed
+         and not (self.hub and self.hub:IsShown()) then
+        self:ShowDuelDeckPicker()
+      end
+    end)
   end
   if openCollection then
-    if self.hub then self.hub:Hide() end
+    self:SetHubAside()
     self.collectionUI:StopFX()
     self.collectionUI:EditDeck(nil)
     self.collectionUI:Show()
@@ -2414,7 +2629,7 @@ function Main:PrintCollection()
     if n > 0 then packs[#packs + 1] = ("%s x%d"):format(set:lower(), n) end
   end
   table.sort(packs)
-  self:Print(#packs > 0 and ("packs: " .. table.concat(packs, ", ") .. " -- /fh open <set>")
+  self:Print(#packs > 0 and ("packs: %d waiting -- /fh open"):format(c:TotalPacks())
                         or "packs: none yet. Kill things.")
   if self.rewards and self.rewards.unsaved > 0 then
     self.rewards:PrintUnsaved()
@@ -2529,7 +2744,7 @@ function Main:Settings(view)
     d.track:SetRewards(self.collection:LevelRewardTrack(self:PlayerClass()),self.collection.character.level or 1,not opening and d.track.first or nil)
   end
   d.body:SetText(table.concat(lines,"\n\n"))
-  d.debug.text:SetText("Debug chat: "..(ForeverHearthstoneDB.debugMessages and "On" or "Off"))
+  d.debug.text:SetText("Extra chat messages: "..(ForeverHearthstoneDB.debugMessages and "On" or "Off"))
   local names,seen={},{}
   for key,name in pairs(self:DuelPrivacy().blocked) do names[#names+1]=name; seen[key]=true end
   for key in pairs(self.silenced or {}) do if not seen[key] then names[#names+1]=key end end
@@ -2571,12 +2786,22 @@ function Main:AddContextMenu()
   local function add(owner, root, contextData)
     if not root or not root.CreateButton then return end
     local name = contextData and contextData.name
-    if not name or name == "" or sameCharacter(name, UnitName("player")) then return end
+    if not name or name == "" then return end
+    -- a portrait's menu knows its unit; a name in chat may know the GUID
+    local unit, guid = contextData.unit, ns.Plain(contextData.guid)
+    --[[ Is it you? By unit or GUID when the menu has one: on Forever two
+         characters can share a first name, which is all the name test sees. ]]
+    local mine = ns.Plain(UnitGUID("player"))
+    if unit and UnitExists(unit) and UnitIsUnit then
+      if ns.Plain(UnitIsUnit(unit, "player")) then return end
+    elseif guid and mine then
+      if guid == mine then return end
+    elseif sameCharacter(name, UnitName("player")) then
+      return
+    end
     -- a player on another realm is addressed as Name-Realm
     local server = contextData.server
     if server and server ~= "" and not name:find("-", 1, true) then name = name .. "-" .. server:gsub("%s", "") end
-    -- a portrait's menu knows its unit; a name in chat may know the GUID
-    local unit, guid = contextData.unit, ns.Plain(contextData.guid)
     root:CreateButton("Challenge to Hearthstone", function() Main:Challenge(name, unit, guid) end)
   end
   for _, tag in ipairs(Main.CHALLENGE_MENUS) do pcall(Menu.ModifyMenu, tag, add) end
@@ -2611,7 +2836,9 @@ f:SetScript("OnEvent", function(_, event, arg1)
       else
         Main.session:Leave("logout")
       end
-      if Main.transport then Main.transport:Tick() end
+      --[[ The last chance to say it: a throttle backoff from a moment ago must
+           not hold the pause or the BYE back until after the client is gone. ]]
+      if Main.transport then Main.transport.holdUntil = nil; Main.transport:Tick() end
     end
   elseif event=="PLAYER_TARGET_CHANGED" or event=="UNIT_PORTRAIT_UPDATE" or event=="UNIT_LEVEL" or event=="GROUP_ROSTER_UPDATE" then
     Main:RefreshProfiles()
@@ -2785,8 +3012,10 @@ function Main:ShowHub()
     button("Open Packs", function() collection():ShowPackRoom() end)
     button("Resume Match", function() if self.board then self.board:Show(); f:Hide() end end)
     button("Close", function() f:Hide() end)
+    -- last in the list (callers and tests index the others), fifth plaque on screen
+    f.duelButton = button("Duel a Player", function() self:DuelFromMenu() end)
     local function heroArt(class) return self.resolver:Card(ns.HERO_ID_BY_CLASS[class]).icon end
-    local function deckArt(deck) return self.resolver:Card(ns.Widgets.DeckSignature(deck)).icon end
+    local function deckArt(deck) return self.resolver:Card(ns.Widgets.DeckArtCard(deck)).icon end
     local function titleCase(s) return s:sub(1,1)..s:sub(2):lower() end
     f.selectedClass = ns.CLASSES[1]
     -- The nine opponents: each hero's portrait in a gold rim over its name.
@@ -2949,10 +3178,11 @@ function Main:ShowHub()
           b:SetSize(w*.2,h*.064)
           b:SetPoint("CENTER",self,"TOPLEFT",w*.04+w*.56/2,-h*.935)
           W.ApplyStyle(b.text,"button",h)
-        elseif i<=4 then
-          -- the four plaques sit in the cabinet's oval
-          local x,y=at(.5,.355+(i-1)*.108)
-          b:SetSize(math.min(spanW*.35,w-2*EDGE),spanH*.092)
+        elseif i<=4 or b==self.duelButton then
+          -- the five plaques sit in the cabinet's oval (Duel a Player is fifth)
+          local slot=(b==self.duelButton) and 5 or i
+          local x,y=at(.5,.34+(slot-1)*.0875)
+          b:SetSize(math.min(spanW*.35,w-2*EDGE),spanH*.08)
           b:SetPoint("CENTER",self,"TOPLEFT",x,-y)
           W.ApplyStyle(b.text,"buttonLarge",h)
         else
@@ -2970,6 +3200,9 @@ function Main:ShowHub()
         end
       end
       self.buttons[1].text:SetText(self.duelSession and "Cancel Duel" or (self.botMode and "Back" or "Play Bots"))
+      -- what is waiting, on the plaque itself
+      local waiting = ns.Main.collection and ns.Main.collection:TotalPacks() or 0
+      self.buttons[4].text:SetText(waiting > 0 and ("Open Packs (%d)"):format(waiting) or "Open Packs")
 
       -- The book (left) and the stage (right).
       local bx,by,bw,bh=w*.04,h*.155,w*.56,h*.72
@@ -3186,6 +3419,15 @@ function Main:ShowHub()
     f:SetScript("OnHide",function()
       f:SetScript("OnUpdate",nil); f:SetAlpha(1)
       ns.Main:SyncMusicSoon()
+      --[[ Closed (Esc, the corner) while it was the duel's deck picker and no
+           deck was chosen: the duel is called off, said so -- left as it was,
+           both players waited on a picker nobody could see. ]]
+      local s=f.duelSession
+      if s and s==ns.Main.session and s.state==ns.Session.STATE.SYNC and not s.committed
+         and not ns.Main.hubAside then
+        ns.Main:Print("you closed the deck picker, so the duel was called off.")
+        ns.Main:Decline()
+      end
     end)
     if UISpecialFrames then table.insert(UISpecialFrames, "ForeverHearthstoneHub") end
     f:Hide() -- Ensure the first opening uses the same entrance as later visits.
@@ -3320,6 +3562,7 @@ SLASH_FOREVERHEARTHSTONE2 = "/foreverhearthstone"
 SlashCmdList["FOREVERHEARTHSTONE"] = function(msg)
   local dev = (msg or ''):match('^%s*dev%s+(.+)$')
   if dev then ns.DevTest:Command(dev); return end
+  local raw = (msg or ""):gsub("^%s+", ""):gsub("%s+$", "")   -- names keep their case
   msg = (msg or ""):lower():gsub("^%s+", ""):gsub("%s+$", "")
 
   if msg == "" then
@@ -3339,7 +3582,8 @@ SlashCmdList["FOREVERHEARTHSTONE"] = function(msg)
       for i, d in ipairs(ns.AI.DIFFICULTIES) do
         if d.name:lower() == arg then n = i end
       end
-      if not n then
+      -- 9 is not a difficulty: say so, rather than quietly choosing Master
+      if not n or n ~= n or n < 1 or n > #ns.AI.DIFFICULTIES then
         Main:Print("difficulty is 1-5 or a name: novice, apprentice, adept, expert, master.")
         return
       end
@@ -3357,6 +3601,14 @@ SlashCmdList["FOREVERHEARTHSTONE"] = function(msg)
 
   elseif msg == "duel" or msg == "challenge" then
     Main:Challenge()
+
+  elseif msg:match("^duel%s") or msg:match("^challenge%s") then
+    --[[ /fh duel Name (or "First Last" on Forever). The character beside you
+         is challenged as the game shows them -- the address /fh duel has
+         always used -- once the name has found them. ]]
+    local name = raw:match("^%S+%s+(.+)$")
+    local unit = name and Main:FindPlayerUnit(name)
+    Main:Challenge(name, unit)
 
   elseif msg == "accept" then
     Main:Accept()
@@ -3412,7 +3664,7 @@ SlashCmdList["FOREVERHEARTHSTONE"] = function(msg)
     local value = msg:match("^debug%s+(%S+)")
     if value == "on" then ForeverHearthstoneDB.debugMessages=true
     elseif value == "off" then ForeverHearthstoneDB.debugMessages=false end
-    Main:Print("Debug chat: "..(ForeverHearthstoneDB.debugMessages and "on" or "off")..". /fh debug on|off")
+    Main:Print("extra chat messages: "..(ForeverHearthstoneDB.debugMessages and "on" or "off")..". /fh debug on|off")
   elseif msg == "music" then
     Main:ToggleMusic()
   elseif msg == "mute" then
@@ -3426,7 +3678,7 @@ SlashCmdList["FOREVERHEARTHSTONE"] = function(msg)
     if not ok then Main:PrintCollection() end
 
   elseif msg:match("^deck") then
-    Main:Deck(msg:match("^deck%s*(.*)$"))
+    Main:Deck(raw:match("^%S+%s*(.*)$"))   -- original case: "/fh deck new My Mage"
 
   elseif msg == "progress" then
     Main:PrintCollection()
@@ -3436,6 +3688,9 @@ SlashCmdList["FOREVERHEARTHSTONE"] = function(msg)
     if verdict == "blank" then Main:MarkIcon(key:upper(), false)
     elseif verdict == "ok" then Main:MarkIcon(key:upper(), true)
     else Main:IconAudit() end
+
+  elseif msg == "open" then
+    Main:OpenPackRoom()   -- the reveal room, as the menu opens it
 
   elseif msg:match("^open") then
     Main:OpenPack(msg:match("^open%s+(%S+)") or "classic")
@@ -3500,11 +3755,19 @@ SlashCmdList["FOREVERHEARTHSTONE"] = function(msg)
     Main:Print(("sound: %d of %d keys resolve on this client%s")
       :format(have, total, have == 0 and " -- the game will be silent" or ""))
 
+  elseif msg == "rewards" then
+    Main:RewardHelp()   -- the Progression window: what each level and kill gives
+
+  elseif msg == "help dev" then
+    Main:Print("diagnostics: /fh save | icons | assets | sound | debug | progress (collection counts)")
+
   else
-    Main:Print("commands: /fh practice | difficulty [1-5] | duel | accept | decline | concede | music")
-    Main:Print("           /fh challenges anyone|friends|off | block <name> | unblock <name> | blocked")
-    Main:Print("           /fh collection | deck | open <set> | progress | save")
-    Main:Print("           /fh drops | icons | assets | sound | show | hide | minimap")
+    -- every command a player uses; diagnostics under /fh help dev
+    Main:Print("commands: /fh (main menu) | practice | difficulty [1-5] | collection | open | rewards | drops")
+    Main:Print("  decks: /fh deck | deck new <name> | deck <n> | deck use <n>")
+    Main:Print("  duels: /fh duel [name] | accept | decline | concede | claim | resume")
+    Main:Print("  who may challenge you: /fh challenges anyone|friends|off | block <name> | unblock <name> | blocked")
+    Main:Print("  window: /fh show | hide | settings | music | mute | minimap   (/fh help dev for diagnostics)")
   end
 end
 

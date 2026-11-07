@@ -133,8 +133,31 @@ end
 --[[ Every failure funnels through here so there is exactly one place that ends
      a session, and exactly one event the UI has to handle. `fatal` distinguishes
      "we stopped playing" from "the game finished". ]]
+--[[ Reasons the other side already knows about, or caused: everything else is
+     something only THIS side saw (a desync, a fault, a lost stream), and the
+     other client must hear of it -- or it plays on alone and, once our line
+     goes quiet on our turn, is handed a win for a bug. ]]
+local ABORT_SHARED = { agreed = true, version = true, aborted = true }
+
+--[[ BYE "aborted" is new in 1.0.4. An older client reads any BYE it does not
+     know, mid-game, as the sender forfeiting -- so it is only said to a peer
+     whose HELLO says it understands it. Anyone else gets the old silence. ]]
+function Session:PeerReadsAborted()
+  local have = {}
+  for n in tostring(self.peer.version or ""):gmatch("%d+") do have[#have + 1] = tonumber(n) end
+  if #have == 0 then return false end
+  for i, want in ipairs({ 1, 0, 4 }) do
+    local v = have[i] or 0
+    if v ~= want then return v > want end
+  end
+  return true
+end
+
 function Session:Abort(reason, detail)
   if self.state == S.ABORTED or self.state == S.OVER then return end
+  if not ABORT_SHARED[reason] and self.state ~= S.IDLE and self:PeerReadsAborted() then
+    self:Send(KIND.BYE, "aborted")   -- before the state changes: Send refuses once ABORTED
+  end
   self.state = S.ABORTED
   self.abortReason = reason
   emit(self, "ABORTED", { reason = reason, detail = detail })
@@ -142,7 +165,11 @@ end
 
 function Session:Send(kind, ...)
   if self.state == S.ABORTED then return end
-  if kind == KIND.BYE then return self.out:Send(kind, (...), self.challengeId or "") end
+  --[[ A BYE is unsequenced. It took a sequence number once, and the transport
+       sends every BYE at 0 -- so the number was never delivered, and
+       everything said after it (the result's PROFILE, a rematch) waited
+       forever behind that hole. ]]
+  if kind == KIND.BYE then return self.out:SendVolatile(kind, (...), self.challengeId or "") end
   return self.out:Send(kind, ...)
 end
 
@@ -412,6 +439,10 @@ end
 function Session:LocalAction(a)
   if self.state ~= S.PLAYING then return false, "not playing" end
   if self.paused and a.kind~="CONCEDE" then return false, "the duel is paused" end
+  --[[ Nothing is played while the two games are being put back in step: the
+       other side drops incoming actions until then, so an action taken now
+       was lost from one game and kept in the other. ]]
+  if self.resyncing and a.kind~="CONCEDE" then return false, "the duel is resyncing" end
   local body, err = Protocol.EncodeAction(a)
   if not body then return false, err end
 
@@ -615,7 +646,9 @@ function Session:Pause(reason)
   self:Send(KIND.PAUSE, reason or "away")
   self.paused = self.paused or {}
   self.paused.me = reason or "away"
-  self.paused.meSince = self.clock or 0
+  --[[ The grace runs from when you FIRST left, as the other client counts it
+       (handlers[KIND.PAUSE]): a change of reason must not restart only ours. ]]
+  self.paused.meSince = self.paused.meSince or self.clock or 0
   emit(self, "PAUSED", { who = "me", reason = reason })
   return true
 end
@@ -644,6 +677,11 @@ function Session:Receive(raw)
   --[[ The count is per hole, not per match: a long duel over a line WoW
        throttles now and then must not add its hiccups up to an abort. ]]
   if #nak == 0 then self.naks = 0 end
+  --[[ While rejoining, a line from the host's OLD stream (a heartbeat sent just
+       before it read our acceptance) is not a hole in the new one; asking for
+       its "missing" predecessors made the host abort. The bundle starts the
+       stream that counts (handlers[KIND.REJOIN_BUNDLE]). ]]
+  if self.state == S.REJOINING then nak = {} end
   if #nak > 0 then
     --[[ Ask for the hole. A NAK that is itself lost is covered by the next
          message arriving and producing the same list again, so there is no
@@ -933,6 +971,10 @@ function Session:AnswerEndDuel(agree)
   self.endInvited=nil
   if not agree then self.peerEndRequestAfter=(self.clock or 0)+Session.END_REQUEST_COOLDOWN end
   self:Send(KIND.END_DUEL,agree and "yes" or "no",self.challengeId)
+  --[[ If the yes is lost, the asker would wait, and on our turn claim a win
+       over a duel we both agreed to end. The BYE behind it (sent after, and
+       kept in order) turns that silence into "no result". ]]
+  if agree and self:PeerReadsAborted() then self:Send(KIND.BYE,"aborted") end
   if agree then self:Abort("agreed","Both players agreed to end the duel. No win, loss or forfeit.") end
   return true
 end
@@ -975,7 +1017,12 @@ end
 
 handlers[KIND.NAK] = function(s, msg)
   local seqs = {}
-  for n in tostring(msg[1] or ""):gmatch("%d+") do seqs[#seqs + 1] = tonumber(n) end
+  --[[ A number we never sent is not ours to resend: it is a request about our
+       stream from before a rejoin reset it. Ignored, never a reason to abort. ]]
+  for n in tostring(msg[1] or ""):gmatch("%d+") do
+    local seq = tonumber(n)
+    if seq >= 1 and seq <= (s.out.seq or 0) then seqs[#seqs + 1] = seq end   -- 0 is never a sequence
+  end
   -- one NAK asks for at most one hole's worth; it cannot flood our queue
   for i = #seqs, Protocol.MAX_NAK + 1, -1 do seqs[i] = nil end
   local ok, lost = s.out:Resend(seqs)
@@ -1007,7 +1054,12 @@ handlers[KIND.BYE] = function(s, msg)
   if s.state==S.OVER or s.state==S.ABORTED then return end
   local reason = msg[1] or "left"
   if s.challengeId and reason ~= "version" and msg[2] ~= s.challengeId then return end
-  if s.state == S.PLAYING and reason == "claimed" and not s:ClaimIsFair() then
+  if reason == "aborted" then
+    -- their client ended it over something only it saw: nobody won
+    if s.state ~= S.IDLE then
+      s:Abort("aborted", "the other player's client had to end the duel -- no result recorded")
+    end
+  elseif s.state == S.PLAYING and reason == "claimed" and not s:ClaimIsFair() then
     --[[ A claim this side cannot account for: we are here, talking, and it is
          not our turn running long. Nobody is handed a loss by one message. ]]
     s:Abort("disconnected", "they claimed the win, but the duel was still on here -- no result recorded")
@@ -1059,6 +1111,7 @@ Session.PROBLEM_AFTER      = 10
 Session.CONNECTION_TIMEOUT = 120
 Session.ABANDON_AFTER      = 300
 Session.REJOIN_EVERY       = 5
+Session.REJOIN_TIMEOUT     = 30
 Session.GRACE = { away = 60, combat = 60, dead = 180, left = 90 }
 Session.CLAIM_MARGIN = 15
 --[[ STALLING. A connected opponent whose turn has run TURN + STALL_GRACE
@@ -1099,18 +1152,39 @@ function Session:Tick(dt)
     end
     return
   end
+  --[[ Waiting for the duel back. Our REJOIN_ACCEPT is one volatile line; if it
+       was lost, their next offer is answered again (handlers[KIND.REJOIN]),
+       and if nothing comes at all we stop waiting -- a client stuck here
+       could not be challenged by anyone until a reload. ]]
+  if self.state == S.REJOINING then
+    self.rejoinWait = (self.rejoinWait or 0) + dt
+    if self.rejoinWait >= Session.REJOIN_TIMEOUT then
+      self:Abort("rejoin", "the duel could not be resumed -- the other player did not answer")
+    end
+    return
+  end
   if self.state==S.PLAYING then self:FlushHover(self.clock) end
   if self.state~=S.PLAYING then return end
   local now = self.clock
 
   -- pauses and their grace periods
   local p = self.paused
-  if p and p.me and now - (p.meSince or now) > self:Grace(p.me) then
+  --[[ BOTH AWAY (two players pulled into the same fight): each client used
+       to forfeit for its own player and ignore the other's forfeit, so each
+       recorded a loss and the boards named different winners. Nobody wins a
+       table both players left; the BYE from Abort ends the other side too. ]]
+  local mineOut = p and p.me and now - (p.meSince or now) > self:Grace(p.me)
+  local theirsOut = p and p.peer and now - (p.peerSince or now) > self:Grace(p.peer) + Session.CLAIM_MARGIN
+  if (mineOut or theirsOut) and p.me and p.peer then
+    self:Abort("away", "you were both away from the table too long -- no result recorded")
+    return
+  end
+  if mineOut then
     emit(self, "TIMED_OUT", { who = "me", reason = p.me })
     self:Leave("away")
     return
   end
-  if p and p.peer and now - (p.peerSince or now) > self:Grace(p.peer) + Session.CLAIM_MARGIN then
+  if theirsOut then
     self:ClaimWin("they did not come back to the table")
     return
   end
@@ -1118,7 +1192,10 @@ function Session:Tick(dt)
   -- stalling: the turn clock runs only while the table is whole and talking
   local g = self.game
   if g and g.activePlayer ~= self.turnPlayer then
+    local wasStalling = self.stalling
     self.turnPlayer, self.turnStart, self.stalling = g.activePlayer, now, false
+    -- they played on after all: the claim notice must go with it
+    if wasStalling then emit(self, "STALL_CLEARED", { name = self.peer.name }) end
   end
   if p or self.connectionProblem then self.turnStart = (self.turnStart or now) + dt end
   if g and g.activePlayer == self.peerIndex and not self.stalling and self.turnStart
@@ -1140,6 +1217,7 @@ function Session:Tick(dt)
     self.rejoinAge = (self.rejoinAge or 0) + dt
     if self.rejoinAge >= Session.REJOIN_EVERY then
       self.rejoinAge = 0
+      self.rejoinOffered = true   -- an acceptance is only honoured while this is open
       self:SendVolatile(KIND.REJOIN, self.peer.name or "")
     end
   end
@@ -1199,12 +1277,34 @@ end
 function Session:RequestRejoin(peerName)
   self.peer.name = peerName or self.peer.name
   self.state = S.REJOINING
+  self.rejoinWait = 0
+  self.acceptedAt = self.clock or 0
   self:SendVolatile(KIND.REJOIN_ACCEPT, self.me.name or "")
   return true
 end
 
+--[[ Still offering the duel, so our acceptance may have been lost: say yes
+     again -- but not to the offer that was already on its way when the first
+     yes landed. Waiting longer than an offer's interval also keeps an older
+     host, which answers every acceptance, from resetting a resumed duel. ]]
+Session.REACCEPT_AFTER = 8
+handlers[KIND.REJOIN] = function(s)
+  if s.state ~= S.REJOINING then return end
+  local now = s.clock or 0
+  if now - (s.acceptedAt or -math.huge) < Session.REACCEPT_AFTER then return end
+  s.acceptedAt = now
+  s:SendVolatile(KIND.REJOIN_ACCEPT, s.me.name or "")
+end
+
 handlers[KIND.REJOIN_ACCEPT] = function(s)
   if s.state ~= S.PLAYING or not s.config then return end
+  --[[ Only an answer to an offer that is still open: the first acceptance
+       closes it. A second one (it crossed our next offer) reset both streams
+       under a duel that had already resumed, and the two sides drifted apart
+       in silence. (Not keyed on connectionProblem: Receive clears that the
+       moment the acceptance itself arrives.) ]]
+  if not s.rejoinOffered then return end
+  s.rejoinOffered = nil
   -- The returning client starts its volatile hover counter over as well.
   s.peerHoverSerial = nil
   -- they are back at the table
@@ -1254,6 +1354,8 @@ handlers[KIND.REJOIN_BUNDLE] = function(s, msg)
     s:Abort("rejoin", "the rebuilt duel did not match theirs" .. (why and (": " .. why) or "")); return
   end
   s.challengeId = msg[10]
+  -- anything held from the host's old stream belongs to a duel that is gone
+  s.inbox.held, s.inbox.missing = {}, {}
   s.config, s.seed = config, seed
   s.myIndex, s.peerIndex = seat, 3 - seat
   s.challenger = seat == 1

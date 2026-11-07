@@ -29,7 +29,9 @@ local KEY = "ForeverHearthstone/vault/1/kNd7-Qx2"
 
 -- The fields sealed from each table. Everything else stays plain (settings,
 -- decks -- a deck is validated against the collection anyway).
-Vault.ACCOUNT_FIELDS = { "cards", "dust", "packs", "stats", "basicsGranted" }
+--[[ milestonesByChar is new in 1.0.4: a vault from before holds none, so it
+     opens as nil and is rebuilt from each character's own milestones. ]]
+Vault.ACCOUNT_FIELDS = { "cards", "dust", "packs", "stats", "basicsGranted", "milestonesByChar" }
 Vault.CHAR_FIELDS    = { "cards", "record", "packMilestones", "bossKills",
                          "level", "dryKills", "practiceRecord" }
 --[[ Fields a version-1 vault (beta.1, beta.2) never held. Opening one of those
@@ -169,6 +171,7 @@ end
 
 local function pick(t, fields)
   local out = {}
+  for k, v in pairs(t.vaultExtra or {}) do out[k] = v end   -- a newer version's fields (Restore)
   for _, f in ipairs(fields) do out[f] = t[f] end
   return out
 end
@@ -187,11 +190,13 @@ function Vault.Store(db, cdb, charSalt)
     db.vaultBackup = db.vault
     db.vault = Vault.Seal(pick(db, Vault.ACCOUNT_FIELDS), "account")
     for _, f in ipairs(Vault.ACCOUNT_FIELDS) do db[f] = nil end
+    db.vaultExtra = nil
   end
   if cdb then
     cdb.vaultBackup = cdb.vault
     cdb.vault = Vault.Seal(pick(cdb, Vault.CHAR_FIELDS), charSalt or "character")
     for _, f in ipairs(Vault.CHAR_FIELDS) do cdb[f] = nil end
+    cdb.vaultExtra = nil
   end
 end
 
@@ -223,9 +228,21 @@ function Vault.Restore(db, cdb, charSalt)
     end
     if value then
       local sealedVersion = (fromBackup and t.vaultBackup or t.vault).v or 1
+      local known = {}
       for _, f in ipairs(fields) do
+        known[f] = true
         if not (sealedVersion < 2 and Vault.ADDED_IN_2[f]) then t[f] = value[f] end
       end
+      --[[ Fields a NEWER version sealed are kept and sealed again, untouched:
+           running an older release once must not throw away what a newer one
+           recorded (1.0.3 dropped 1.0.4's milestonesByChar that way). ]]
+      t.vaultExtra = nil
+      for k, v in pairs(value) do
+        if not known[k] then t.vaultExtra = t.vaultExtra or {}; t.vaultExtra[k] = v end
+      end
+      -- a vault that opens is a good one again: a "tampered" mark from a bad
+      -- day must not stop every later logout from sealing
+      t.tampered = nil
       if fromBackup then problems[#problems + 1] = { what = label, restored = true } end
     else
       problems[#problems + 1] = { what = label, restored = false }

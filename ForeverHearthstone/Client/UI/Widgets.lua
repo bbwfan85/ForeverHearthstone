@@ -605,6 +605,9 @@ function W.MenuButton(parent, label, onClick)
       if ns.Sounds then ns.Sounds.Play("menu_click") end
       return onClick(...)
     end
+    -- a greyed button may still say why it cannot be pressed
+    local why = rawget(b, "onDisabledClick")
+    if why then return why(...) end
   end)
   b:SetScript("OnEnter", function()
     if b.enabled then
@@ -1045,20 +1048,40 @@ end
      Basic cards, or an empty one, has nothing to tell it apart: its hero.
      Returns the card id to draw. ]]
 local RARITY_RANK = { FREE = 0, COMMON = 1, RARE = 2, EPIC = 3, LEGENDARY = 4 }
+--[[ The card a deck box shows when its owner has not chosen one. In order:
+     a card of the deck's own class (what makes it THAT deck, not a pile of
+     neutrals any class could run), then the rarest, then a minion -- its art
+     is a character, a spell's is often an effect -- then the costliest. ]]
 function W.DeckSignature(deck)
-  local best, bestRank, bestCost
+  local best, bestKey
   for _, id in ipairs(deck and deck.cards or {}) do
     local p = ns.PrintedCards[id]
     -- Basic (set CORE) never stands for a deck, whatever its rarity says:
     -- some Basic cards, Flamestrike among them, are printed COMMON
     local rank = p and p.set ~= "CORE" and RARITY_RANK[p.rarity or "FREE"] or 0
-    local cost = p and p.cost or 0
-    if rank > 0 and (not best or rank > bestRank or (rank == bestRank and
-        (cost > bestCost or (cost == bestCost and id < best)))) then
-      best, bestRank, bestCost = id, rank, cost
+    if rank > 0 then
+      local key = { p.class ~= "NEUTRAL" and 1 or 0, rank, p.type == "MINION" and 1 or 0, p.cost or 0 }
+      local better = not best
+      if not better then
+        for i = 1, #key do
+          if key[i] ~= bestKey[i] then better = key[i] > bestKey[i]; break end
+          if i == #key then better = id < best end   -- a stable tie-break
+        end
+      end
+      if better then best, bestKey = id, key end
     end
   end
   return best or ns.HERO_ID_BY_CLASS[deck and deck.class or "MAGE"] or ns.HERO_ID_BY_CLASS.MAGE
+end
+
+--- The card a deck box shows: the one its owner chose while it is still in
+--- the deck, otherwise DeckSignature's pick.
+function W.DeckArtCard(deck)
+  local chosen = deck and deck.art
+  if chosen then
+    for _, id in ipairs(deck.cards or {}) do if id == chosen then return chosen end end
+  end
+  return W.DeckSignature(deck)
 end
 
 function W.StyleDeckBox(b, o)
@@ -2577,6 +2600,9 @@ local function cardSetLiveStats(w, st)
     if key == "trigger" and st.deathrattle then on = false end
     if on then t:Show() else t:Hide() end
   end
+  -- a spell has no stats: writing them put "0" and "1" on an enlarged Fireball
+  local hasStats = d.type == "MINION" or d.type == "WEAPON"
+  if hasStats then
   w.atk:SetText(tostring(st.atk or 0))
   w.hp:SetText(tostring(st.health or 0))
 
@@ -2598,6 +2624,7 @@ local function cardSetLiveStats(w, st)
   else
     w.atk:SetTextColor(1, 1, 1, 1)
   end
+  end -- hasStats
 
   --[[ Frozen is a blue wash over the art and stealth is transparency: both are
        states you must be able to see without reading, because both change what
@@ -3229,7 +3256,9 @@ W.KEYWORDS = {
   { "Taunt", "Enemies must attack this minion." },
   { "Charge", "Can attack immediately." },
   { "Divine Shield", "The first time a Shield minion takes damage, ignore it." },
-  { "Windfury", "Can attack twice each turn." },
+  -- `unless`: a longer keyword containing this one (V-07-TR-0N's Mega-Windfury)
+  { "Windfury", "Can attack twice each turn.", unless = "Mega%-Windfury" },
+  { "Mega-Windfury", "Can attack four times each turn." },
   { "Stealth", "Can't be attacked or targeted until it attacks." },
   { "Battlecry", "Does something when you play it from your hand." },
   { "Deathrattle", "Does something when it dies." },
@@ -3242,14 +3271,17 @@ W.KEYWORDS = {
   { "Secret", "Hidden until a specific action occurs on your opponent's turn." },
   { "Choose One", "Choose one of two effects." },
   { "Immune", "Can't be damaged." },
+  { "Spare Part", "Spare Parts are 1-Cost spells with minor effects." },
+  { "Counter", "A card that is Countered has no effect." },
 }
 
 function W.KeywordsOf(card)
   local text = ((card and card.text) or ""):gsub("<[^>]+>", "")
   local found = {}
   for _, kw in ipairs(W.KEYWORDS) do
-    local hit = text:find(kw[1], 1, true)
-    for _, word in ipairs(kw[3] or {}) do hit = hit or text:find(word, 1, true) end
+    local own = kw.unless and text:gsub(kw.unless, "") or text
+    local hit = own:find(kw[1], 1, true)
+    for _, word in ipairs(kw[3] or {}) do hit = hit or own:find(word, 1, true) end
     if hit then found[#found + 1] = kw end
   end
   return found

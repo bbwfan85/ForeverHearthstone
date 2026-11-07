@@ -565,6 +565,56 @@ H.suite("presentation: opponent actions are shown one after another, and long ch
   end)
 end)
 
+H.suite("table: a secret position in an instance is not leaving the table",function(ns,H)
+  withAddon(ns,function(Main)
+    local peer,pump=liveDuel(ns,Main)
+    Main.session:LocalAction({kind="MULLIGAN",indices={}})
+    peer:LocalAction({kind="MULLIGAN",indices={}}); pump()
+    local saved=UnitPosition
+    _G.UnitPosition=function() return Stub.Secret(),Stub.Secret(),Stub.Secret(),Stub.Secret() end
+    Main:CheckTable(); pump()
+    H.eq(Main.session.paused,nil,"an unknown position never pauses the duel")
+    _G.UnitPosition=saved
+  end)
+end)
+
+H.suite("table: zoning into a dungeon mid-duel is leaving the table",function(ns,H)
+  withAddon(ns,function(Main)
+    local peer,pump=liveDuel(ns,Main)
+    Main.session:LocalAction({kind="MULLIGAN",indices={}})
+    peer:LocalAction({kind="MULLIGAN",indices={}}); pump()
+    Stub.units.player.pos={100,100,1}
+    local inside=false
+    local saved=rawget(_G,"IsInInstance")
+    _G.IsInInstance=function() return inside end
+    Main:CheckTable(); pump()
+    H.eq(Main.session.paused,nil,"sitting in the open world")
+    inside=true; Stub.units.player.pos=nil
+    Main:CheckTable(); pump()
+    H.eq(peer.paused and peer.paused.peer,"away","through a portal is away")
+    Main:CheckTable(); pump()
+    H.eq(peer.paused and peer.paused.peer,"away","and an unknown position inside does not bring you back")
+    _G.IsInInstance=saved
+  end)
+end)
+
+H.suite("table: a pause notice from the last duel does not carry into the next",function(ns,H)
+  withAddon(ns,function(Main)
+    local peer,pump=liveDuel(ns,Main)
+    Main.session:LocalAction({kind="MULLIGAN",indices={}})
+    peer:LocalAction({kind="MULLIGAN",indices={}}); pump()
+    Stub.units.player.inCombat=true
+    Main:CheckTable(); pump()
+    H.ok(Main.board.statusPanel:IsShown(),"the notice is up")
+    Main.session:Abort("disconnected","gone")
+    H.notOk(Main.board.statusPanel:IsShown(),"an ended duel takes its notice with it")
+    Main.board:ShowStatus("You left the table -- come back within 60 seconds or forfeit")
+    Stub.units.player.inCombat=nil
+    peer,pump=liveDuel(ns,Main)
+    H.notOk(Main.board.statusPanel:IsShown(),"and a new duel starts without one")
+  end)
+end)
+
 H.suite("table: dying, fighting or walking away pauses the duel for both players",function(ns,H)
   withAddon(ns,function(Main)
     local peer,pump=liveDuel(ns,Main)
@@ -959,6 +1009,40 @@ H.suite("proximity: the answer from another address than the challenge's is reco
   end)
 end)
 
+H.suite("proximity: Forever's first-last reading of UnitName finds the player beside you",function(ns,H)
+  withAddon(ns,function(Main)
+    local saved=UnitName
+    _G.UnitName=function(u) if u=="target" then return "Femboy","President" end return saved(u) end
+    H.eq(Main:FindPlayerUnit("Femboy-President"),"target","as first-last")
+    H.eq(Main:FindPlayerUnit("Femboy"),"target","and as the plain name a reply comes from")
+    H.eq(Main:FindPlayerUnit("Someone"),nil)
+    _G.UnitName=saved
+  end)
+end)
+
+H.suite("proximity: a far challenger is turned away by GUID even when names differ",function(ns,H)
+  withAddon(ns,function(Main)
+    Main:SetChallengePolicy("anyone")
+    Stub.units.target={name="Pagpag Halohalo",class="PRIEST",isPlayer=true,guid="Player-Pagpag"}
+    Stub.interactDistance=false
+    arrive(ns.Protocol.Encode(1,ns.Protocol.KIND.HELLO,ns.Protocol.VERSION,
+      ns.Protocol.ADDON_VERSION,"PRIEST","Pagpag",30,"Player-Pagpag",1,0,0,"c"),"Pagpag-Realm")
+    H.eq(Main.session,nil,"seen standing far off, so no challenge pops up")
+  end)
+end)
+
+H.suite("proximity: the challenge entry is hidden on your own portrait, not on a namesake's",function(ns,H)
+  withAddon(ns,function(Main)
+    local made={}
+    local root={CreateButton=function(_,label,fn) made[#made+1]=label end}
+    Stub.menuMods["MENU_UNIT_PLAYER"](nil,root,{name="Tester",unit="player"})
+    H.eq(#made,0,"your own portrait")
+    Stub.units.target={name="Tester",class="PRIEST",isPlayer=true,guid="Player-Namesake"}
+    Stub.menuMods["MENU_UNIT_PLAYER"](nil,root,{name="Tester",unit="target"})
+    H.eq(#made,1,"another character sharing your first name can be challenged")
+  end)
+end)
+
 H.suite("proximity: a portrait's menu challenges the unit it was opened on",function(ns,H)
   withAddon(ns,function(Main)
     Stub.units.target={name="Pagpag Halohalo",class="PRIEST",isPlayer=true,guid="Player-Pagpag"}
@@ -1048,7 +1132,7 @@ H.suite("transport: repeated accept preserves deck picker and decline notifies p
     challengeFrom(ns,"Foe"); H.ok(Main:Accept())
     H.notOk(Main:Accept()); H.ok(Main.duelDeckPicker:IsShown())
     Main.transport.budget=0
-    Main:Decline(); H.eq(Main.session,nil); H.notOk(Main.duelDeckPicker:IsShown())
+    Main:Decline(); H.eq(Main.session,nil); H.notOk(Main.hub:IsShown()); H.eq(Main.duelDeckPicker,nil)
     Main.transport:Tick()
     local sent=sentMessages(); local msg=ns.Protocol.Decode(sent[#sent].msg)
     H.eq(msg.kind,ns.Protocol.KIND.BYE); H.eq(msg[1],"declined")
@@ -1084,6 +1168,35 @@ H.suite("transport: incoming end request clearly offers consent and can be decli
   end)
 end)
 
+--[[ Agreeing ends our side at once, which clears the transport's peer and
+     queue. A "yes" still waiting there -- WoW's allowance spent mid-game --
+     was wiped, so the other player was left in a duel nobody was playing. ]]
+H.suite("transport: agreeing to end reaches them even when the line is busy",function(ns,H)
+  withAddon(ns,function(Main)
+    local peer,pump=liveDuel(ns,Main)
+    peer:AskEndDuel(); pump()
+    Main.transport.budget=0                      -- nothing more may go this tick
+    Main.endDuelDialog.buttons[1]:Click()
+    H.eq(Main.session,nil,"our side has ended")
+    pump()
+    H.eq(peer.abortReason,"agreed","and their side heard the yes")
+    H.ok(Main.agreedDialog and Main.agreedDialog:IsShown(),"we are told it was agreed")
+    H.ok(Main.agreedDialog.message:GetText():find("agreed",1,true))
+    Main.agreedDialog.buttons[1]:Click()
+    H.notOk(Main.agreedDialog:IsShown()); H.notOk(Main.board.frame:IsShown(),"and taken back to the menu")
+  end)
+end)
+
+H.suite("transport: the player who asked is told the end was agreed",function(ns,H)
+  withAddon(ns,function(Main)
+    local peer,pump=liveDuel(ns,Main)
+    Main:RequestDuelExit(); Main.exitDialog.confirm:Click(); pump()
+    peer:AnswerEndDuel(true); pump()
+    H.eq(Main.session,nil)
+    H.ok(Main.agreedDialog and Main.agreedDialog:IsShown(),"the asker sees it was agreed")
+  end)
+end)
+
 H.suite("transport: declined end request button counts down and re-enables",function(ns,H)
   withAddon(ns,function(Main)
     local peer,pump=liveDuel(ns,Main)
@@ -1099,5 +1212,228 @@ H.suite("transport: declined end request button counts down and re-enables",func
     Main.exitDialog:GetScript("OnUpdate")()
     H.eq(Main.exitDialog.confirm.text:GetText(),"Ask to End Duel")
     Main.exitDialog.confirm:Click(); pump(); H.ok(peer.endInvited)
+  end)
+end)
+
+--================================================ round 1 review (judges)
+
+H.suite("review: a stranger's failed challenge leaves your practice game alone",function(ns,H)
+  withAddon(ns,function(Main)
+    Main:SetChallengePolicy("anyone")
+    Main:StartPractice("MAGE","WARRIOR")
+    local game,controller=Main.game,Main.controller
+    challengeFrom(ns,"Foe")
+    Main.session:Abort("disconnected","they stopped answering")
+    H.eq(Main.mode,"practice"); H.ok(Main.controller==controller,"the practice game keeps its controller")
+    H.ok(Main.game==game); H.eq(Main.session,nil)
+  end)
+end)
+
+H.suite("review: declining after a finished duel does not close the main menu",function(ns,H)
+  withAddon(ns,function(Main)
+    Main:SetChallengePolicy("anyone")
+    challengeFrom(ns,"Foe"); Main:Accept()   -- the hub became the duel's deck picker once
+    Main:Decline()
+    Main:ShowHub(); Main.hub.buttons[1]:Click()   -- the practice book
+    challengeFrom(ns,"Foe")
+    Main:Decline()
+    H.ok(Main.hub:IsShown(),"the menu stays open"); H.ok(Main.hub.botMode,"on the page you were on")
+  end)
+end)
+
+H.suite("review: an old rejoin offer cannot replace the duel being played",function(ns,H)
+  withAddon(ns,function(Main)
+    local peer,pump=liveDuel(ns,Main)
+    local live=Main.session
+    Main.rejoinOffer="Other"
+    Main:Rejoin()
+    H.ok(Main.session==live,"the live duel stays")
+  end)
+end)
+
+H.suite("review: a secret range answer inside an instance does not refuse",function(ns,H)
+  withAddon(ns,function(Main)
+    local saved=CheckInteractDistance
+    _G.CheckInteractDistance=function() return Stub.Secret() end
+    H.ok(ns.Transport.InRange("target"),"unknown is not too far")
+    _G.CheckInteractDistance=function() return false end
+    H.notOk(ns.Transport.InRange("target"),"a plain no still is")
+    _G.CheckInteractDistance=saved
+  end)
+end)
+
+H.suite("review: closing the duel's deck picker calls the duel off",function(ns,H)
+  withAddon(ns,function(Main)
+    Main:SetChallengePolicy("anyone")
+    challengeFrom(ns,"Foe"); Main:Accept()
+    H.ok(Main.hub:IsShown())
+    Main.hub:Hide()
+    H.eq(Main.session,nil,"no setup left waiting on a hidden picker")
+  end)
+end)
+
+H.suite("review: the main menu has a Duel entry that explains itself",function(ns,H)
+  withAddon(ns,function(Main)
+    Stub.units.target=nil
+    Main:ShowHub()
+    H.ok(Main.hub.duelButton and Main.hub.duelButton:IsShown(),"Duel a Player is on the menu")
+    Main.hub.duelButton:Click()
+    H.ok(Main.duelHint and Main.duelHint:IsShown(),"with nobody targeted it says how")
+    Stub.units.target={name="Foe",class="PRIEST",isPlayer=true,guid="Player-Foe"}
+    Main.duelHint:Hide()
+    Main.hub.duelButton:Click()
+    H.eq(Main.session and Main.session.state,ns.Session.STATE.OFFERED,"with a player targeted it challenges")
+  end)
+end)
+
+H.suite("review: /fh duel Name challenges the named player, first-last too",function(ns,H)
+  withAddon(ns,function(Main)
+    local saved=UnitName
+    _G.UnitName=function(u) if u=="target" then return "Pagpag","Halohalo" end return saved(u) end
+    SlashCmdList["FOREVERHEARTHSTONE"]("duel Pagpag Halohalo")
+    H.eq(Main.session and Main.session.state,ns.Session.STATE.OFFERED)
+    _G.UnitName=saved
+  end)
+end)
+
+H.suite("review: a refused move is said on the table, not only in chat",function(ns,H)
+  withAddon(ns,function(Main)
+    Main:StartPractice("MAGE","WARRIOR")
+    local said
+    local real=Main.board.ShowSpeech
+    Main.board.ShowSpeech=function(b,side,text) said=text; return real(b,side,text) end
+    Main.controller.HandleIntent=function(c) c.refusalVoice="mana"; return false,"not enough mana" end
+    Main:OnIntent({kind="PLAY",handIndex=1})
+    H.eq(said,"I don't have enough mana.")
+    Main.board.ShowSpeech=real
+  end)
+end)
+
+--================================================ round 2 review (judges)
+
+H.suite("review 2: looking at your collection from the duel deck picker keeps the duel",function(ns,H)
+  withAddon(ns,function(Main)
+    Main:SetChallengePolicy("anyone")
+    challengeFrom(ns,"Foe"); Main:Accept()
+    H.eq(Main.session.state,ns.Session.STATE.SYNC)
+    Main:SetHubAside()   -- what opening the collection or the pack room does
+    H.notOk(Main.hub:IsShown())
+    H.ok(Main.session and Main.session.state==ns.Session.STATE.SYNC,"the duel is still being set up")
+    Main:ShowDuelDeckPicker()   -- what closing the collection does
+    H.ok(Main.hub:IsShown() and Main.hub.duelSession,"and the picker comes back")
+  end)
+end)
+
+H.suite("review 2: the duel hint does not come back over the next menu",function(ns,H)
+  withAddon(ns,function(Main)
+    Stub.units.target=nil
+    Main:ShowHub(); Main.hub.duelButton:Click()
+    H.ok(Main.duelHint:IsShown())
+    Main.hub:Hide(); Main:ShowHub()
+    H.notOk(Main.duelHint:IsShown(),"closing the menu put it away")
+  end)
+end)
+
+H.suite("review 2: the match tells you who goes first, Overload owed and the claim button",function(ns,H)
+  withAddon(ns,function(Main)
+    local peer,pump=liveDuel(ns,Main)
+    local t=Main.board.mulliganTitle:GetText()
+    H.ok(t:find("You go first",1,true) or t:find("The Coin",1,true),"the mulligan says who goes first")
+    Main.session:LocalAction({kind="MULLIGAN",indices={}})
+    peer:LocalAction({kind="MULLIGAN",indices={}}); pump()
+    local me=Main.game.players[Main.session.myIndex]
+    me.pendingOverload=2; Main.controller:Changed()
+    H.ok(Main.board.overloadText:IsShown(),"Overload owed shows")
+    H.ok(Main.board.overloadText:GetText():find("2",1,true))
+    Main.session.stalling=true; Main:UpdateTableStatus()
+    H.ok(Main.board.statusAction and Main.board.statusAction:IsShown(),"a staller gets a Claim Victory button")
+    H.eq(Main.board.statusAction.text:GetText(),"Claim Victory")
+    Main.session.stalling=false; Main:UpdateTableStatus()
+    H.notOk(Main.board.statusAction:IsShown(),"and it goes with the notice")
+  end)
+end)
+
+H.suite("review 2: right-clicking their hero squelches their emotes",function(ns,H)
+  withAddon(ns,function(Main)
+    local peer,pump=liveDuel(ns,Main)
+    local said=0
+    local real=Main.board.ShowSpeech
+    Main.board.ShowSpeech=function(b,side,text) if side=="foe" then said=said+1 end; return real(b,side,text) end
+    Main.board.foeHero.frame:GetScript("OnClick")(Main.board.foeHero.frame,"RightButton")
+    H.ok(Main.board.squelched)
+    Main:OnSessionEvent("EMOTE",{index=1})
+    H.eq(said,0,"a squelched emote shows nothing")
+    Main.board.ShowSpeech=real
+  end)
+end)
+
+--================================================ round 3 review: hostile input
+
+H.suite("review 3: a stranger repeating challenges cannot hold back our own lines",function(ns,H)
+  withAddon(ns,function(Main)
+    Main:SetChallengePolicy("nobody")
+    for _=1,200 do challengeFrom(ns,"Spammer") end
+    for i=1,10 do challengeFrom(ns,"Spammer"..i) end
+    local declines=0
+    for _,r in ipairs(Main.transport.replies or {}) do if r.raw:find(";BY;declined",1,true) then declines=declines+1 end end
+    H.ok(declines<=4,("at most a handful of declines wait (%d)"):format(declines))
+  end)
+end)
+
+H.suite("review 3: a namesake cannot take over an open challenge",function(ns,H)
+  withAddon(ns,function(Main)
+    Stub.units.target.guid="Player-Foe"
+    Main:Challenge()
+    arrive(ns.Protocol.Encode(1,ns.Protocol.KIND.PING,"invited"),"Foe-EvilRealm")
+    H.eq(Main.transport.peer,"Foe","a ping from another address changes nobody's address")
+    arrive(ns.Protocol.Encode(2,ns.Protocol.KIND.HELLO,ns.Protocol.VERSION,ns.Protocol.ADDON_VERSION,
+      "PRIEST","Foe",30,"",1,0,0,"a","","","","",Main.session.challengeId),"Foe-EvilRealm")
+    H.eq(Main.session.state,ns.Session.STATE.OFFERED,"an acceptance without their GUID is not theirs")
+    H.eq(Main.transport.peer,"Foe")
+  end)
+end)
+
+H.suite("review 3: a namesake's rejoin offer does not pull you into a rejoin",function(ns,H)
+  withAddon(ns,function(Main)
+    ForeverHearthstoneCharDB.activeDuel={peer="Foe",at=time and time() or 0}
+    arrive(ns.Protocol.Encode(0,ns.Protocol.KIND.REJOIN,"Foe"),"Foe-EvilRealm")
+    H.notOk(Main.session and Main.session.state==ns.Session.STATE.REJOINING)
+  end)
+end)
+
+H.suite("review 3: a stranger's line does not wipe a rematch being settled",function(ns,H)
+  withAddon(ns,function(Main)
+    local peer,pump=liveDuel(ns,Main)
+    Main.session.state=ns.Session.STATE.OVER; Main.session.rematch="invited"
+    local s=Main.session
+    arrive("1;HI;1;x;PRIEST","Griefer")
+    H.ok(Main.session==s,"the finished duel and its rematch stay")
+  end)
+end)
+
+--================================================ round 4 review: final diff
+
+H.suite("review 4: the claim notice goes when the staller plays on",function(ns,H)
+  withAddon(ns,function(Main)
+    local peer,pump=liveDuel(ns,Main)
+    Main.session:LocalAction({kind="MULLIGAN",indices={}})
+    peer:LocalAction({kind="MULLIGAN",indices={}}); pump()
+    local s=Main.session
+    s.stalling=true; Main:UpdateTableStatus()
+    H.ok(Main.board.statusAction:IsShown())
+    s.turnPlayer=nil   -- the next tick sees a different active player
+    s:Tick(0.1)
+    H.notOk(Main.board.statusAction:IsShown(),"the button goes on its own")
+  end)
+end)
+
+H.suite("review 4: an unanswered rematch does not lock other challengers out",function(ns,H)
+  withAddon(ns,function(Main)
+    Main:SetChallengePolicy("anyone")
+    local peer,pump=liveDuel(ns,Main)
+    Main.session.state=ns.Session.STATE.OVER; Main.session.rematch="asked"
+    Main:LeaveGame()
+    challengeFrom(ns,"Stranger")
+    H.eq(Main.session and Main.session.state,ns.Session.STATE.INVITED,"a new challenge gets through")
   end)
 end)

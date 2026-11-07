@@ -667,6 +667,8 @@ function Stub.Install(env)
   env.UnitDistanceSquared   = function(u) return Stub.distanceSquared or 0, true end
   env.SetPortraitTexture = function(texture,unit) texture.portraitUnit=unit; rec("SetPortraitTexture",unit) end
   env.UnitGUID              = function(u) local x = Stub.units and Stub.units[u]; return x and x.guid end
+  env.UnitIsUnit            = function(a, b) local x = Stub.units and Stub.units[a]
+    return x ~= nil and x == (Stub.units and Stub.units[b]) end
   --[[ Kill classification and the XP gate (Client/Rewards.lua). Values come
        from Stub.units so a test can say "a level 40 elite Beast died" without
        any of this knowing what a drop is. ]]

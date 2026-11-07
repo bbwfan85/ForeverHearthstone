@@ -77,7 +77,9 @@ function CollectionUI.Create(opts)
   local u = setmetatable({}, CollectionUI)
   u.collection = opts.collection
   u.resolver   = opts.resolver
-  u.onPrint    = opts.onPrint or function() end
+  -- said in chat AND on the window: chat is behind it ("deck is full", "crafted ...")
+  local printer = opts.onPrint or function() end
+  u.onPrint    = function(msg) printer(msg); u:Toast(msg) end
   u.page       = 1
   u.scrollRow  = 0
   u.filter     = {}
@@ -209,6 +211,11 @@ function CollectionUI.Create(opts)
     box:ClearFocus(); u:Relayout()
   end)
   u.deckName:SetScript("OnEscapePressed",function(box) box:ClearFocus(); u:Relayout() end)
+  -- the name is editable, which nothing about a banner says on its own
+  u.deckName:SetScript("OnEnter",function(box)
+    if GameTooltip then GameTooltip:SetOwner(box,"ANCHOR_TOP"); GameTooltip:SetText("Click to rename this deck"); GameTooltip:Show() end
+  end)
+  u.deckName:SetScript("OnLeave",function() if GameTooltip then GameTooltip:Hide() end end)
   u.emptyText=fs(f,"pageTitle","CENTER")
   u.emptyText:SetText("No cards match these filters"); u.emptyText:Hide()
   u.search=CreateFrame("EditBox",nil,f)
@@ -270,12 +277,15 @@ function CollectionUI.Create(opts)
   u.inspect.frame:SetFrameLevel(300)
   u.inspect.frame:SetScript("OnClick", function() u.inspect.frame:Hide() end)
   -- the footer's own Craft/Disenchant come back when the card is put down
-  u.inspect.frame:HookScript("OnHide", function() if u.frame:IsShown() then u:Relayout() end end)
+  u.inspect.frame:HookScript("OnHide", function() u.inspectingCard = nil; if u.frame:IsShown() then u:Relayout() end end)
   u.inspectCraft = makeButton(u.inspect.frame, "Craft", function() u:CraftSelected(); u.inspect.frame:Hide() end)
   u.inspectDust = makeButton(u.inspect.frame, "Disenchant", function() u:DisenchantSelected() end)
+  -- while editing a deck: this card on the deck's box, or back to the automatic pick
+  u.inspectArt = makeButton(u.inspect.frame, "Use as Deck Art", function() u:ToggleDeckArt() end)
+  u.inspectArt:Hide()
   -- what crafting it would cost, and what you have, under the enlarged card
   u.inspectCost = W.StyledText(u.inspect.frame, "dialog")
-  for i, button in ipairs({u.inspectCraft, u.inspectDust}) do
+  for i, button in ipairs({u.inspectCraft, u.inspectDust, u.inspectArt}) do
     button:SetFrameLevel(470)
     button:SetSize(170, 36)
     button:SetPoint("CENTER", u.inspect.frame, "CENTER", (i-1.5)*155, -230)
@@ -295,6 +305,7 @@ function CollectionUI.Create(opts)
   f:SetScript("OnHide",function()
     u.packDragging=nil
     if u.disenchantDialog then u.disenchantDialog:Hide() end
+    if u.craftDialog then u.craftDialog:Hide() end   -- never re-armed on the next open
     if u.packBack then u.packBack:StopMovingOrSizing() end
     u:StopFX()
   end)
@@ -344,7 +355,11 @@ function CollectionUI:Relayout()
   self.progressHelp:Hide()
   self:StopFX(true)
   if self.inspect and self.inspect.frame:IsShown() then
-    if self.selected then self:InspectSelected() else self.inspect.frame:Hide() end
+    --[[ Redraw what is being READ: a pack card shown with InspectCard stayed
+         itself, not the browser's old selection with live Craft/Disenchant. ]]
+    local shown = self.inspectingCard
+    if shown then self:InspectCard(shown.cardId, shown.golden)
+    elseif self.selected then self:InspectSelected() else self.inspect.frame:Hide() end
   end
   local f = self.frame
   local w, h = f:GetWidth(), f:GetHeight()
@@ -550,7 +565,7 @@ function CollectionUI:MenuItem(index, label, action, x, y, w, h)
   W.ClearDeckBox(b)
   b.bg:SetTexture(ART.."tavern-button.tga")
   b:RegisterForClicks("LeftButtonUp")
-  b.action = action; b.text:SetText(label)
+  b.action = action; b.text:SetText(label); b.onDisabledClick = nil
   b.text:SetWordWrap(false)
   for _,key in ipairs({"cardArt","artFade","tileOverlay","countBox","manaBadge","manaLabel","countLabel","roundIcon"}) do
     if rawget(b,key) then b[key]:Hide() end
@@ -599,7 +614,8 @@ function CollectionUI:LayoutDeckRows(r)
   local banner=self.deckBanner
   banner:SetFrameLevel(self.sidebarPanel:GetFrameLevel()+2)
   place(banner,{x=r.x+6,y=r.y+r.h-6-bannerH,w=r.w-12,h=bannerH},f)
-  banner.art:SetTexture(self.resolver:Card(ns.HERO_ID_BY_CLASS[deck.class] or ns.HERO_ID_BY_CLASS.MAGE).icon)
+  -- the deck's own art, as on its box in the deck list
+  banner.art:SetTexture(self.resolver:Card(W.DeckArtCard(deck)).icon)
   banner.art:SetTexCoord(0,1,.16,.16+math.min(.84,bannerH/(r.w-12)))
   banner.rim:Layout(r.w-12,bannerH); banner:Show()
   place(self.deckName,{x=r.x+18,y=r.y+r.h-6-bannerH/2-12,w=r.w-36,h=24},f)
@@ -614,7 +630,13 @@ function CollectionUI:LayoutDeckRows(r)
   self.deckScroll=math.max(0,math.min(self.deckScroll or 0,math.max(0,#ids-visible)))
   place(self.deckText,{x=r.x+10,y=r.y+footH+14,w=r.w-20,h=22},f)
   self.deckText:SetJustifyH("CENTER")
-  self.deckText:SetText(#deck.cards .. "/30 cards" .. (#ids>visible and "  -  scroll for more" or "")); self.deckText:Show()
+  --[[ A full deck that is still not legal says WHY, in red, where its count
+       is: a card disenchanted out from under it used to leave "30/30" and a
+       Use Deck button that silently did nothing. ]]
+  local legal, problems = self.collection:ValidateDeck(deck)
+  local why = (not legal and #deck.cards >= 30 and problems and problems[1]) or nil
+  self.deckText:SetText(why and ("|cffff7055" .. why:gsub("^%l", string.upper) .. "|r")
+    or (#deck.cards .. "/30 cards" .. (#ids>visible and "  -  scroll for more" or ""))); self.deckText:Show()
   if #ids==0 then
     place(self.deckHint,{x=r.x+16,y=r.y+r.h*.35,w=r.w-32,h=80},f)
     W.ApplyStyle(self.deckHint,"body",f:GetHeight())
@@ -718,12 +740,25 @@ function CollectionUI:LayoutDeckRows(r)
     end
   end
   local by=-(f:GetHeight()-r.y-footH-8)
+  local bw=(r.w-28)/3
   self:MenuItem(visible+1,"Done",function() self:ShowDecks() end,
-    r.x+8,by,(r.w-22)/2,footH)
-  local valid=self.collection:ValidateDeck(deck)
-  self:MenuItem(visible+2,"Use Deck",function()
-    self.collection.character.activeDeck=self.deckIndex; self:ShowDecks()
-  end,r.x+14+(r.w-22)/2,by,(r.w-22)/2,footH):SetEnabledLook(valid)
+    r.x+8,by,bw,footH)
+  -- a variant without rebuilding 30 cards: the copy opens for editing
+  self:MenuItem(visible+3,"Copy",function()
+    local _,index=self.collection:CopyDeck(self.deckIndex)
+    if index then self.onPrint(("copied \"%s\"."):format(deck.name or "Deck")); self:EditDeck(index) end
+  end,r.x+14+bw,by,bw,footH)
+  local valid,problems=self.collection:ValidateDeck(deck)
+  local use=self:MenuItem(visible+2,"Use Deck",function()
+    self.collection.character.activeDeck=self.deckIndex
+    self.onPrint(("duelling with \"%s\"."):format(deck.name or "Deck"))
+    self:ShowDecks()
+  end,r.x+20+2*bw,by,bw,footH)
+  use:SetEnabledLook(valid)
+  -- pressed while not legal: say why instead of doing nothing
+  use.onDisabledClick=not valid and function()
+    self.onPrint(problems and problems[1] or "this deck is not legal yet")
+  end or nil
 end
 
 function CollectionUI:ClearBrowser()
@@ -738,6 +773,7 @@ end
 
 function CollectionUI:ShowPackRoom()
   self.deckBrowser = nil; self.packRoom = true
+  self.selected = nil   -- the browser's selection has no business in the pack room
   self:Relayout()
 end
 
@@ -811,7 +847,7 @@ function CollectionUI:LayoutPackRoom()
   self.packBack:SetShown(count>0)
   place(self.deckHint,{x=trayX+trayW*.06,y=trayY-ph/2-room.h*.14,w=trayW*.88,h=room.h*.12},self.frame)
   W.ApplyStyle(self.deckHint,"body",h)
-  self.deckHint:SetText(count>0 and "Classic + GvG + Naxx\n5 cards per pack" or "Earn packs through play.")
+  self.deckHint:SetText(count>0 and "Classic + GvG + Naxx\n5 cards per pack" or "No packs yet.\nPacks come from levelling and\nfrom creatures that give experience.")
   self.deckHint:Show()
   -- centred under the well, on the stone
   self.packDropHint:SetJustifyH("CENTER")
@@ -865,7 +901,7 @@ function CollectionUI:LayoutDecks()
       local box=self:MenuItem(slot,"",function() self:EditDeck(index) end,x,-y,bw,bh)
       local valid=self.collection:ValidateDeck(deck)
       W.StyleDeckBox(box,{
-        portrait=self.resolver:Card(W.DeckSignature(deck)).icon,
+        portrait=self.resolver:Card(W.DeckArtCard(deck)).icon,
         name=deck.name or "Deck",
         detail=valid and "30/30 cards" or (#deck.cards.."/30 cards"),
         detailColor=valid and W.Colors.count or {1,.45,.35},
@@ -993,6 +1029,7 @@ end
 function CollectionUI:InspectSelected()
   local entry = self.selected
   if not entry then return end
+  self.inspectingCard = nil
   local w, h = self.frame:GetWidth(), self.frame:GetHeight()
   local ch = math.min(h * 0.70, 440)
   CardWidget.SetDescriptor(self.inspect.card, self.resolver:Card(entry.cardId))
@@ -1002,9 +1039,19 @@ function CollectionUI:InspectSelected()
   self.inspectCraft:SetEnabledLook(entry.canCraft)
   self.inspectDust:SetEnabledLook(self.collection:CanDisenchant(entry.cardId, entry.owned == 0 and entry.golden > 0))
   local caption = self:LabelCraftButtons(entry, self.inspectCraft, self.inspectDust)
-  for i, button in ipairs({self.inspectCraft,self.inspectDust}) do
+  local buttons = {self.inspectCraft,self.inspectDust}
+  -- a card in the deck being edited can be chosen to stand for it
+  local deck = self:CurrentDeck()
+  local inDeck = false
+  for _, id in ipairs(deck and deck.cards or {}) do if id == entry.cardId then inDeck = true; break end end
+  self.inspectArt:SetShown(inDeck)
+  if inDeck then
+    self.inspectArt.text:SetText(deck.art == entry.cardId and "Automatic Art" or "Use as Deck Art")
+    buttons[3] = self.inspectArt
+  end
+  for i, button in ipairs(buttons) do
     button:ClearAllPoints()
-    button:SetPoint("CENTER", self.inspect.frame, "CENTER", (i-1.5)*185, -ch/2-25)
+    button:SetPoint("CENTER", self.inspect.frame, "CENTER", (i-(#buttons+1)/2)*185, -ch/2-25)
   end
   self.inspectCost:ClearAllPoints()
   self.inspectCost:SetPoint("TOP", self.inspect.frame, "CENTER", 0, -ch/2-48)
@@ -1054,6 +1101,7 @@ end
      managed -- one just pulled from a pack. No craft or disenchant: the
      reveal is not the place to dust what you just opened. Click to close. ]]
 function CollectionUI:InspectCard(cardId, golden)
+  self.inspectingCard = { cardId = cardId, golden = golden }
   local w, h = self.frame:GetWidth(), self.frame:GetHeight()
   local ch = math.min(h * 0.70, 440)
   local d = self.resolver:Card(cardId)
@@ -1062,7 +1110,7 @@ function CollectionUI:InspectCard(cardId, golden)
   end
   CardWidget.SetDescriptor(self.inspect.card, d)
   CardWidget.ApplyRect(self.inspect.card, {x=(w-ch*0.7)/2,y=(h-ch)/2,w=ch*0.7,h=ch})
-  self.inspectCraft:Hide(); self.inspectDust:Hide(); self.inspectCost:Hide()
+  self.inspectCraft:Hide(); self.inspectDust:Hide(); self.inspectArt:Hide(); self.inspectCost:Hide()
   W.InspectKeywords(self.inspect, cardId)
   self.inspect.frame:Show()
 end
@@ -1164,9 +1212,29 @@ function CollectionUI:SetFilter(index)
   self:Relayout()
 end
 
-function CollectionUI:CraftSelected()
+--[[ An Epic or Legendary is 400 or 1600 dust, and disenchanting it again
+     gives back a quarter: one stray click there is asked about first. ]]
+CollectionUI.CONFIRM_CRAFT_AT = 400
+function CollectionUI:CraftSelected(confirmed)
   local entry = self.selected
   if not entry then return end
+  local v = self.collection:DustValues(entry.cardId)
+  if not confirmed and entry.canCraft and v and v.craft and v.craft >= CollectionUI.CONFIRM_CRAFT_AT
+     and self.collection:Dust() >= v.craft then
+    if not self.craftDialog then
+      local dialog
+      dialog = W.Dialog(self.frame, "ForeverHearthstoneCraftConfirm", {
+        { "Craft", function() dialog:Hide(); self:CraftSelected(true) end },
+        { "Cancel", function() dialog:Hide() end },
+      }, { paper = true })
+      self.craftDialog = dialog
+    end
+    for _, p in ipairs(self.inspect.keywordPanels or {}) do p:Hide() end
+    self.craftDialog.message:SetText(("Craft %s for %d dust?\n\nYou have %d. Disenchanting it later gives back %d.")
+      :format(entry.printed.name, v.craft, self.collection:Dust(), v.de or 0))
+    self.craftDialog:Show()
+    return
+  end
   local ok, result = self.collection:Craft(entry.cardId)
   if not ok then self.onPrint(result); return end
   self.onPrint(("crafted %s for %d dust."):format(entry.printed.name, result))
@@ -1204,7 +1272,16 @@ function CollectionUI:DisenchantSelected()
   for _,p in ipairs(self.inspect.keywordPanels or {}) do p:Hide() end
   local values=self.collection:DustValues(entry.cardId)
   self.pendingDisenchant={entry=entry,golden=golden}
-  self.disenchantDialog.message:SetText("Disenchant 1 "..(golden and "GOLDEN " or "")..entry.printed.name.."?\n\nReceive "..(golden and values.deGolden or values.de).." dust.\nThis removes one copy from your collection.")
+  -- decks that would be left needing this copy, named before it goes
+  local left=self.collection:Count(entry.cardId)-1
+  local hurt={}
+  for _,d in ipairs(self.collection.character.decks or {}) do
+    local used=0
+    for _,id in ipairs(d.cards or {}) do if id==entry.cardId then used=used+1 end end
+    if used>left then hurt[#hurt+1]=d.name or "Deck" end
+  end
+  local warning=#hurt>0 and ("\n|cffff7055Used in: "..table.concat(hurt,", ").." -- it will be incomplete.|r") or ""
+  self.disenchantDialog.message:SetText("Disenchant 1 "..(golden and "GOLDEN " or "")..entry.printed.name.."?\n\nReceive "..(golden and values.deGolden or values.de).." dust.\nThis removes one copy from your collection."..warning)
   self.disenchantDialog:Show()
 end
 
@@ -1250,6 +1327,41 @@ function CollectionUI:AddToDeck(cardId)
   if not ok then self.onPrint(why); return end
   deck.cards[#deck.cards + 1] = cardId
   self:Relayout()
+end
+
+--- The inspected card on the deck's box -- or, if it already is, back to the
+--- automatic pick.
+--[[ A notice across the top of the window for a few seconds: the reply to
+     something the player just did, where they are looking. ]]
+CollectionUI.TOAST_SECONDS = 3
+function CollectionUI:Toast(text)
+  if not (self.frame and text and text ~= "") then return end
+  local p = self.toast
+  if not p then
+    p = W.HSPanel(self.frame)
+    p:SetFrameLevel(520)
+    p:EnableMouse(false)
+    self.toast = p
+  end
+  p:SetContent(nil, (tostring(text):gsub("^%l", string.upper)), math.floor(math.min(460, self.frame:GetWidth() * .42)))
+  p:ClearAllPoints()
+  p:SetPoint("TOP", self.frame, "TOP", 0, -self.frame:GetHeight() * .12)
+  p:Show()
+  self.toastSerial = (self.toastSerial or 0) + 1
+  local serial = self.toastSerial
+  if C_Timer and C_Timer.After then
+    C_Timer.After(CollectionUI.TOAST_SECONDS, function()
+      if self.toastSerial == serial then p:Hide() end
+    end)
+  end
+end
+
+function CollectionUI:ToggleDeckArt()
+  local deck, entry = self:CurrentDeck(), self.selected
+  if not (deck and entry) then return end
+  local ok, why = self.collection:SetDeckArt(deck, deck.art ~= entry.cardId and entry.cardId or nil)
+  if not ok then self.onPrint(why); return end
+  self:Relayout()   -- redraws the open inspect view too, with the button's new label
 end
 
 function CollectionUI:RemoveFromDeck(cardId)

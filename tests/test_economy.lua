@@ -91,6 +91,31 @@ H.suite("economy: a new character is started with packs, and milestones pay once
   H.eq(c:TotalPacks(), 16)
 end)
 
+--[[ The packs go to the account; the milestones used to live only in the
+     character's file. Deleting that one file regranted every milestone while
+     the account kept everything opened from them -- infinite packs. ]]
+H.suite("economy: deleting a character's file does not pay its milestones again", function(ns, H)
+  local account = {}
+  local c = ns.Collection.New(account, {}, { characterKey = "Player-1-A" })
+  H.eq(c:GrantPacksForLevel(25), 5, "a level 25 character catches up on its milestones")
+  local again = ns.Collection.New(account, {}, { characterKey = "Player-1-A" })   -- its file deleted
+  H.eq(again:GrantPacksForLevel(25), 0, "the account remembers them")
+  H.eq(again:GrantPacksForLevel(30), 2, "and the next milestone still pays")
+  local alt = ns.Collection.New(account, {}, { characterKey = "Player-1-B" })
+  H.eq(alt:GrantPacksForLevel(1), 3, "another character is its own")
+  -- an existing save: milestones only in the character's file move into the account's record
+  local old = { packMilestones = { [1] = true, [10] = true } }
+  local acct2 = {}
+  local up = ns.Collection.New(acct2, old, { characterKey = "Player-1-C" })
+  H.eq(up:GrantPacksForLevel(10), 0, "an upgrade pays nothing it already paid")
+  H.ok(acct2.milestonesByChar["Player-1-C"][10], "and the account now remembers it")
+  -- through the sealed file and back
+  ns.Vault.Store(account, {}, "c")
+  H.eq(account.milestonesByChar, nil, "sealed, not left in plain text")
+  ns.Vault.Restore(account, {}, "c")
+  H.ok(account.milestonesByChar and account.milestonesByChar["Player-1-A"][20], "and restored at login")
+end)
+
 H.suite("economy: nothing can be farmed that should not be", function(ns, H)
   local E = ns.Drops.Eligible
   H.notOk(E({ kind = "normal", classification = "minus", playerLevel = 20, grantsXP = true }),

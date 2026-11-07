@@ -3373,7 +3373,28 @@ H.suite("ui: a deck box shows its signature card, a Basic deck its hero", functi
     H.eq(W.DeckSignature({ class = "MAGE", cards = {} }), ns.HERO_ID_BY_CLASS.MAGE, "empty: the hero")
     H.eq(W.DeckSignature({ class = "MAGE", cards = { "CS2_029", "CS2_032" } }), ns.HERO_ID_BY_CLASS.MAGE,
          "only Basic cards: the hero")
-    H.eq(W.DeckSignature({ class = "MAGE", cards = { "CS2_029", "EX1_559", "EX1_016", "NEW1_030" } }), "NEW1_030",
-         "the rarest, then the costliest: Deathwing over Sylvanas and Archmage Antonidas")
+    H.eq(W.DeckSignature({ class = "MAGE", cards = { "CS2_029", "EX1_559", "EX1_016", "NEW1_030" } }), "EX1_559",
+         "a class card first: Archmage Antonidas over Deathwing and Sylvanas")
+    H.eq(W.DeckSignature({ class = "MAGE", cards = { "CS2_029", "EX1_016", "NEW1_030" } }), "NEW1_030",
+         "then the rarest, then the costliest: Deathwing over Sylvanas")
+    local deck = { class = "MAGE", cards = { "EX1_559", "NEW1_030" }, art = "NEW1_030" }
+    H.eq(W.DeckArtCard(deck), "NEW1_030", "the owner's choice wins")
+    deck.cards = { "EX1_559" }
+    H.eq(W.DeckArtCard(deck), "EX1_559", "until that card leaves the deck")
+  end)
+end)
+
+H.suite("ui: keyword reminders know Mega-Windfury, Spare Part and Counter", function(ns, H)
+  withBoard(ns, function()
+  local W = ns.Widgets
+  local function names(id)
+    local out = {}
+    for _, kw in ipairs(W.KeywordsOf(ns.PrintedCards[id])) do out[kw[1]] = true end
+    return out
+  end
+  local tron = names("GVG_111t")   -- V-07-TR-0N
+  H.ok(tron["Mega-Windfury"], "Mega-Windfury explained"); H.notOk(tron["Windfury"], "not as plain Windfury")
+  H.ok(names("GVG_078")["Spare Part"], "Mechanical Yeti's Spare Part")
+  H.ok(names("EX1_287")["Counter"], "Counterspell's Counter")
   end)
 end)

@@ -71,6 +71,7 @@ function Collection.New(account, character, opts)
   c.account   = account or {}
   c.character = character or {}
   c.printed   = opts.printed or ns.PrintedCards or {}
+  c.characterKey = opts.characterKey   -- the character's GUID, when the client gives one
 
   local a = c.account
   a.cards   = a.cards or {}        -- neutrals: account-wide (D5)
@@ -505,10 +506,28 @@ function Collection:GrantPacksForLevel(level)
   level = level or self.character.level or 1
   local ch = self.character
   ch.packMilestones = ch.packMilestones or {}
+  --[[ ALSO REMEMBERED BY THE ACCOUNT. The packs go to the account, but the
+       milestones lived only in the character's file -- so deleting that one
+       file and logging in granted every milestone again while the account kept
+       the cards they had opened, as often as you liked. The account file now
+       keeps each character's milestones too, by GUID; either copy remembering
+       a grant is enough. Deleting the account file as well starts the whole
+       collection over, which is a fresh start, not a profit. ]]
+  local mine = ch.packMilestones
+  if self.characterKey then
+    local byChar = self.account.milestonesByChar or {}
+    self.account.milestonesByChar = byChar
+    byChar[self.characterKey] = byChar[self.characterKey] or {}
+    local remembered = byChar[self.characterKey]
+    for lv in pairs(ch.packMilestones) do remembered[lv] = true end
+    for lv in pairs(remembered) do ch.packMilestones[lv] = true end
+    mine = remembered
+  end
   local total, list = 0, {}
   for _, m in ipairs(Collection.PACK_MILESTONES) do
     if level >= m.level and not ch.packMilestones[m.level] then
       ch.packMilestones[m.level] = true
+      mine[m.level] = true
       self:AddPack(ns.Packs.SETS.HEARTHSTONE, m.packs)
       total = total + m.packs
       list[#list + 1] = { level = m.level, packs = m.packs, why = m.why }
@@ -603,6 +622,30 @@ function Collection:NewDeck(name, class)
   return deck, #self.character.decks
 end
 
+--- A copy of deck `index`, added after the others. Returns the deck and its index.
+function Collection:CopyDeck(index)
+  local src = self.character.decks[index]
+  if not src then return nil, "no such deck" end
+  local deck = { name = (src.name or "Deck") .. " (copy)", class = src.class, art = src.art, cards = {} }
+  for i, id in ipairs(src.cards or {}) do deck.cards[i] = id end
+  self.character.decks[#self.character.decks + 1] = deck
+  return deck, #self.character.decks
+end
+
+--[[ The card a deck box shows, chosen by its owner (nil: picked for them,
+     Widgets.DeckSignature). Only a card in the deck may stand for it; one that
+     later leaves the deck simply stops counting (Widgets.DeckArtCard). ]]
+function Collection:SetDeckArt(deck, cardId)
+  if not deck then return false, "no such deck" end
+  if cardId ~= nil then
+    local found = false
+    for _, id in ipairs(deck.cards or {}) do if id == cardId then found = true; break end end
+    if not found then return false, "only a card in the deck can be its art" end
+  end
+  deck.art = cardId
+  return true
+end
+
 function Collection:DeleteDeck(index)
   if not self.character.decks[index] then return false, "no such deck" end
   table.remove(self.character.decks, index)
@@ -639,6 +682,10 @@ end
      SORT ORDER IS HEARTHSTONE'S: by mana cost, then by name. Every player who
      has used the real collection expects the 2-drops together, and any other
      order makes deck building slower for no gain. ]]
+Collection.SEARCH_RARITY = { common = "COMMON", rare = "RARE", epic = "EPIC", legendary = "LEGENDARY" }
+Collection.SEARCH_SET = { basic = "CORE", classic = "EXPERT1", naxx = "NAXX", naxxramas = "NAXX",
+                          gvg = "GVG", ["goblins vs gnomes"] = "GVG" }
+
 function Collection:Browse(filter)
   filter = filter or {}
   local out = {}
@@ -666,9 +713,17 @@ function Collection:Browse(filter)
       if keep and filter.set then keep = p.set == filter.set end
       if keep and filter.rarity then keep = p.rarity == filter.rarity end
       if keep and filter.text and filter.text ~= "" then
-        local needle = filter.text:lower()
-        keep = (p.name and p.name:lower():find(needle, 1, true) ~= nil)
-            or (p.text and p.text:gsub("<[^>]+>", ""):lower():find(needle, 1, true) ~= nil)
+        local needle = filter.text:lower():gsub("^%s+", ""):gsub("%s+$", "")
+        --[[ A rarity or a set typed in the search box is that filter, as in
+             Hearthstone ("legendary", "gvg"): the browser has no other
+             control for them. Anything else searches name and text. ]]
+        local rarity, set = Collection.SEARCH_RARITY[needle], Collection.SEARCH_SET[needle]
+        if rarity then keep = p.rarity == rarity
+        elseif set then keep = p.set == set
+        else
+          keep = (p.name and p.name:lower():find(needle, 1, true) ~= nil)
+              or (p.text and p.text:gsub("<[^>]+>", ""):lower():find(needle, 1, true) ~= nil)
+        end
       end
       if keep and filter.golden then keep = golden > 0 end
 

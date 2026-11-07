@@ -122,6 +122,7 @@ AI.STYLES = {
 
 local function clampDifficulty(d)
   d = tonumber(d) or AI.DEFAULT_DIFFICULTY
+  if d ~= d then d = AI.DEFAULT_DIFFICULTY end   -- "nan" is a number to tonumber
   return math.max(1, math.min(#AI.DIFFICULTIES, math.floor(d)))
 end
 AI.ClampDifficulty = clampDifficulty

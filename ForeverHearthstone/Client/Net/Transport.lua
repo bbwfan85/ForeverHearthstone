@@ -190,8 +190,23 @@ function Transport:SendTo(raw, peer)
   return true
 end
 
+--[[ Agreeing to end the duel (END_DUEL "yes") is the last thing this side
+     says: the session ends at once, and that clears the peer and the queue.
+     So the yes -- and every line still queued ahead of it, or it would wait
+     behind a hole nobody will fill -- moves to the replies, which keep their
+     destination. It stays sequenced: an unsequenced ED is not one 1.0.3 reads. ]]
+local function agreesToEnd(raw)
+  return raw:match("^%d+;ED;yes;") or raw:match("^%d+;ED;yes$")
+end
+
 function Transport:Send(raw)
   if raw:match("^%d+;BY;") and self.peer then return self:SendTo(raw:gsub("^%d+;", "0;"), self.peer) end
+  if agreesToEnd(raw) and self.peer then
+    self.replies = self.replies or {}
+    for _, line in ipairs(self.queue) do self.replies[#self.replies + 1] = {raw=line, peer=self.peer} end
+    self.queue = {}
+    return self:SendTo(raw, self.peer)
+  end
   if not self.peer then self.dropped = self.dropped + 1; return false end
   local kind = volatileKind(raw)
   if kind then
@@ -297,8 +312,9 @@ function Transport:OnReceive(raw, sender)
        from: Forever's UnitName gives a first and last name, and "First-Last"
        reaches them but their replies arrive as their real address. Once the
        owner recognises the player, that address is the peer from then on. ]]
-  if self.claim and self.claim(raw, sender) then
-    self.peer = sender
+  local claimed = self.claim and self.claim(raw, sender)
+  if claimed then
+    if claimed ~= "deliver" then self.peer = sender end   -- "deliver": heard, not re-addressed
     self:Deliver(raw, sender)
     return
   end
@@ -335,13 +351,20 @@ end
 
 function Transport.InRange(unit)
   unit = unit or "target"
-  if not UnitExists(unit) then return false, "nobody there" end
-  if not plain(UnitIsPlayer(unit)) then return false, "that is not a player" end
+  if not UnitExists(unit) then return false, "target a player standing next to you first, or /fh duel Name" end
+  --[[ A SECRET answer (inside instances) is no answer: only a plain false
+       refuses. Treating secret as "no" made two players standing together in
+       a dungeon unable to duel at all. ]]
+  local isSecret = rawget(_G, "issecretvalue") or function() return false end
+  local isPlayer = UnitIsPlayer(unit)
+  if not isSecret(isPlayer) and not isPlayer then return false, "that is not a player" end
 
   if CheckInteractDistance then
-    local ok = plain(CheckInteractDistance(unit, 2))     -- 2 = trade range
-    if ok then return true end
-    return false, "too far away to sit down together"
+    local ok = CheckInteractDistance(unit, 2)     -- 2 = trade range
+    if not isSecret(ok) then
+      if ok then return true end
+      return false, "too far away to sit down together"
+    end
   end
 
   if UnitDistanceSquared then

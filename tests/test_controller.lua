@@ -544,3 +544,20 @@ H.suite("controller: spell text follows spell power and silence", function(ns,H)
   H.eq(c:Snapshot().handStats[fire].rulesText,"Deal 6 damage.")
   H.eq(ns.PrintedCards.CS2_029.text,"Deal 6 damage.")
 end)
+
+H.suite("controller: card text says what the spell will really do", function(ns, H)
+  local g = H.NewGame({ class1 = "PRIEST" })
+  g.activePlayer = 1
+  local function text(id) local i = H.Hand(g, 1, id); return ns.Controller.SpellText(g, g.players[1].hand[i]) end
+  H.Put(g, 1, "CS2_142")                                   -- Kobold Geomancer, Spell Damage +1
+  H.ok(text("EX1_625"):find("Deal 2 damage", 1, true), "Shadowform's hero power takes no Spell Damage")
+  g.players[1].hand = {}
+  local strike = text("EX1_408")
+  H.ok(strike:find("Deal 5 damage", 1, true) and strike:find("deal 7 instead", 1, true),
+       "both of Mortal Strike's numbers move: " .. strike)
+  g.players[1].hand = {}
+  H.Put(g, 1, "EX1_350")                                   -- Prophet Velen
+  local holy = text("EX1_624")                             -- Holy Fire: 5 damage, restore 5
+  H.ok(holy:find("Restore 10", 1, true), "Velen doubles the healing too: " .. holy)
+end)
+

@@ -323,6 +323,46 @@ function Targeting.ModeOptions(game, card, player)
   return out
 end
 
+--[[ POWERED UP: Hearthstone's gold glow on a card in hand whose extra effect
+     would happen if it were played now -- Combo once a card has been played
+     this turn, "if you have a Beast/Mech", Mind Control Tech's four minions,
+     Mortal Strike at 12 Health. Only conditions knowable BEFORE the play
+     count: one that needs a target (Ice Lance, Demonfire) or the outcome is
+     decided by the play itself, and one that reads a deck (Mindgames reads
+     the opponent's) would leak hidden information. Hearthstone also leaves
+     the mode-swapping cards dark (Wild Growth, Upgrade!, Shadowform). ]]
+local KNOWABLE = { Combo = true, CountAtLeast = true, CountAtMost = true, MyHeroHealthAtMost = true }
+local SEL_TOUCHES = { target = true, self = true, zone = true, random = true, lastSummoned = true,
+                      lastDrawn = true, payloadEntity = true, adjacent = true }
+local function knowable(cond)
+  if not cond then return false end
+  if cond.c == "All" or cond.c == "Any" then
+    for _, sub in ipairs(cond.of or {}) do if not knowable(sub) then return false end end
+    return #(cond.of or {}) > 0
+  end
+  if cond.c == "Not" then return knowable(cond.of) end
+  if not KNOWABLE[cond.c] then return false end
+  for k in pairs(cond.sel or {}) do if SEL_TOUCHES[k] then return false end end
+  return true
+end
+
+function Targeting.PoweredUp(game, card, player)
+  local script = card and game:ScriptFor(card.cardId)
+  if not script then return false end
+  local ctx = { source = card, controller = player }
+  if script.combo then return ns.Conditions.Eval(game, { c = "Combo" }, ctx) end
+  local body = script.battlecry or script.spell
+  if not body then return false end
+  local cond = body.cond
+  if not cond then
+    local first = body.ops and body.ops[1]
+    cond = first and first.op == "Conditional" and first.cond or nil
+  end
+  if not knowable(cond) then return false end
+  local ok, yes = pcall(ns.Conditions.Eval, game, cond, ctx)
+  return ok and yes or false
+end
+
 --- Can this card be played at all right now (cost, slots, target availability)?
 --- For a Choose One card, `mode` may be given to ask about one specific mode;
 --- with no mode the card is playable when EITHER mode is.
