@@ -663,6 +663,9 @@ function Stub.Install(env)
   env.UnitPosition          = function(u) local x = Stub.units and Stub.units[u]
     if x and x.pos then return x.pos[2], x.pos[1], 0, x.pos[3] or 0 end end
   env.UnitIsVisible         = function(u) return Stub.units and Stub.units[u] ~= nil end
+  -- own movement speed (0 standing on a moving boat); nil = not reported
+  env.GetUnitSpeed          = function(u) local x = Stub.units and Stub.units[u]; return x and x.speed end
+  env.UnitOnTaxi            = function(u) local x = Stub.units and Stub.units[u]; return x and x.onTaxi or false end
   env.CheckInteractDistance = function(u, i) return Stub.interactDistance ~= false end
   env.UnitDistanceSquared   = function(u) return Stub.distanceSquared or 0, true end
   env.SetPortraitTexture = function(texture,unit) texture.portraitUnit=unit; rec("SetPortraitTexture",unit) end

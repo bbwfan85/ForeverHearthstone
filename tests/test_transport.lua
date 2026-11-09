@@ -590,11 +590,87 @@ H.suite("table: zoning into a dungeon mid-duel is leaving the table",function(ns
     Main:CheckTable(); pump()
     H.eq(Main.session.paused,nil,"sitting in the open world")
     inside=true; Stub.units.player.pos=nil
+    Stub.interactDistance=false   -- they stayed outside
     Main:CheckTable(); pump()
     H.eq(peer.paused and peer.paused.peer,"away","through a portal is away")
     Main:CheckTable(); pump()
     H.eq(peer.paused and peer.paused.peer,"away","and an unknown position inside does not bring you back")
     _G.IsInInstance=saved
+  end)
+end)
+
+H.suite("table: riding a boat together is not leaving the table",function(ns,H)
+  withAddon(ns,function(Main)
+    local peer,pump=liveDuel(ns,Main)
+    Main.session:LocalAction({kind="MULLIGAN",indices={}})
+    peer:LocalAction({kind="MULLIGAN",indices={}}); pump()
+    Stub.units.player.pos={100,100,0}
+    Main:CheckTable(); pump()
+    -- the boat sails: hundreds of yards and a loading screen, the opponent beside you throughout
+    for _,p in ipairs({{300,100,0},{900,400,0},{2000,800,1}}) do
+      Stub.units.player.pos=p
+      Main:CheckTable(); pump()
+      H.eq(peer.paused,nil,"carried to "..p[1]..","..p[2].." with them beside you")
+    end
+    -- the starting spot moved with the deck: stepping off is measured from the dock
+    Stub.interactDistance=false
+    Stub.units.player.pos={2010,800,1}
+    Main:CheckTable(); pump()
+    H.eq(peer.paused,nil,"ten yards from where the boat docked is still the table")
+    Stub.units.player.pos={2060,800,1}
+    Main:CheckTable(); pump()
+    H.eq(peer.paused and peer.paused.peer,"away","walking off the dock without them is away")
+    Stub.interactDistance=true
+    Main:CheckTable(); pump()
+    H.eq(peer.paused,nil,"and back beside them resumes it")
+  end)
+end)
+
+H.suite("table: a boat carries the table even when the other player is not targeted",function(ns,H)
+  withAddon(ns,function(Main)
+    local peer,pump=liveDuel(ns,Main)
+    Main.session:LocalAction({kind="MULLIGAN",indices={}})
+    peer:LocalAction({kind="MULLIGAN",indices={}}); pump()
+    Stub.interactDistance=false; Stub.units.player.speed=0
+    Stub.units.player.pos={100,100,0}
+    Main:CheckTable(); pump()
+    local function tick(x,y,map) Stub.Advance(1); Stub.units.player.pos={x,y,map or 0}; Main:CheckTable(); pump() end
+    for i=1,20 do tick(100+i*20,100) end
+    H.eq(peer.paused,nil,"sitting still while the deck slides 400 yards is not leaving")
+    -- the crossing: a loading screen to the other continent, target gone
+    tick(5000,5000,1)
+    H.eq(peer.paused,nil,"just through the loading screen: nothing is decided yet")
+    for i=1,ns.Main.TABLE_SETTLE+1 do tick(5000+i*20,5000,1) end
+    H.eq(peer.paused and peer.paused.peer,"away","still unseen after the settle time is away")
+    local said
+    local real=Main.board.ShowStatus
+    Main.board.ShowStatus=function(b,t,a) said=t; return real(b,t,a) end
+    Main:UpdateTableStatus()
+    Main.board.ShowStatus=real
+    H.ok(said and said:find("target them"),"and the notice says to target them: "..tostring(said))
+    Stub.interactDistance=true
+    tick(5400,5000,1)
+    H.eq(peer.paused,nil,"targeting them again resumes it")
+  end)
+end)
+
+H.suite("table: a hearthstone or a flight path is leaving, standing still or not",function(ns,H)
+  withAddon(ns,function(Main)
+    local peer,pump=liveDuel(ns,Main)
+    Main.session:LocalAction({kind="MULLIGAN",indices={}})
+    peer:LocalAction({kind="MULLIGAN",indices={}}); pump()
+    Stub.interactDistance=false; Stub.units.player.speed=0
+    Stub.units.player.pos={100,100,0}
+    Main:CheckTable(); pump()
+    Stub.Advance(1); Stub.units.player.pos={900,100,0}
+    Main:CheckTable(); pump()
+    H.eq(peer.paused and peer.paused.peer,"away","an 800-yard jump in a second is a teleport, not a boat")
+    Stub.units.player.pos={100,100,0}
+    Main:CheckTable(); pump()
+    H.eq(peer.paused,nil,"back at the table")
+    Stub.units.player.onTaxi=true
+    Main:CheckTable(); pump()
+    H.eq(peer.paused and peer.paused.peer,"away","on a flight path")
   end)
 end)
 
@@ -631,6 +707,7 @@ H.suite("table: dying, fighting or walking away pauses the duel for both players
     Main:CheckTable(); pump()
     H.eq(peer.paused, nil, "and it resumes when the fight is over")
     Stub.units.player.pos = { 150, 100, 1 }
+    Stub.interactDistance = false   -- and the other player is left behind
     Main:CheckTable(); pump()
     H.eq(peer.paused and peer.paused.peer, "away", "walking fifty yards away pauses it")
     Stub.units.player.pos = { 110, 100, 1 }

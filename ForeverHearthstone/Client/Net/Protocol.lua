@@ -80,7 +80,7 @@ Protocol.VERSION = 10
 --[[ The addon's own version, reported in HELLO so a mismatch can be described
      to the player ("they are on 0.2.0, you are on 0.1.0") even when the
      protocol number happens to agree. ]]
-Protocol.ADDON_VERSION = "1.0.4"   -- replaced from the .toc at load (Main.lua)
+Protocol.ADDON_VERSION = "1.1.0"   -- replaced from the .toc at load (Main.lua)
 
 --[[ 255 is the hard cap on an addon message. The margin covers the chunk header
      and leaves room for the prefix and channel bookkeeping the client adds, so

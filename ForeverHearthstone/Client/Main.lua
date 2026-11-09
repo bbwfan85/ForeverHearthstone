@@ -1865,7 +1865,7 @@ function Main:BeginDuel(data)
   if self.agreedDialog then self.agreedDialog:Hide() end   -- the last duel's ending is not this one's
   self.resultReason = nil
   if self.board and not data.resumed then self.board.squelched = nil end   -- a new opponent is heard
-  if not data.resumed then self.tableAnchor = nil end
+  if not data.resumed then self:ResetTable() end
   -- a notice left from the last duel ("you left the table") is not about this one
   if self.board then self.board:ShowStatus(nil) end
   self.running = {}
@@ -1941,8 +1941,56 @@ end
      combat, or more than TABLE_RANGE yards from where you sat down -- your
      OWN movement, measured against your own starting spot, so it needs no
      report from the other player and works anywhere UnitPosition answers
-     (it does not in instances, where only death and combat count). ]]
+     (it does not in instances, where only death and combat count).
+
+     ON A BOAT OR ZEPPELIN the table moves: both players are carried hundreds
+     of yards from where they sat down without taking a step. So the first
+     question is whether the OTHER PLAYER is still beside you (follow range,
+     about 28 yards, close to TABLE_RANGE); if they are, you are at the table
+     wherever it is now, and the starting spot moves to here, so stepping off
+     the deck later is still measured from the right place. Only when they
+     cannot be seen or answered for does the starting spot decide.
+
+     When they cannot be seen (nobody targeted, no nameplates), two more
+     things keep the boat from reading as leaving:
+       - CARRIED. Standing still (GetUnitSpeed 0) while your position slides
+         smoothly is the deck moving under you, so the starting spot slides
+         with it. A jump faster than TABLE_CARRY yards a second while standing
+         still is a teleport or a hearthstone, not a boat, and is not carried.
+       - A LOADING SCREEN (the map changes: a boat or zeppelin crossing the
+         sea, but also a portal). For TABLE_SETTLE seconds nothing is decided,
+         while the other player's nameplate loads back in; after that, still
+         unseen is away, and the notice says to target them -- a loading
+         screen usually clears your target.
+     A flight path is leaving, wherever it goes. ]]
 Main.TABLE_RANGE, Main.TABLE_RETURN = 30, 25
+Main.TABLE_INTERACT = 4   -- CheckInteractDistance index 4: follow range
+Main.TABLE_CARRY = 60     -- yards a second a transport can carry you
+Main.TABLE_SETTLE = 15    -- seconds to find the other player after a loading screen
+
+function Main:BesideOpponent()
+  local s = self.session
+  if not (s and s.peer and CheckInteractDistance) then return false end
+  local unit = self:FindPlayerUnit(s.peer.name, s.peer.guid)
+  if not unit then return false end
+  local ok, near = pcall(CheckInteractDistance, unit, Main.TABLE_INTERACT)
+  -- a secret answer (inside instances) is no answer: fall back to the spot
+  return ok and ns.Plain(near) == true
+end
+
+-- not moving under your own power; unknown is not still
+local function standingStill()
+  local speed = rawget(_G, "GetUnitSpeed")
+  if not speed then return false end
+  local ok, v = pcall(speed, "player")
+  v = ok and ns.Plain(v)
+  return v == 0
+end
+
+function Main:ResetTable()
+  self.tableAnchor, self.tableLast, self.tableCrossedAt, self.tableLostSight = nil, nil, nil, nil
+end
+
 function Main:TableTick(dt)
   self.tableAge = (self.tableAge or 0) + (dt or 0)
   if self.tableAge < 1 then return end
@@ -1953,21 +2001,56 @@ end
 function Main:WhyAway()
   if UnitIsDeadOrGhost and UnitIsDeadOrGhost("player") then return "dead" end
   if (UnitAffectingCombat and UnitAffectingCombat("player")) then return "combat" end
+  local taxi = rawget(_G, "UnitOnTaxi")
+  if taxi and ns.Plain(taxi("player")) == true then return "away" end
   local y, x, z, map = nil, nil, nil, nil
   if UnitPosition then y, x, z, map = UnitPosition("player") end
   -- in an instance the position can be secret: unknown, so only death and combat count
   y, x, map = ns.Plain(y), ns.Plain(x), ns.Plain(map)
+  local known = type(y) == "number" and type(x) == "number"
+  local now = GetTime and GetTime() or 0
   local current = self.session and self.session.paused and self.session.paused.me
   local inside = IsInInstance and ns.Plain(IsInInstance()) and true or false
+  local last = self.tableLast
+  if known then self.tableLast = { x = x, y = y, map = map, at = now } end
+  self.tableLostSight = nil
+  if self:BesideOpponent() then
+    -- the table is wherever the two of you are: a moving boat carries it along
+    if known then
+      self.tableAnchor = { x = x, y = y, map = map, inside = inside }
+    elseif self.tableAnchor then
+      self.tableAnchor.inside = inside   -- zoned in together: still together
+    end
+    self.tableCrossedAt = nil
+    return nil
+  end
   if self.tableAnchor and self.tableAnchor.inside == false and inside then
     -- sat down in the open world and zoned into a dungeon: that is leaving
     return "away"
   end
-  if type(y) == "number" and type(x) == "number" then
-    if not self.tableAnchor then self.tableAnchor = { x = x, y = y, map = map, inside = inside } end
+  if known then
+    local anchor = self.tableAnchor
+    if not anchor then
+      anchor = { x = x, y = y, map = map, inside = inside }
+      self.tableAnchor = anchor
+    end
+    if last and last.map == map and standingStill() then
+      local step = math.sqrt((x - last.x) ^ 2 + (y - last.y) ^ 2)
+      if step > 0 and step <= Main.TABLE_CARRY * math.max(1, now - (last.at or now)) then
+        anchor.x, anchor.y = anchor.x + (x - last.x), anchor.y + (y - last.y)
+      end
+    end
     -- another continent or instance: its coordinates are another frame entirely
-    if self.tableAnchor.map and map and map ~= self.tableAnchor.map then return "away" end
-    local d = math.sqrt((x - self.tableAnchor.x) ^ 2 + (y - self.tableAnchor.y) ^ 2)
+    if anchor.map and map and map ~= anchor.map then
+      if last and last.map ~= map then self.tableCrossedAt = now end
+      if self.tableCrossedAt and now - self.tableCrossedAt < Main.TABLE_SETTLE then
+        -- just through a loading screen: decide once they can load in
+        return current == "away" and "away" or nil
+      end
+      self.tableLostSight = true
+      return "away"
+    end
+    local d = math.sqrt((x - anchor.x) ^ 2 + (y - anchor.y) ^ 2)
     if d > Main.TABLE_RANGE or (current == "away" and d > Main.TABLE_RETURN) then return "away" end
   elseif current == "away" then
     return "away"   -- nothing says they came back, so they have not
@@ -2000,6 +2083,11 @@ function Main:UpdateTableStatus()
     local what = (Main.AWAY_TEXT[p.me] or "left the table"):gsub("^is ", "are ")
     what = what:gsub("^has ", "have ")
     text = ("You %s -- come back within %d seconds or forfeit"):format(what, s:Grace(p.me))
+    if p.me == "away" and self.tableLostSight then
+      -- after a loading screen (a boat crossing the sea) your target is usually gone
+      text = ("Can't see %s after the loading screen -- target them if you are still together, or forfeit in %d seconds")
+             :format(tostring(s.peer.name or "your opponent"), s:Grace(p.me))
+    end
   elseif p and p.peer then
     text = ("%s %s -- the duel is paused"):format(tostring(s.peer.name or "Your opponent"),
       Main.AWAY_TEXT[p.peer] or "stepped away")
