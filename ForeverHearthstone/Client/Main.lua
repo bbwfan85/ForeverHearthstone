@@ -95,7 +95,64 @@ function Main:SetBotDifficulty(d)
   return d
 end
 
-function Main:StartPractice(myClass, foeClass, selectedDeck, foeDeck, difficulty)
+--[[ THE BOT LADDER (Client/Ladder.lua, docs/45). This character's ranked
+     record, saved per character (decks are a character's, so is a rank), and
+     moved into the current season -- a calendar month -- the first time it is
+     read in one. A season reset is kept to be said once on the Play screen. ]]
+function Main:Ladder()
+  local ch = rawget(_G, "ForeverHearthstoneCharDB")
+  if not ch then ForeverHearthstoneCharDB = {}; ch = ForeverHearthstoneCharDB end
+  ch.ladder = ns.Ladder.Normalize(ch.ladder)
+  local dateFn = rawget(_G, "date")
+  local season = dateFn and dateFn("%Y-%m") or "season"
+  local reset = ns.Ladder.BeginSeason(ch.ladder, season)
+  if reset then self.ladderReset = reset end
+  return ch.ladder
+end
+
+--- Ranked or Casual on the Play screen; saved for the account, Ranked first.
+function Main:RankedMode()
+  local db = rawget(_G, "ForeverHearthstoneDB")
+  return not (db and db.botCasual)
+end
+
+function Main:SetRankedMode(on)
+  ForeverHearthstoneDB = ForeverHearthstoneDB or {}
+  ForeverHearthstoneDB.botCasual = not on or nil
+end
+
+--[[ A ranked game: an opponent is found near your rank (any class, mirrors
+     included, as the ladder pairs them), bringing the deck tier and the
+     thinking its rank earns. ]]
+function Main:StartLadder(selectedDeck)
+  local state = self:Ladder()
+  local foe = ns.Ladder.Opponent(state, math.random)
+  local foeClass = ns.CLASSES[math.random(1, #ns.CLASSES)]
+  --[[ What a player at that rank actually brings (docs/45): sometimes a list
+       from above their rank, copied off a deck site; always their own copy
+       of it, holes filled with what they own, maybe a legendary they opened
+       (BotDecks.Personalize). ]]
+  local tier = foe.deckTier
+  if foe.skill < 5 and math.random(1, 100) <= 30 then tier = math.min(ns.BotDecks.TIERS, tier + 1) end
+  local foeDeck = ns.BotDecks.Personalize(ns.BotDecks.Pick(foeClass, tier, math.random), foe.skill, math.random)
+  -- named like a player of that class and rank (Client/BotNames.lua)
+  foe.name = ns.BotNames.Pick(foeClass, foe.rank, math.random)
+  return self:StartPractice(nil, foeClass, selectedDeck, foeDeck, nil, foe)
+end
+
+--[[ A ranked game left unfinished -- a new game started over it -- is a loss,
+     as walking out of a ranked game in Hearthstone is. Its result is recorded
+     once. ]]
+function Main:ForfeitLadderGame()
+  local lm = self.ladderMatch
+  if lm and not lm.recorded and self.game and not self.game.over then
+    lm.recorded = true
+    local change = ns.Ladder.Record(self:Ladder(), false, math.random)
+    self:Print("the unfinished ranked game counts as a loss. " .. ns.Ladder.Describe(change))
+  end
+end
+
+function Main:StartPractice(myClass, foeClass, selectedDeck, foeDeck, difficulty, ladder)
   if self.session and self.session:IsActive() then
     self:Print("Finish or concede your player duel before starting a bot game."); return false
   end
@@ -123,9 +180,16 @@ function Main:StartPractice(myClass, foeClass, selectedDeck, foeDeck, difficulty
        tier. Picked with math.random for the same reason the class is -- before
        the game exists -- and kept for a rematch, as Hearthstone keeps the
        opponent you just played. ]]
-  difficulty = ns.AI.ClampDifficulty(difficulty or self:BotDifficulty())
-  foeDeck = foeDeck or ns.BotDecks.Pick(foeClass, difficulty, math.random)
+  difficulty = ns.AI.ClampDifficulty(difficulty or (ladder and math.floor(ladder.skill)) or self:BotDifficulty())
+  foeDeck = foeDeck or ns.BotDecks.Pick(foeClass, ladder and ladder.deckTier or difficulty, math.random)
   self.botOpts = { difficulty = difficulty, style = foeDeck and foeDeck.style or "midrange" }
+  -- the post-game medal and Play Again are for ranked games (Board:SetPostGame)
+  if self.board then self.board.rankedGame = ladder ~= nil end
+  -- a ladder bot thinks at its rank's skill, between and beyond the slider's notches
+  if ladder then self.botOpts.skill = ladder.skill end
+  self:ForfeitLadderGame()
+  self.ladderMatch = ladder
+  if ladder then ladder.recorded = nil; ladder.change = nil end
   self.botDeck = foeDeck
   self.aiThink = nil
   local myDeck = ns.Controller.BasicDeck(myClass)
@@ -161,7 +225,7 @@ function Main:StartPractice(myClass, foeClass, selectedDeck, foeDeck, difficulty
   self.mode = "practice"
   -- What Rematch replays: the same matchup, the same decks, the same bot.
   self.lastPractice = { my = myClass, foe = foeClass, deck = selectedDeck,
-                        foeDeck = foeDeck, difficulty = difficulty }
+                        foeDeck = foeDeck, difficulty = difficulty, ladder = ladder ~= nil }
   self:StartDirector(game, 1)
   self.controller = ns.Controller.New({
     game = game,
@@ -194,6 +258,7 @@ function Main:StartPractice(myClass, foeClass, selectedDeck, foeDeck, difficulty
       end,
     })
   end
+  self.board.rankedGame = ladder ~= nil
   self:WatchBoard()
   --[[ A new match, a new table. The board frame is built once and reused for
        every game, so this cannot live in Board.Create -- doing it there gave
@@ -651,7 +716,20 @@ function Main:AnnounceResult()
   local won = g.winner == 1
   if g.winner == nil then won = g.players[2].hero:Health() <= 0 end
   self:Debug(g.winner == 0 and "a draw." or (won and "you win." or "you lose."))
-  if self.mode == "practice" and g.winner ~= 0 then
+  local lm = self.mode == "practice" and self.ladderMatch
+  if lm and not lm.recorded and g.winner ~= 0 then
+    --[[ A RANKED RESULT: stars won or lost, said under the result as the
+         classic ladder's post-game medal did. ]]
+    lm.recorded = true
+    lm.change = ns.Ladder.Record(self:Ladder(), won, math.random)
+    if self.board then
+      local st = self:Ladder()
+      self.board.postGameNote = ("Season record: %d-%d"):format(st.wins, st.losses)
+      self.board.postGameLadder = lm.change
+      if self.board.postGameState == "ready" then self.board:SetPostGame("ready") end
+    end
+    self:RefreshProfiles()
+  elseif self.mode == "practice" and g.winner ~= 0 then
     local record = self:PracticeRecord()
     if won then record.wins = record.wins + 1 else record.losses = record.losses + 1 end
     -- what the game counted for, under the result
@@ -1107,9 +1185,11 @@ end
 function Main:NewSession(peerName)
   local class = self:PlayerClass()
   local record = self:Record()
+  local ladder = self:Ladder()
   local session = ns.Session.New({
     name  = UnitName("player"),
     wins = record.wins, losses = record.losses,
+    rank = ladder.rank, legend = ladder.legend,
     level = UnitLevel("player"), guid = UnitGUID("player"),
     class = class,
     getPosition = function() return self:WorldPosition() end,
@@ -1735,8 +1815,9 @@ function Main:OnSessionEvent(event, data)
       local record = self:Record()
       if data.winner == data.me then record.wins = record.wins + 1
       else record.losses = record.losses + 1 end
+      local ladder = self:Ladder()
       session:Send(ns.Protocol.KIND.PROFILE, UnitLevel("player"), UnitGUID("player") or "",
-                   record.wins, record.losses)
+                   record.wins, record.losses, ladder.rank, ladder.legend or "")
     end
     -- under the result: why it ended, if it was not played out, and the record
     if self.board then
@@ -2188,10 +2269,14 @@ function Main:RefreshProfiles()
     icon=self.resolver:Card(ns.HERO_ID_BY_CLASS[ownClass]).icon}
   local record=self:Record()
   mine.wins, mine.losses = record.wins, record.losses
+  -- the rank this character has earned on the bot ladder
+  local ladder=self:Ladder()
+  mine.rank, mine.stars, mine.legend = ladder.rank, ladder.stars, ladder.legend
   local peer
   if self.mode=="duel" and self.session then
     local remote=self.session.peer
     peer={name=remote.name,guid=remote.guid,level=remote.level,wins=remote.wins,losses=remote.losses,
+      rank=remote.rank,legend=remote.legend,
       icon=self.resolver:Card(ns.HERO_ID_BY_CLASS[remote.class or "MAGE"]).icon}
     local units={"target","focus"}
     for i=1,4 do units[#units+1]="party"..i end
@@ -2210,6 +2295,13 @@ function Main:RefreshProfiles()
     peer={name=class:sub(1,1)..class:sub(2):lower().." Bot",bot=true,
       botLabel=level and (level.name.." bot") or nil,
       icon=self.resolver:Card(ns.HERO_ID_BY_CLASS[class]).icon}
+    local lm=self.mode=="practice" and self.ladderMatch
+    if lm then
+      -- a ladder opponent goes by its own name; the tag says its class
+      peer.name=lm.name or peer.name
+      peer.botLabel=class:sub(1,1)..class:sub(2):lower()
+      peer.rank, peer.stars, peer.legend = lm.rank, lm.stars, lm.legend
+    end
   end
   self.board:SetProfiles(mine,peer)
 end
@@ -2234,6 +2326,8 @@ end
 function Main:Rematch()
   if self.mode == "practice" then
     local last = self.lastPractice or {}
+    -- Ranked plays on: a new opponent from the ladder, as "Play" again does
+    if last.ladder then return self:StartLadder(last.deck) end
     self:StartPractice(last.my, last.foe, last.deck, last.foeDeck, last.difficulty)
   elseif self.session then
     local ok, why = self.session:AskRematch()
@@ -2933,7 +3027,8 @@ f:SetScript("OnEvent", function(_, event, arg1)
     if event=="UNIT_LEVEL" and arg1=="player" and Main.session and Main.session:IsActive() then
       Main.session.me.level=UnitLevel("player")
       local record=Main:Record()
-      Main.session:Send(ns.Protocol.KIND.PROFILE,UnitLevel("player"),UnitGUID("player") or "",record.wins,record.losses)
+      local ladder=Main:Ladder()
+      Main.session:Send(ns.Protocol.KIND.PROFILE,UnitLevel("player"),UnitGUID("player") or "",record.wins,record.losses,ladder.rank,ladder.legend or "")
     end
   elseif event == "ADDON_LOADED" and arg1 == ADDON then
     --[[ SavedVariables only exist once this fires for THIS addon. They are also
@@ -3054,6 +3149,25 @@ function Main:ShowHub()
     f.bookPage:SetTexture(ART.."menu-parchment.tga"); f.bookPage:SetVertexColor(1,.96,.86,1)
     f.stage=W.TrayPanel(f)
     for _,panel in ipairs({f.book,f.stage}) do panel:SetFrameLevel(f:GetFrameLevel()); panel:Hide() end
+    --[[ WHO YOU ARE PLAYING, STAGED (docs/45; "could use an improvement in
+         backgrounds", the owner): behind the opponent -- or your medal, in
+         Ranked -- a halo in their class's colour, slow light rays, and their
+         class crest faint in the wood. It was a portrait on bare carving. ]]
+    --[[ The stage's own floor: dark leather inside its gold rim, like the
+         book's cover, shading darker toward the top. It was see-through to
+         the tavern wall behind it ("no background", reported). ]]
+    f.stageFill=f.stage:CreateTexture(nil,"BACKGROUND",nil,-6)
+    f.stageFill:SetTexture(ART.."menu-leather.tga"); f.stageFill:SetVertexColor(.36,.22,.13,1)
+    f.stageFill:SetPoint("TOPLEFT",f.stage,"TOPLEFT",7,-7); f.stageFill:SetPoint("BOTTOMRIGHT",f.stage,"BOTTOMRIGHT",-7,7)
+    f.stageShade=f.stage:CreateTexture(nil,"BACKGROUND",nil,-5)
+    f.stageShade:SetTexture(ART.."page-shade.tga"); f.stageShade:SetTexCoord(0,1, 1,1, 0,0, 1,0)
+    f.stageShade:SetVertexColor(0,0,0,.7)
+    f.stageShade:SetPoint("TOPLEFT",f.stageFill,"TOPLEFT"); f.stageShade:SetPoint("BOTTOMRIGHT",f.stageFill,"BOTTOMRIGHT")
+    f.stageRays=f.stage:CreateTexture(nil,"BACKGROUND",nil,3)
+    f.stageRays:SetTexture(ART.."fx-rays.tga"); f.stageRays:SetBlendMode("ADD")
+    f.stageCrest=f.stage:CreateTexture(nil,"BACKGROUND",nil,4)
+    f.stageHalo=f.stage:CreateTexture(nil,"BACKGROUND",nil,5)
+    f.stageHalo:SetTexture(ART.."crest-glow.tga"); f.stageHalo:SetBlendMode("ADD")
     f.stageHero=CreateFrame("Frame",nil,f.stage)
     f.stagePortrait=f.stageHero:CreateTexture(nil,"ARTWORK"); f.stagePortrait:SetAllPoints()
     f.stageRim=W.GoldFrame(f.stageHero,14,"OVERLAY")
@@ -3073,6 +3187,20 @@ function Main:ShowHub()
       get=function() return self:BotDifficulty() end,
       set=function(i) self:SetBotDifficulty(i); ns.Sounds.Play("menu_click"); f:Layout() end,
     })
+    --[[ RANKED OR CASUAL, as Hearthstone's Play screen offers: a pair of
+         plaques over the stage. Ranked goes straight to your decks -- the
+         ladder chooses who you meet -- and the stage shows your medal; Casual
+         is the old practice, an opponent and a difficulty of your choosing. ]]
+    f.medal=W.RankMedal(f.stage)
+    f.rankToggle={}
+    for i,label in ipairs({"Ranked","Casual"}) do
+      f.rankToggle[i]=W.MenuButton(f.stage,label,function()
+        local ranked=i==1
+        if ranked~=self:RankedMode() then self:SetRankedMode(ranked); ns.Sounds.Play("menu_page") end
+        f.chooseDeck=ranked; f.selectedDeck=false; f.deckPage=1; f:Layout()
+      end)
+      f.rankToggle[i]:SetFrameLevel(f.stage:GetFrameLevel()+6)
+    end
     -- Practice names itself on the stone plaque every screen shares; the main
     -- menu is Hearthstone's box itself and carries no title (docs/24).
     local title = W.TitlePlaque(f)
@@ -3092,8 +3220,10 @@ function Main:ShowHub()
     end
     local caption = W.StyledText(f, "caption")
     caption:SetText("Choose an opponent")
-    button("Play Bots", function() if f.duelSession then self:Decline(); return end; if f.botMode and f.chooseDeck then f.chooseDeck=false
-      else f.botMode=not f.botMode end
+    button("Play Bot Ladder", function() if f.duelSession then self:Decline(); return end
+      -- Ranked opens on the decks, so Back from them is back to the menu
+      if f.botMode and f.chooseDeck and not self:RankedMode() then f.chooseDeck=false
+      else f.botMode=not f.botMode; f.chooseDeck=f.botMode and self:RankedMode() or false end
       f.selectedDeck=false; f.deckPage=1; ns.Sounds.Play("menu_page"); f:Layout() end)
     button("My Collection", function() collection():EditDeck(nil) end)
     button("My Decks", function() collection():ShowDecks() end)
@@ -3180,7 +3310,11 @@ function Main:ShowHub()
         return
       end
       if not f.selectedDeck then return end
-      if self:StartPractice(nil, f.selectedClass, f.selectedDeck)~=false then
+      local started
+      if self:RankedMode() then started=self:StartLadder(f.selectedDeck)
+      else started=self:StartPractice(nil, f.selectedClass, f.selectedDeck) end
+      if started~=false then
+        self.ladderReset=nil
         f.lastDeck=f.selectedDeck
         f.selectedDeck=false; f.chooseDeck=false; f.botMode=false; f:Hide()
       else f.selectedDeck=false; f:Layout() end
@@ -3201,7 +3335,7 @@ function Main:ShowHub()
          and the block sits in the middle. As one centred string the rows were
          different lengths and the numbers wandered. ]]
     f.recordRows = {}
-    for i = 1, 2 do
+    for i = 1, 3 do
       local label, value = W.StyledText(f.record, "tooltipBody"), W.StyledText(f.record, "tooltipBody")
       label:SetJustifyH("RIGHT"); value:SetJustifyH("LEFT")
       label:SetWordWrap(false); value:SetWordWrap(false)
@@ -3254,7 +3388,7 @@ function Main:ShowHub()
       self.bg:SetVertexColor(self.botMode and .5 or 1,self.botMode and .45 or 1,self.botMode and .4 or 1,1)
       self.bgBands:SetVertexColor(self.botMode and .5 or 1,self.botMode and .45 or 1,self.botMode and .4 or 1,1)
       title:SetShown(self.botMode==true)
-      if self.botMode then title:Place(w/2,math.max(26,h*.058),math.max(34,math.min(56,h*.07)),self.duelSession and "Duel" or "Practice") end
+      if self.botMode then title:Place(w/2,math.max(26,h*.058),math.max(34,math.min(56,h*.07)),self.duelSession and "Duel" or (ns.Main:RankedMode() and "Ranked" or "Casual")) end
       -- Main menu: four plaques in the cabinet, Resume and Close beneath.
       -- Practice keeps only Back (from the decks to the opponents), under the
       -- book; Main Menu and close are in the corner, as on every screen.
@@ -3287,7 +3421,7 @@ function Main:ShowHub()
           W.ApplyStyle(b.text,"button",h)
         end
       end
-      self.buttons[1].text:SetText(self.duelSession and "Cancel Duel" or (self.botMode and "Back" or "Play Bots"))
+      self.buttons[1].text:SetText(self.duelSession and "Cancel Duel" or (self.botMode and "Back" or "Play Bot Ladder"))
       -- what is waiting, on the plaque itself
       local waiting = ns.Main.collection and ns.Main.collection:TotalPacks() or 0
       self.buttons[4].text:SetText(waiting > 0 and ("Open Packs (%d)"):format(waiting) or "Open Packs")
@@ -3299,6 +3433,15 @@ function Main:ShowHub()
       self.bookPage:ClearAllPoints(); self.bookPage:SetPoint("TOPLEFT",self.book,"TOPLEFT",10,-10)
       self.bookPage:SetSize(bw-20,bh-20)
       place(self.stage,sx,by,sw,bh); self.stage:SetShown(self.botMode==true)
+      --[[ ABOVE the window, not level with it. At the same frame level WoW
+           interleaves the two frames' textures by layer, so the cabinet art
+           (the window's BACKGROUND) drew over the stage's own floor and only
+           its halo and rim showed through ("no background", reported twice).
+           What stands on the stage is raised with it. ]]
+      local L0=self:GetFrameLevel()
+      self.stage:SetFrameLevel(L0+2)
+      self.stageHero:SetFrameLevel(L0+4); self.medal:SetFrameLevel(L0+4); self.diffSlider:SetFrameLevel(L0+4)
+      for _,b in ipairs(self.rankToggle) do b:SetFrameLevel(L0+8) end
       caption:SetText(picking and "Choose your deck" or "Choose an opponent")
       caption:ClearAllPoints(); caption:SetPoint("BOTTOM",self,"TOPLEFT",bx+bw/2,-by+2)
       W.ApplyStyle(caption,"caption",h)
@@ -3399,10 +3542,13 @@ function Main:ShowHub()
       local diffH=picking and ((select(2,self.diffName:GetFont()) or 14)*2.5+10)
         or ((select(2,self.diffName:GetFont()) or 14)*2.5+self.diffSlider:GetHeight()
           +(select(2,self.diffBlurb:GetFont()) or 14)*2.5+12)
-      local ph=math.min(inner*1.2,bh-18-8-30-2-18-14-playH-18-diffH)
+      -- the Ranked / Casual pair across the top of the stage (not in a duel)
+      local toggleH=(self.botMode and not self.duelSession) and math.max(26,math.min(34,bh*.06)) or 0
+      local toggleGap=toggleH>0 and toggleH+8 or 0
+      local ph=math.min(inner*1.2,bh-18-8-30-2-18-14-playH-18-diffH-toggleGap)
       local pw=math.min(inner,ph/1.2)
       self.stageHero:ClearAllPoints(); self.stageHero:SetSize(pw,ph)
-      self.stageHero:SetPoint("TOP",self.stage,"TOP",0,-18)
+      self.stageHero:SetPoint("TOP",self.stage,"TOP",0,-18-toggleGap)
       self.stagePortrait:SetTexture(heroArt(stageClass))
       local a=pw/ph; self.stagePortrait:SetTexCoord((1-a)/2,(1+a)/2,0,1)
       self.stageRim:Layout(pw,ph)
@@ -3439,6 +3585,59 @@ function Main:ShowHub()
       self.diffName:SetWordWrap(true)
       self.diffName:SetSize(inner,select(2,self.diffName:GetFont())*2.5)
       self.diffBlurb:SetShown(self.botMode==true and not picking)
+      -- Ranked: your medal and season where the opponent's hero stands
+      local ranked=self.botMode and not self.duelSession and ns.Main:RankedMode()
+      for i,b in ipairs(self.rankToggle) do
+        b:SetShown(toggleH>0)
+        if toggleH>0 then
+          local tw=(inner-8)/2
+          b:ClearAllPoints(); b:SetSize(tw,toggleH)
+          b:SetPoint("TOPLEFT",self.stage,"TOPLEFT",18+(i-1)*(tw+8),-16)
+          local chosen=(i==1)==(ranked==true)
+          b:SetEnabledLook(true); b:SetAlpha(1)
+          -- chosen: the bright plaque with dark lettering; the other: dark
+          -- wood with light lettering -- not a faded copy (judge, docs/45)
+          if not rawget(b,"woodShade") then
+            b.woodShade=b:CreateTexture(nil,"ARTWORK",nil,-2)
+            b.woodShade:SetPoint("TOPLEFT",b,"TOPLEFT",4,-4); b.woodShade:SetPoint("BOTTOMRIGHT",b,"BOTTOMRIGHT",-4,4)
+            b.woodShade:SetColorTexture(.2,.12,.06,.78)
+          end
+          b.woodShade:SetShown(not chosen)
+          b.textColor=chosen and W.Colors.button or {.86,.76,.56}
+          W.ApplyStyle(b.text,"button",h,nil,b.textColor)
+        end
+      end
+      self.medal:SetShown(ranked==true)
+      self.stageHero:SetShown(not ranked)
+      if ranked then
+        local st=ns.Main:Ladder()
+        local ms=math.min(pw,ph/1.2)*.96
+        self.medal:ClearAllPoints(); self.medal:SetPoint("TOP",self.stageHero,"TOP",0,-(ph-ms*1.2)/2)
+        self.medal:Layout(ms,{stars=true}); self.medal:Set(st.rank,st.stars,st.legend)
+        self.stageName:SetText(ns.Ladder.Label(st.rank,st.legend))
+        self.stageDetail:SetText(ns.Ladder.Name(st.rank))
+        local reset=ns.Main.ladderReset
+        local line
+        if reset then line=("A new season! You start at rank %d."):format(reset.to.rank)
+        elseif (st.wins+st.losses)==0 then line="Win games to earn stars and climb."
+        elseif st.streak>=2 and st.rank>5 then line=("Season %d-%d. On a win streak!"):format(st.wins,st.losses)
+        else line=("Season %d-%d"):format(st.wins,st.losses) end
+        self.diffName:SetText(line)
+      end
+      do
+        local CLASS_RGB={DRUID={1,.49,.04},HUNTER={.67,.83,.45},MAGE={.25,.78,.92},PALADIN={.96,.55,.73},
+          PRIEST={1,1,1},ROGUE={1,.96,.41},SHAMAN={0,.44,.87},WARLOCK={.53,.53,.93},WARRIOR={.78,.61,.43}}
+        local rgb=ranked and {1,.8,.42} or (CLASS_RGB[stageClass] or {1,.8,.42})
+        local art=ranked and self.medal or self.stageHero
+        local sz=math.max(art:GetWidth() or pw,art:GetHeight() or ph)
+        for _,t in ipairs({self.stageRays,self.stageHalo,self.stageCrest}) do t:ClearAllPoints(); t:SetPoint("CENTER",art,"CENTER",0,0) end
+        self.stageHalo:SetSize(sz*1.55,sz*1.55); self.stageHalo:SetVertexColor(rgb[1],rgb[2],rgb[3]); self.stageHalo:SetAlpha(.55)
+        self.stageRays:SetSize(sz*1.9,sz*1.9); self.stageRays:SetVertexColor(rgb[1],rgb[2],rgb[3]); self.stageRays:SetAlpha(.22)
+        self.stageCrest:SetTexture(ART.."class-"..(ranked and ns.Main:PlayerClass() or stageClass):lower()..".tga")
+        self.stageCrest:SetSize(sz*1.15,sz*1.15); self.stageCrest:SetVertexColor(1,1,1); self.stageCrest:SetAlpha(.16)
+        local show=self.botMode==true
+        self.stageRays:SetShown(show); self.stageHalo:SetShown(show); self.stageCrest:SetShown(show)
+      end
       self.play.text:SetText(self.duelSession and (self.duelSession.committed and "Waiting..." or "Ready") or (picking and "Play" or "Choose Deck"))
       W.ApplyStyle(self.play.text,"playButton",h*(picking and 1.08 or .85))
       self.play:SetEnabledLook(not (self.duelSession and self.duelSession.committed) and (not picking or self.selectedDeck~=false))
@@ -3471,11 +3670,12 @@ function Main:ShowHub()
         local capsW=600-faceW
         local recordW=math.max(190,math.ceil(self.privacy.text:GetStringWidth()+capsW+16))
         local rowH=17
-        self.record:SetContent("Your Record",nil,recordW,rowH*2)
+        self.record:SetContent("Your Record",nil,recordW,rowH*3)
+        local st=ns.Main:Ladder()
         local rowY=-(14+self.record.title:GetStringHeight()+4)
-        for i,row in ipairs({{"Duels:",duel},{"Practice:",practice}}) do
+        for i,row in ipairs({{"Duels:",duel},{"Casual:",practice},{"Ladder:",nil,ns.Ladder.Label(st.rank,st.legend)}}) do
           local r=self.recordRows[i]
-          r.label:SetText(row[1]); r.value:SetText(W.RecordText(row[2].wins,row[2].losses,true," - "))
+          r.label:SetText(row[1]); r.value:SetText(row[3] or W.RecordText(row[2].wins,row[2].losses,true," - "))
           r.label:ClearAllPoints(); r.label:SetSize(recordW/2-18,rowH)
           r.label:SetPoint("TOPRIGHT",self.record,"TOP",-3,rowY)
           r.value:ClearAllPoints(); r.value:SetSize(recordW/2-12,rowH)
@@ -3656,9 +3856,16 @@ SlashCmdList["FOREVERHEARTHSTONE"] = function(msg)
   if msg == "" then
     Main:ShowHub()
 
-  elseif msg == "practice" then
+  elseif msg == "practice" or msg == "ladder" or msg == "ranked" or msg == "casual" then
+    if msg ~= "practice" then Main:SetRankedMode(msg ~= "casual") end
     Main:ShowHub()
-    Main.hub.botMode=true; Main.hub.chooseDeck=false; Main.hub.selectedDeck=false; Main.hub:Layout()
+    Main.hub.botMode=true; Main.hub.chooseDeck=Main:RankedMode(); Main.hub.selectedDeck=false; Main.hub:Layout()
+    if msg == "ladder" or msg == "ranked" then
+      local st = Main:Ladder()
+      Main:Print(("bot ladder: %s (%s), %d stars. Season %s: %d-%d."):format(
+        ns.Ladder.Label(st.rank, st.legend), ns.Ladder.Name(st.rank), st.stars,
+        tostring(st.season), st.wins, st.losses))
+    end
 
   elseif msg:match("^difficulty") then
     -- /fh difficulty            what it is now
@@ -3851,7 +4058,7 @@ SlashCmdList["FOREVERHEARTHSTONE"] = function(msg)
 
   else
     -- every command a player uses; diagnostics under /fh help dev
-    Main:Print("commands: /fh (main menu) | practice | difficulty [1-5] | collection | open | rewards | drops")
+    Main:Print("commands: /fh (main menu) | ladder | casual | difficulty [1-5] | collection | open | rewards | drops")
     Main:Print("  decks: /fh deck | deck new <name> | deck <n> | deck use <n>")
     Main:Print("  duels: /fh duel [name] | accept | decline | concede | claim | resume")
     Main:Print("  who may challenge you: /fh challenges anyone|friends|off | block <name> | unblock <name> | blocked")

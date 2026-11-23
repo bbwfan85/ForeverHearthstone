@@ -3832,4 +3832,114 @@ W.NewToastStage = newToastStage
 W.NewTween = newTween
 W.TickTween = tweenTick
 
+
+-- ============================================================= rank medal
+
+--[[ A LADDER RANK MEDAL, as the classic ladder drew one: the rank's minion in a
+  round gold setting (Legend's is orange and flared), the rank number on a red
+  ribbon across its foot, and the rank's stars in a row beneath -- lit for the
+  stars won, dark sockets for those still to win (docs/45).
+
+      local m = W.RankMedal(parent)
+      m:Set(rank, stars, legend)      -- rank 0 is Legend
+      m:Layout(size, { stars = true })
+
+  Art: Art/rank-medal*.tga and rank-star*.tga (tools/build_rank_art.py); the
+  portrait is the namesake card's art through the resolver, and the Innkeeper
+  (rank 1, no card) wears the Hearthstone swirl from the tavern cabinet.
+]]
+-- The swirl crest at the top of tavern-cabinet.tga, as texcoords.
+local RANK_INNKEEPER = { tex = ART .. "tavern-cabinet.tga", coords = { 0.452, 0.548, 0.06, 0.27 } }
+
+function W.RankMedal(parent)
+  local m = CreateFrame("Frame", nil, parent)
+  m:EnableMouse(false)
+  m.portrait = m:CreateTexture(nil, "ARTWORK", nil, 1)
+  m.portraitMask = W.Mask(m, m.portrait, "mask-oval")
+  m.ring = m:CreateTexture(nil, "OVERLAY", nil, 1)
+  m.ribbon = m:CreateTexture(nil, "OVERLAY", nil, 2)
+  m.ribbon:SetTexture(ART .. "hs-ribbon.tga")
+  m.number = m:CreateFontString(nil, "OVERLAY", nil, 3)
+  W.ApplyStyle(m.number, "number", nil, 14)
+  m.number:SetJustifyH("CENTER"); m.number:SetWordWrap(false)
+  m.stars = {}
+  for i = 1, 5 do
+    m.stars[i] = m:CreateTexture(nil, "OVERLAY", nil, 2)
+  end
+
+  function m:Set(rank, stars, legend)
+    rank = math.max(0, math.min(25, math.floor(tonumber(rank) or 25)))
+    self.rank, self.starsWon, self.legend = rank, stars or 0, legend
+    local info = ns.Ladder and ns.Ladder.RANKS[rank] or {}
+    local icon
+    if info.card and ns.Main and ns.Main.resolver then
+      local c = ns.Main.resolver:Card(info.card)
+      icon = c and c.icon
+    end
+    if icon then
+      self.portrait:SetTexture(icon)
+      -- the face, not the frame of the art: a central square of it
+      self.portrait:SetTexCoord(0.14, 0.86, 0.08, 0.80)
+    elseif rank == 1 then
+      self.portrait:SetTexture(RANK_INNKEEPER.tex)
+      self.portrait:SetTexCoord(unpack(RANK_INNKEEPER.coords))
+    else
+      self.portrait:SetColorTexture(.2, .14, .08, 1)
+    end
+    self.ring:SetTexture(ART .. (rank == 0 and "rank-medal-legend.tga" or "rank-medal.tga"))
+    --[[ The setting by tier, as the classic medals climbed: bronze at 25-21,
+         silver at 20-11, gold from 10 (Legend has its own orange). ]]
+    if rank == 0 or rank <= 10 then self.ring:SetVertexColor(1, 1, 1)
+    elseif rank <= 20 then self.ring:SetVertexColor(.78, .84, .92)
+    else self.ring:SetVertexColor(.86, .58, .34) end
+    if rank == 0 then
+      self.number:SetText(legend and tostring(legend) or "Legend")
+    else
+      self.number:SetText(tostring(rank))
+    end
+    self:Layout(rawget(self, "size") or 64, rawget(self, "opts"))
+  end
+
+  function m:Layout(size, opts)
+    size = math.max(16, size or 64)
+    self.size, self.opts = size, opts or rawget(self, "opts") or {}
+    local withStars = self.opts.stars ~= false
+    local starH = withStars and size * 0.2 or 0
+    self:SetSize(size, size + starH)
+    self.ring:ClearAllPoints(); self.ring:SetPoint("TOP", self, "TOP", 0, 0); self.ring:SetSize(size, size)
+    self.portrait:ClearAllPoints(); self.portrait:SetPoint("CENTER", self.ring, "CENTER", 0, 0)
+    self.portrait:SetSize(size * 0.8, size * 0.8)
+    -- the ribbon crosses the medal's foot
+    local rw, rh = size * 1.02, size * 0.255
+    self.ribbon:ClearAllPoints(); self.ribbon:SetPoint("CENTER", self.ring, "BOTTOM", 0, size * 0.14)
+    self.ribbon:SetSize(rw, rh)
+    self.number:ClearAllPoints(); self.number:SetPoint("CENTER", self.ribbon, "CENTER", 0, size * 0.005)
+    self.number:SetSize(rw * 0.7, rh * 0.86)
+    local rank, legend = rawget(self, "rank"), rawget(self, "legend")
+    local legendWord = rank == 0 and not legend
+    W.ApplyStyle(self.number, legendWord and "label" or "number", nil,
+      math.max(8, math.floor(rh * (legendWord and 0.5 or 0.68))))
+    -- gold lettering on the red ribbon, not stark white
+    self.number:SetTextColor(1, .88, .54)
+    local n = (withStars and rank and rank > 0) and ns.Ladder.Stars(rank) or 0
+    local s = math.min(starH * 0.95, size / 5.4)
+    local total = n * s * 0.92
+    for i, star in ipairs(self.stars) do
+      if i <= n then
+        star:SetTexture(ART .. (i <= (rawget(self, "starsWon") or 0) and "rank-star.tga" or "rank-star-empty.tga"))
+        star:ClearAllPoints()
+        star:SetPoint("TOPLEFT", self, "TOP", -total / 2 + (i - 1) * s * 0.92, -size * 0.98)
+        star:SetSize(s, s)
+        star:Show()
+      else
+        star:Hide()
+      end
+    end
+  end
+
+  m:Layout(64)
+  return m
+end
+
+
 return W

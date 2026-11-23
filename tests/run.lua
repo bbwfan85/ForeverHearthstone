@@ -90,6 +90,7 @@ local SUITES = {
   "tests.test_rulings",
   "tests.test_readiness",
   "tests.test_tour",
+  "tests.test_ladder",
 }
 
 for _, mod in ipairs(SUITES) do

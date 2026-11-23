@@ -3184,7 +3184,8 @@ H.suite("ui: the main menu's record lines its W - L figures up on the card's cen
   H.eq((rows[1].value:GetText():gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", "")), "12 W - 3 L", "with this character's duel record")
   H.ok(rows[1].value:GetText():find("|c" .. ns.Widgets.RECORD_COLOURS.light.win .. "12 W|r", 1, true), "wins in green")
   H.ok(rows[1].value:GetText():find("|c" .. ns.Widgets.RECORD_COLOURS.light.loss .. "3 L|r", 1, true), "losses in red")
-  H.eq(rows[2].label:GetText(), "Practice:", "practice row")
+  H.eq(rows[2].label:GetText(), "Casual:", "casual (practice) row")
+  H.eq(rows[3].label:GetText(), "Ladder:", "and the ladder rank (docs/45)")
   for i, r in ipairs(rows) do
     local lp, vp = r.label.points[1], r.value.points[1]
     H.eq(lp[1], "TOPRIGHT", "row " .. i .. ": the label ends at the centre line")

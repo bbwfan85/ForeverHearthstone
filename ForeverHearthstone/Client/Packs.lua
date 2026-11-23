@@ -208,6 +208,8 @@ function Packs.Open(collection, set, opts)
   end
 
   for _, c in ipairs(pack.cards) do
+    -- never owned before this card: the reveal (and the bulk summary) say NEW
+    c.new = collection:Count(c.cardId) == 0
     collection:Add(c.cardId, 1, c.golden)
     --[[ A COPY NO DECK CAN USE BECOMES DUST AS THE PACK OPENS -- the third
          common, the second legendary. Kept, it only sat in the collection
@@ -227,6 +229,68 @@ function Packs.Open(collection, set, opts)
   end
 
   return pack
+end
+
+--[[ OPENING MANY AT ONCE: Hearthstone's bulk opening (Patch 27.6, October
+     2023: "open multiple packs at once", up to 40). Each pack is opened
+     exactly as Open opens one -- the same odds, the same guaranteed rare, the
+     same duplicate dust -- one after another, so the contents never depend on
+     how many were opened together ("The amount of packs purchased at once
+     does not in any way affect the contents", hearthstone.wiki.gg/wiki/
+     Card_pack).
+
+     Returns { packs = n, cards = every card in opening order, summary =
+     { [rarity] = copies }, dust = dust from duplicates, distinct = one entry
+     per card and finish, best first (Packs.SortBulk) }. ]]
+Packs.BULK_MAX = 40
+
+local RARITY_RANK = { LEGENDARY = 4, EPIC = 3, RARE = 2, COMMON = 1, FREE = 0 }
+
+function Packs.SortBulk(list, printed)
+  printed = printed or ns.PrintedCards or {}
+  table.sort(list, function(a, b)
+    local ra, rb = RARITY_RANK[a.rarity] or 0, RARITY_RANK[b.rarity] or 0
+    if ra ~= rb then return ra > rb end
+    if a.golden ~= b.golden then return a.golden end
+    if (a.new and true or false) ~= (b.new and true or false) then return a.new and true or false end
+    local pa, pb = printed[a.cardId] or {}, printed[b.cardId] or {}
+    if (pa.cost or 0) ~= (pb.cost or 0) then return (pa.cost or 0) < (pb.cost or 0) end
+    return (pa.name or a.cardId) < (pb.name or b.cardId)
+  end)
+  return list
+end
+
+function Packs.OpenMany(collection, set, n, opts)
+  n = math.max(1, math.min(Packs.BULK_MAX, math.floor(tonumber(n) or 1)))
+  n = math.min(n, collection:PackCount(set))
+  if n <= 0 then return nil, "no packs to open" end
+  local out = { set = set, packs = 0, cards = {}, summary = {}, dust = 0, distinct = {}, packList = {} }
+  local byKey = {}
+  for _ = 1, n do
+    local pack, why = Packs.Open(collection, set, opts)
+    if not pack then
+      if out.packs == 0 then return nil, why end
+      break
+    end
+    out.packs = out.packs + 1
+    out.packList[#out.packList + 1] = pack   -- each pack, for the reveal
+    for _, c in ipairs(pack.cards) do
+      out.cards[#out.cards + 1] = c
+      out.summary[c.rarity] = (out.summary[c.rarity] or 0) + 1
+      out.dust = out.dust + (c.dust or 0)
+      local key = c.cardId .. (c.golden and "*" or "")
+      local e = byKey[key]
+      if not e then
+        e = { cardId = c.cardId, rarity = c.rarity, golden = c.golden, copies = 0, dust = 0 }
+        byKey[key] = e; out.distinct[#out.distinct + 1] = e
+      end
+      e.copies = e.copies + 1
+      e.new = e.new or c.new
+      if c.dust then e.dust = e.dust + c.dust; e.dusted = (e.dusted or 0) + 1 end
+    end
+  end
+  Packs.SortBulk(out.distinct)
+  return out
 end
 
 -- ======================================================== mob card drops

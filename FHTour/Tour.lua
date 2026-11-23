@@ -256,8 +256,20 @@ function Tour:Scenes()
   local function add(name, fn, wait, pre) S[#S + 1] = { name = name, fn = fn, wait = wait, pre = pre } end
 
   -- ---------------------------------------------------------- menus
-  add("hub", function() M:ShowHub() end, 1.2)
-  add("practice-new", function() M.hub.buttons[1]:Click() end, 0.8)
+  add("hub", function() M:SetRankedMode(true); M:ShowHub() end, 1.2)
+  -- the bot ladder (docs/45): Ranked opens on the decks with your medal
+  add("ladder-ranked", function() M.hub.buttons[1]:Click() end, 0.9)
+  add("ladder-ranked-stars", function()
+    local st = M:Ladder()
+    st.rank, st.stars, st.best, st.bestStars, st.wins, st.losses, st.streak = 7, 3, 7, 3, 41, 30, 2
+    M.hub:Layout()
+  end, 0.8)
+  add("ladder-legend", function()
+    local st = M:Ladder()
+    st.rank, st.stars, st.legend, st.best, st.streak = 0, 0, 812, 0, 0
+    M.hub:Layout()
+  end, 0.8)
+  add("practice-new", function() M.hub.rankToggle[2]:Click() end, 0.8)
   add("practice-decks", function() M.hub.play:Click() end, 0.8)
   add("collection", function() M.hub:Hide(); ui = M:Collection(true) end, 2.0)
   add("collection-page-two", function() ui:TurnPage(1) end, 1.5)
@@ -288,6 +300,19 @@ function Tour:Scenes()
     end
     ui:ShowDecks()
   end, 1.0)
+  -- deck codes (docs/45): out, in, and what an import is missing
+  add("deck-code-export", function()
+    ui:ShowDeckCode("export", M.collection.character.decks[deckIndex])
+  end, 0.8)
+  add("deck-code-import", function()
+    ui.codeDialog:Hide()
+    ui:ShowDeckCode("import")
+    local top = ns.BotDecks.Pick(class, 5)
+    ui.codeDialog.box:SetText(ns.DeckCode.Export({ class = class, name = top.name, cards = ns.BotDecks.Expand(top) }))
+    ui.codeDialog.box:ClearFocus()
+  end, 0.6)
+  add("deck-code-plan", function() ui:ReadDeckCode(ui.codeDialog.box:GetText()) end, 0.8)
+  add(nil, function() ui.codeDialog:Hide() end, 0.2)
   add("pack-room", function() ui:ShowPackRoom() end, 1.5)
   add("pack-open-start", function()
     M.collection:AddPack("CLASSIC", 1)
@@ -309,6 +334,15 @@ function Tour:Scenes()
   add("pack-reveal-all", function()
     for i = 1, 5 do if i ~= 4 then ui:RevealCard(i) end end
   end, 1.6)
+  -- opening many at once (docs/45)
+  add("pack-room-bulk", function()
+    ui:ClosePack()
+    M.collection:AddPack("HEARTHSTONE", 14)
+    ui:ShowPackRoom()
+  end, 1.2)
+  add("pack-bulk-result", function() ui.bulkCount = 14; ui:OpenBulk(14) end, 1.6)
+  add("pack-bulk-page-two", function() ui.bulkPage = 2; ui:Relayout() end, 1.0)
+  add(nil, function() ui:CloseBulk() end, 0.3)
   add("disenchant-confirm", function()
     ui:Show(); ui:EditDeck(deckIndex)
     M.collection:Add("EX1_116", 1)
@@ -346,7 +380,7 @@ function Tour:Scenes()
        directly left the hub's deck book drawn over the whole match in run 1. ]]
   local function fromHub(name, pre)
     add(nil, function()
-      self:Clear(); M:ShowHub()
+      self:Clear(); M:SetRankedMode(false); M:ShowHub()
       M.hub.botMode, M.hub.chooseDeck, M.hub.selectedDeck = false, false, false
       M.hub:Layout(); M.hub.buttons[1]:Click()
     end, 0.8, pre)
@@ -424,6 +458,20 @@ function Tour:Scenes()
     pcall(function() M:ConcedeMatch() end)
     b:Hide()
   end, 1.0)
+
+  -- ---------------------------------------------------------- a ranked game
+  add(nil, function()
+    self:Clear()
+    local st = M:Ladder()
+    st.rank, st.stars, st.legend, st.best, st.streak = 12, 2, nil, 12, 0
+    M:SetRankedMode(true); M:ShowHub()
+    M.hub.botMode, M.hub.chooseDeck, M.hub.selectedDeck = false, false, false
+    M.hub:Layout(); M.hub.buttons[1]:Click()
+  end, 0.8, 1.0)
+  add("ranked-mulligan", function() M.hub.play:Click() end, 4.0)
+  add("ranked-postgame", function() pcall(function() M:ConcedeMatch() end) end, 3.0)
+  add("ranked-postgame-medal", function() end, 3.5)
+  add(nil, function() if M.board then M.board:Hide() end end, 0.5)
 
   -- ---------------------------------------------------------- a real match
   fromHub(nil, 1.0)

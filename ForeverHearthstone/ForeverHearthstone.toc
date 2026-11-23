@@ -6,7 +6,7 @@
 ## Title: Forever Hearthstone
 ## Notes: A faithful recreation of Hearthstone's Basic, Classic, Naxxramas and Goblins vs Gnomes sets, played between two players sitting near each other in the world.
 ## Author: bbwfan85
-## Version: 1.1.0
+## Version: 1.2.0
 ## IconTexture: Interface\AddOns\ForeverHearthstone\Art\minimap-icon.tga
 ## AddonCompartmentFunc: ForeverHearthstone_OnAddonCompartmentClick
 ## SavedVariables: ForeverHearthstoneDB
@@ -38,6 +38,7 @@ Engine\Targeting.lua
 Engine\Game.lua
 
 Data\PrintedCards.lua
+Data\DbfIds.lua
 Data\Effects\Generated.lua
 Data\Effects\Handwritten.lua
 
@@ -59,6 +60,7 @@ Client\UI\Layout.lua
 Client\UI\CollectionLayout.lua
 Client\Actions.lua
 Client\Collection.lua
+Client\DeckCode.lua
 Client\Packs.lua
 Client\Drops.lua
 Client\Controller.lua
@@ -66,7 +68,10 @@ Client\Net\Protocol.lua
 Client\Net\Session.lua
 Client\Vault.lua
 Client\BotDecks.lua
+Client\BotDecksExtra.lua
 Client\AI.lua
+Client\Ladder.lua
+Client\BotNames.lua
 Client\Net\DevTest.lua
 Client\Rewards.lua
 Client\Net\Transport.lua

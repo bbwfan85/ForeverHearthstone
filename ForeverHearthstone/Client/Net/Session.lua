@@ -113,7 +113,8 @@ function Session.New(opts)
   s.getPosition = opts.getPosition
   s.me       = { name = opts.name or "you", class = opts.class or "MAGE",
                  deck = opts.deck, level=opts.level, guid=opts.guid,
-                 wins = opts.wins, losses = opts.losses }
+                 wins = opts.wins, losses = opts.losses,
+                 rank = opts.rank, legend = opts.legend }
   s.peer     = {}
   s.nonce    = opts.nonce or tostring(math.floor((opts.now or 0) * 1000) + 1)
   s.hashes   = {}          -- turn -> our own fingerprint, for late comparison
@@ -233,7 +234,11 @@ function Session:SendHello(role)
   self:Send(KIND.HELLO, Protocol.VERSION, Protocol.ADDON_VERSION,
             self.me.class, self.me.name, self.me.level or 0, self.me.guid or "", 1,
             self.me.wins or 0, self.me.losses or 0, role,
-            pos.x or "", pos.y or "", pos.z or "", pos.instance or "", self.challengeId or "")
+            pos.x or "", pos.y or "", pos.z or "", pos.instance or "", self.challengeId or "",
+            --[[ 16-17: the bot-ladder rank (Client/Ladder.lua) and Legend number.
+                 Trailing and optional: a 1.1 client ignores them and sends
+                 none, so no protocol bump (docs/45). ]]
+            self.me.rank or "", self.me.legend or "")
 end
 
 function Session:ReadPeerPosition(x, y, z, instance)
@@ -790,6 +795,7 @@ handlers[KIND.HELLO] = function(s, msg)
   s.peer.level=tonumber(msg[5]); s.peer.guid=msg[6]
   s.peer.heartbeat=tonumber(msg[7])==1
   s.peer.wins, s.peer.losses = tonumber(msg[8]), tonumber(msg[9])
+  s.peer.rank, s.peer.legend = Session.ReadRank(msg[16], msg[17])
   s:ReadPeerPosition(msg[11], msg[12], msg[13], msg[14])
 
   if s.state == S.IDLE then
@@ -1045,9 +1051,20 @@ handlers[KIND.PING] = function(s, msg)
     s:Send(KIND.PING,'over')
   end
 end
+--[[ A ladder rank off the wire: a whole number 0 (Legend) to 25, and a Legend
+     number only with Legend. Anything else is no rank at all. ]]
+function Session.ReadRank(rank, legend)
+  rank = tonumber(rank)
+  if not rank or rank ~= math.floor(rank) or rank < 0 or rank > 25 then return nil, nil end
+  legend = tonumber(legend)
+  if rank ~= 0 or not legend or legend ~= math.floor(legend) or legend < 1 or legend > 1e6 then legend = nil end
+  return rank, legend
+end
+
 handlers[KIND.PROFILE] = function(s,msg)
   s.peer.level=tonumber(msg[1]); s.peer.guid=msg[2]
   if msg[3] then s.peer.wins, s.peer.losses = tonumber(msg[3]), tonumber(msg[4]) end
+  if msg[5] then s.peer.rank, s.peer.legend = Session.ReadRank(msg[5], msg[6]) end
   emit(s,"PROFILE",s.peer)
 end
 handlers[KIND.BYE] = function(s, msg)

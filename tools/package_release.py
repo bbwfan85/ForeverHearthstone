@@ -45,7 +45,8 @@ DIST = ROOT / "dist"
 PRUNE = {
     "board.tga", "board1.tga", "board2.tga", "board3.tga", "orgrimmar.tga", "orgrimmar_clean.tga",
     "menu-pack-room.tga", "endturn-green.tga", "endturn-grey.tga", "endturn-yellow.tga",
-    "hs-ribbon.tga", "hs-ribbon-dark.tga", "menu-nav.tga", "card-digits.tga",
+    # hs-ribbon.tga ships again: the rank medal's banner (docs/45)
+    "hs-ribbon-dark.tga", "menu-nav.tga", "card-digits.tga",
 }
 # Files that are development material, not the addon.
 # Import reports, provenance notes and the art README are for whoever rebuilds

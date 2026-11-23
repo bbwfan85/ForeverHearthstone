@@ -401,6 +401,16 @@ frameMethods.SetFocus = function(s) s.hasFocus=true end
 frameMethods.HasFocus = function(s) return s.hasFocus==true end
 frameMethods.SetFont = function(s,...) s.font={...} end
 frameMethods.SetTextInsets = function(s,...) s.textInsets={...} end
+-- EditBox: a pasted or copied deck code (docs/45)
+frameMethods.SetMultiLine = function(s,v) s.multiLine=v end
+-- ScrollFrame (the deck-code box scrolls inside one)
+frameMethods.SetScrollChild = function(s,c) s.scrollChild=c end
+frameMethods.SetVerticalScroll = function(s,v) s.vscroll=v end
+frameMethods.GetVerticalScroll = function(s) return s.vscroll or 0 end
+frameMethods.GetVerticalScrollRange = function(s) return 0 end
+frameMethods.HighlightText = function(s,a,b) s.highlight={a or 0,b or -1} end
+frameMethods.SetMaxLetters = function(s,n) s.maxLetters=n end
+frameMethods.SetCursorPosition = function(s,n) s.cursor=n end
 frameMethods.SetTextColor = function(s,...) s.textColor={...} end
 frameMethods.SetText         = function(s, t)
   local changed=rawget(s,"text")~=t; s.text=t

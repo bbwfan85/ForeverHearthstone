@@ -231,7 +231,8 @@ local function withUI(ns, fn, opts)
   Stub.Install(_G)
   Stub.resting = false
   Stub.units = { player = { name = "Tester", class = "MAGE", isPlayer = true, level = opts.level or 60 } }
-  _G.ForeverHearthstoneDB = {}
+  -- the Casual flow (opponent, then deck) unless a test asks for Ranked (docs/45)
+  _G.ForeverHearthstoneDB = { botCasual = (not opts.ranked) or nil }
   _G.ForeverHearthstoneCharDB = {}
   for _, path in ipairs(WOW_FILES) do
     assert(loadfile(path))("ForeverHearthstone", ns)
@@ -1803,4 +1804,270 @@ H.suite("collection: typing a rarity or a set into search filters by it", functi
     H.ok(#gvg > 0)
     for _, e in ipairs(gvg) do H.eq(e.printed.set, "GVG") end
   end)
+end)
+
+--============================================================ docs/45
+
+H.suite("ladder ui: Play Bot Ladder opens Ranked on your decks, with your medal", function(ns, H)
+  withUI(ns, function(Main, ns)
+    Main:ShowHub(); Stub.Advance(.4)
+    local hub = Main.hub
+    hub:SetSize(1280, 720)
+    H.eq(hub.buttons[1].text:GetText(), "Play Bot Ladder", "the menu plaque says so")
+    hub.buttons[1]:Click()
+    H.ok(hub.botMode and hub.chooseDeck, "Ranked goes straight to the decks")
+    H.ok(hub.medal:IsShown(), "your medal stands on the stage")
+    H.notOk(hub.stageHero:IsShown(), "where the opponent's hero would")
+    H.eq(hub.stageName:GetText(), "Rank 25", "a new player is rank 25")
+    H.eq(hub.stageDetail:GetText(), "Angry Chicken")
+    H.ok(hub.rankToggle[1]:IsShown() and hub.rankToggle[2]:IsShown(), "Ranked | Casual")
+    -- the stage's floor must draw over the window's cabinet art (reported:
+    -- at the same level the cabinet showed through)
+    H.ok(hub.stage:GetFrameLevel() > hub:GetFrameLevel(), "the stage sits above the window")
+    H.ok(hub.stageFill:IsShown() or hub.stageFill:IsVisible() ~= false, "with its own floor")
+    H.ok(hub.medal:GetFrameLevel() > hub.stage:GetFrameLevel(), "and the medal above the stage")
+    H.ok(hub.rankToggle[1]:GetFrameLevel() > hub.stage:GetFrameLevel(), "and the tabs too")
+    for _, tile in ipairs(hub.tiles) do H.notOk(tile:IsShown(), "no opponent to pick in Ranked") end
+    H.ok(hub.selectedDeck, "a deck is chosen")
+    Stub.Advance(.5)
+    hub.play:Click()
+    H.ok(Main.game and Main.ladderMatch, "a ranked game started")
+    H.ok(Main.botOpts.skill and Main.botOpts.skill < 1.5, "against a bot of rank 25's skill")
+    H.ok(math.abs(Main.ladderMatch.rank - 25) <= 1, "matched near rank 25")
+    -- conceding is a ranked loss, counted once (rank 25 loses no stars)
+    Main:ConcedeMatch(); Main:AnnounceResult()
+    local st = Main:Ladder()
+    H.eq(st.losses, 1, "one loss on the ladder")
+    H.eq(st.rank, 25); H.eq(st.stars, 0)
+    H.eq(Main:PracticeRecord().losses, 0, "the casual record is untouched")
+    H.eq(Main.board.postGameNote, "Season record: 0-1", "the season under the result")
+    H.ok(ns.Ladder.Describe(Main.ladderMatch.change):find("no stars lost"), "and the medal will say what it cost")
+    -- Play again finds a new opponent
+    Main:Rematch()
+    H.ok(Main.ladderMatch and not Main.ladderMatch.recorded, "a fresh ranked game")
+    -- starting another over it forfeits it
+    Main:StartLadder(Main.lastPractice.deck)
+    H.eq(Main:Ladder().losses, 2, "walking out of a ranked game is a loss")
+  end, { ranked = true })
+end)
+
+H.suite("ladder ui: Casual keeps the opponents and the slider", function(ns, H)
+  withUI(ns, function(Main)
+    Main:ShowHub(); Stub.Advance(.4)
+    local hub = Main.hub
+    hub:SetSize(1280, 720)
+    hub.buttons[1]:Click()
+    hub.rankToggle[2]:Click()
+    H.notOk(Main:RankedMode(), "Casual is chosen and saved")
+    H.eq(ForeverHearthstoneDB.botCasual, true)
+    H.ok(hub.tiles[1]:IsShown(), "opponents are offered")
+    H.ok(hub.diffSlider:IsShown(), "with the difficulty")
+    H.notOk(hub.medal:IsShown())
+    hub.rankToggle[1]:Click()
+    H.ok(Main:RankedMode() and hub.chooseDeck, "and back to Ranked")
+  end, { ranked = true })
+end)
+
+H.suite("ladder ui: the nameplates carry both players' ranks", function(ns, H)
+  withUI(ns, function(Main)
+    Main:Ladder().rank = 12
+    Main:StartLadder(nil)
+    local p = Main.board.profiles
+    H.ok(p.self.medal:IsShown(), "yours")
+    H.eq(p.self.medal.number:GetText(), "12")
+    H.ok(p.foe.medal:IsShown(), "and the ladder bot's")
+    local foe = Main.board.profileData.foe
+    H.eq(foe.name, Main.ladderMatch.name, "named like a player")
+    H.notOk(foe.name:find("Bot"), "not \"Mage Bot\"")
+    H.eq(foe.botLabel, Main.game.players[2].class:sub(1,1)..Main.game.players[2].class:sub(2):lower(), "its class under the name")
+  end, { ranked = true })
+end)
+
+H.suite("deck code ui: export selects the code; import lists what is missing", function(ns, H)
+  withUI(ns, function(Main, ns)
+    local ui = Main:Collection()
+    local c = ui.collection
+    c.account.dust = 0
+    ui:ShowDecks()
+    H.ok(ui.menuItems[45]:IsShown(), "Import Deck sits with New Deck")
+    H.eq(ui.menuItems[45].text:GetText(), "Import Deck")
+    -- export the starter deck
+    local deck = c.character.decks[1]
+    ui:EditDeck(1)
+    ui:ShowDeckCode("export", deck)
+    local d = ui.codeDialog
+    H.ok(d:IsShown() and d.box:IsShown(), "the code is in a box")
+    H.ok(d.box:GetText():find("^### "), "Hearthstone's text")
+    H.ok(d.box.highlight, "selected, ready for Ctrl+C")
+    -- export has only Close: no blank plaques (reported with a screenshot)
+    H.notOk(d.buttons[1]:IsShown(), "no empty first button")
+    H.notOk(d.buttons[2]:IsShown(), "no empty second button")
+    H.eq(d.buttons[3].text:GetText(), "Close")
+    H.eq(d.box:GetParent(), d.scroll, "the code scrolls inside its box")
+    d:Hide()
+    -- import a deck with a card this collection lacks
+    local wanted = { class = "MAGE", name = "Antonidas", cards = {} }
+    for i = 1, 29 do wanted.cards[i] = deck.cards[i] end
+    wanted.cards[30] = "EX1_116"                       -- Leeroy: never granted
+    while c:Count("EX1_116") > 0 do c:Remove("EX1_116", 1, c:Owned("EX1_116") == 0) end
+    local before = #c.character.decks
+    ui:ShowDeckCode("import")
+    d.box:SetText(ns.DeckCode.Export(wanted))
+    d.buttons[1]:Click()                                -- Import
+    local v = d.view
+    H.eq(v.owned:GetText(), "29 / 30 cards owned", "the summary counts what you own")
+    H.ok(v.rows[1]:IsShown(), "a row for the missing card")
+    H.eq(v.rows[1].name:GetText(), "Leeroy Jenkins", "by name")
+    H.ok(v.rows[1].price:GetText():find("1,600"), "with its cost: " .. v.rows[1].price:GetText())
+    H.ok(v.rows[1].craft:IsShown(), "and its own Craft button")
+    H.notOk(v.rows[1].craft.enabled, "which waits for the dust")
+    H.notOk(v.warn:IsShown(), "no warning: every card is from these sets")
+    H.notOk(d.buttons[1].enabled, "Craft All waits for the dust")
+    c.account.dust = 5000
+    ui:ReadDeckCode(ns.DeckCode.Export(wanted))         -- read again, now rich
+    -- one card crafted from its own row says Owned and stays listed
+    v.rows[1].craft:Click()
+    H.eq(c:Count("EX1_116"), 1, "the row's Craft made it")
+    H.eq(v.rows[1].price:GetText(), "Owned")
+    H.notOk(v.rows[1].craft:IsShown())
+    c:Remove("EX1_116", 1)                              -- and back, for Craft All below
+    c.account.dust = 5000
+    ui:ReadDeckCode(ns.DeckCode.Export(wanted))
+    H.ok(d.buttons[1].enabled, "now it can be crafted")
+    d.buttons[1]:Click()                                -- Craft & Save
+    H.eq(#c.character.decks, before + 1, "saved as a new deck")
+    H.eq(c:Count("EX1_116"), 1, "Leeroy was crafted")
+    H.eq(#c.character.decks[before + 1].cards, 30, "the whole deck")
+    -- the wrong class is refused before anything is saved
+    ui:ShowDeckCode("import")
+    d.box:SetText(ns.DeckCode.Encode({ class = "WARRIOR", cards = { "EX1_400" } }))
+    d.buttons[1]:Click()
+    H.ok(d.message:GetText():find("Warrior deck"), "another class's deck is refused")
+    -- a code with cards from later sets warns, and leaves them out
+    local raw = ns.DeckCode.Encode({ class = "MAGE", cards = { "CS2_029", "CS2_029" } })
+    -- append an unknown card id (99999) as a single copy: rebuild by hand
+    ui:ShowDeckCode("import")
+    d.importState = nil
+    local decoded = ns.DeckCode.Decode(raw)
+    decoded.unknown = { { dbf = 99999, n = 1 } }
+    d.importState = { decoded = decoded, scroll = 0, maxScroll = 0 }
+    ui:DrawImport()
+    H.ok(v.warn:IsShown(), "a warning for cards this game does not have")
+    H.ok(v.warnText:GetText():find("after Goblins vs Gnomes"), v.warnText:GetText())
+    H.eq(#c.character.decks, before + 1)
+  end)
+end)
+
+H.suite("packs ui: open many at once, the best cards first", function(ns, H)
+  withUI(ns, function(Main, ns)
+    local ui = Main:Collection()
+    while ui.collection:PackCount("HEARTHSTONE") > 0 do ui.collection:TakePack("HEARTHSTONE") end
+    ui.collection:AddPack("HEARTHSTONE", 12)
+    ui:ShowPackRoom()
+    local open = ui.menuItems[50]
+    H.ok(open:IsShown(), "an Open N plaque with two or more packs")
+    H.eq(open.text:GetText(), "Open 10", "ten to start")
+    ui.menuItems[52]:Click(); ui.menuItems[52]:Click(); ui.menuItems[52]:Click()
+    H.eq(ui.bulkCount, 12, "+ stops at what you have")
+    ui.menuItems[51]:Click()
+    ui.menuItems[50]:Click()
+    -- each pack plays its own reveal, by itself
+    H.ok(ui.bulkPlay and ui.pack, "the first pack is on the table")
+    H.eq(ui.bulkPlay.index, 1)
+    H.eq(ui.bulkCounter:GetText(), "Pack 1 of 11")
+    H.ok(ui.bulkSkip:IsShown(), "with a way straight to the summary")
+    local first = ui.pack
+    for _ = 1, 40 do Stub.Advance(0.25) end
+    H.ok(ui.bulkPlay and ui.bulkPlay.index >= 2, "the next pack follows without a click")
+    H.ok(ui.pack ~= first)
+    local fresh = ui.pack
+    local revealed = 0
+    for i = 1, 5 do if ui.revealedCards and ui.revealedCards[i] then revealed = revealed + 1 end end
+    H.ok(revealed < 5 or ui.pack ~= fresh, "cards turn over one at a time")
+    ui.bulkSkip:Click()
+    H.ok(ui.bulk, "Skip shows everything")
+    H.eq(ui.bulkPlay, nil)
+    H.eq(ui.bulk.packs, 11)
+    H.eq(ui.collection:PackCount("HEARTHSTONE"), 1)
+    H.ok(#ui.slots > 0, "cards on the table")
+    H.eq(ui.slots[1].entry, ui.bulk.distinct[1], "best first")
+    H.ok(ui.bulkSummary:GetText():find("Rare") or ui.bulkSummary:GetText():find("Epic")
+      or ui.bulkSummary:GetText():find("Legendary"), "the summary counts rarities")
+    ui.menuItems[55]:Click()                          -- Done
+    H.eq(ui.bulk, nil, "Done returns to the room")
+    H.notOk(ui.menuItems[50]:IsShown(), "one pack left: no bulk plaque")
+  end)
+end)
+
+H.suite("ladder ui: after a ranked game the medal plays its stars, and Play Again queues", function(ns, H)
+  withUI(ns, function(Main)
+    local st = Main:Ladder()
+    st.rank, st.stars, st.best = 12, 2, 12
+    Main:StartLadder(nil)
+    local b = Main.board
+    H.ok(b.rankedGame, "the board knows it is ranked")
+    Main:ConcedeMatch(); Main:AnnounceResult()
+    for _ = 1, 30 do Stub.Advance(0.2) end            -- the result, then the medal
+    local p = b.ladderPanel
+    H.ok(p and p:IsShown(), "the medal took the result's place")
+    H.notOk(b.result:IsShown(), "the result art stepped aside")
+    H.eq(p.medal.number:GetText(), "12")
+    H.eq(rawget(p.medal, "starsWon"), 1, "the star went dark")
+    H.ok((p.caption:GetText() or ""):find("lost a star"), "and it says so: " .. tostring(p.caption:GetText()))
+    H.eq(b.postGame.primary.text:GetText(), "Play Again", "Play Again, not Rematch")
+    b.postGame.primary:Click()
+    H.ok(Main.ladderMatch and not Main.ladderMatch.recorded, "a new ranked game is queued")
+    H.notOk(b.ladderPanel:IsShown(), "and the medal is gone from the new table")
+  end, { ranked = true })
+end)
+
+H.suite("packs ui: a bulk opening plays every pack by itself, to the summary", function(ns, H)
+  --[[ Reported: "just does one". Starting the next pack inside the reveal's
+       own timeline left the new pack's crack and auto-flips in a list the
+       ticker then overwrote, so pack 2 froze with its shell still up. ]]
+  withUI(ns, function(Main, ns)
+    local ui = Main:Collection()
+    while ui.collection:PackCount("HEARTHSTONE") > 0 do ui.collection:TakePack("HEARTHSTONE") end
+    ui.collection:AddPack("HEARTHSTONE", 5)
+    ui:ShowPackRoom()
+    ui.bulkCount = 5
+    ui:OpenBulk(5)
+    local seen = {}
+    for _ = 1, 400 do
+      if ui.bulkPlay then seen[ui.bulkPlay.index] = true end
+      if ui.bulk then break end
+      Stub.Advance(0.1)
+    end
+    for i = 1, 5 do H.ok(seen[i], "pack " .. i .. " played") end
+    H.ok(ui.bulk, "and the summary came by itself")
+  end)
+end)
+
+H.suite("ladder ui: a rank-up is in colour, over a scrim, with its banner", function(ns, H)
+  withUI(ns, function(Main, ns)
+    local st = Main:Ladder()
+    st.rank, st.stars, st.best = 18, 3, 18
+    Main:StartLadder(nil)
+    local b = Main.board
+    local change = ns.Ladder.Record(Main:Ladder(), true, math.random)
+    b:DrainTable(true)                                   -- the game-over grey
+    b:ShowLadderResult(change)
+    b:DrainTable(false); b:DrainTable(true)              -- and again, after
+    local p = b.ladderPanel
+    for _ = 1, 40 do Stub.Advance(0.1) end
+    local grey = 0
+    local function walk(fr)
+      for _, r in ipairs({ fr:GetRegions() }) do
+        if r:GetObjectType() == "Texture" and r:IsDesaturated() then grey = grey + 1 end
+      end
+      for _, c in ipairs({ fr:GetChildren() }) do walk(c) end
+    end
+    walk(p)
+    H.eq(grey, 0, "nothing on the medal screen is drained grey")
+    H.ok(p.scrim:GetAlpha() > 0.6, "a dark scrim over the table")
+    H.ok(p:GetFrameLevel() > 400, "above the hand")
+    H.eq(p.medal.number:GetText(), "17", "the new rank's medal")
+    H.eq(p.banner:GetText(), "RANK UP!")
+    H.ok(p.banner:GetAlpha() > 0.9, "the banner has dropped in")
+  end, { ranked = true })
 end)

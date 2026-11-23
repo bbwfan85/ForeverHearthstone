@@ -32,6 +32,7 @@ local LOAD_ORDER = {
   "ForeverHearthstone/Engine/Targeting.lua",
   "ForeverHearthstone/Engine/Game.lua",
   "ForeverHearthstone/Data/PrintedCards.lua",
+  "ForeverHearthstone/Data/DbfIds.lua",
   "ForeverHearthstone/Data/Effects/Generated.lua",
   "ForeverHearthstone/Data/Effects/Handwritten.lua",
   -- Client layer. Assets/ and FX/ are deliberately WoW-API-free so they load and
@@ -54,6 +55,7 @@ local LOAD_ORDER = {
   "ForeverHearthstone/Client/UI/CollectionLayout.lua",
   "ForeverHearthstone/Client/Actions.lua",
   "ForeverHearthstone/Client/Collection.lua",
+  "ForeverHearthstone/Client/DeckCode.lua",
   "ForeverHearthstone/Client/Packs.lua",
   "ForeverHearthstone/Client/Drops.lua",
   "ForeverHearthstone/Client/Controller.lua",
@@ -61,7 +63,10 @@ local LOAD_ORDER = {
   "ForeverHearthstone/Client/Net/Session.lua",
   "ForeverHearthstone/Client/Vault.lua",
   "ForeverHearthstone/Client/BotDecks.lua",
+  "ForeverHearthstone/Client/BotDecksExtra.lua",
   "ForeverHearthstone/Client/AI.lua",
+  "ForeverHearthstone/Client/Ladder.lua",
+  "ForeverHearthstone/Client/BotNames.lua",
   "ForeverHearthstone/Client/Net/DevTest.lua",
 }
 

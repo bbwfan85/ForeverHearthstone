@@ -7,5 +7,5 @@
 
   ONLY, when set, limits the tour to scenes whose name contains one of these
   substrings -- for re-shooting just the screens a fix touched. ]]
-FHTOUR_RUN = 4
+FHTOUR_RUN = 5
 FHTOUR_ONLY = nil   -- e.g. { "pack-", "board-states" }

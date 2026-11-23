@@ -1093,6 +1093,8 @@ Board.RESULT_ART = {
 }
 function Board:ShowResult(kind, snap)
   local res = self.result
+  -- a ranked game's medal has taken the result's place (ShowLadderResult)
+  if rawget(self, "ladderShown") then if res then res:Hide() end; return end
   local A = Board.RESULT_ART
   local w, h = self.frame:GetWidth(), self.frame:GetHeight()
   -- about three quarters of the table's height, a little above centre so
@@ -1156,6 +1158,7 @@ function Board:DrainTable(on)
   if self.drained then return end
   local drained, skip = {}, { [self.result] = true, [self.resultDimLayer] = true }
   if self.postGame then skip[self.postGame] = true end
+  if self.ladderPanel then skip[self.ladderPanel] = true end
   local function walk(fr)
     if skip[fr] then return end
     for _, r in ipairs({ fr:GetRegions() }) do
@@ -1216,7 +1219,13 @@ function Board:SetPostGame(state, name)
     closed = "Rematch declined.", starting = "Starting the rematch...",
   })[state] or ""
   p.text:SetText(message)
-  p.primary.text:SetText(state == "invited" and "Accept" or "Rematch")
+  -- a ranked game: the medal takes the result's place and plays its stars
+  if state == "ready" and self.postGameLadder and not self.ladderShown then
+    self.ladderShown = true
+    self:ShowLadderResult(self.postGameLadder)
+  end
+  -- ranked plays on with a new opponent: Hearthstone's Play again
+  p.primary.text:SetText(state == "invited" and "Accept" or (self.rankedGame and "Play Again" or "Rematch"))
   p.secondary.text:SetText(state == "invited" and "Decline" or "Main Menu")
   p.primary:SetShown(state ~= "declined" and state ~= "closed" and state ~= "starting")
   p.primary:SetEnabledLook(state == "ready" or state == "invited")
@@ -1244,6 +1253,262 @@ function Board:SetPostGame(state, name)
     W.ApplyStyle(b.text, "button", nil, math.max(13, math.floor(bh * 0.40)))
   end
   p:Show()
+end
+
+-- ========================================================== the ranked medal
+
+--[[ AFTER A RANKED GAME, as the classic ladder showed it (docs/45): the result
+     art gives way to your medal at the rank you had, then the stars move one
+     by one (Ladder.Steps) -- a star won flares gold and lights; a star lost
+     drains dark with a shudder; a new rank swaps the medal in with a burst;
+     Legend gets the loudest fanfare -- and the line saying what it meant
+     appears beneath. Play Again (SetPostGame) queues the next game. ]]
+--[[ The beats, from the judge's reading of the classic client (docs/45):
+     the medal slams in over a dark scrim, its stars pop in, then each star
+     moment plays; a rank-up pulses the stars, flashes the medal white, swaps
+     it under the flash with a shockwave, gold flecks and a RANK UP banner. ]]
+Board.LADDER_ARRIVE = 0.55   -- the medal's arrival
+Board.LADDER_START = 1.0     -- the first star moment
+Board.LADDER_STEP = 0.8      -- between star moments
+Board.LADDER_RANKUP = 1.3    -- a rank-up takes longer: pulse, flash, swap
+
+local function lerp(a, b, v) return a + (b - a) * v end
+local function outBack(v) local c = 1.70158; v = v - 1; return 1 + (c + 1) * v * v * v + c * v * v end
+
+function Board:ShowLadderResult(change)
+  local p = self.ladderPanel
+  if not p then
+    p = CreateFrame("Frame", nil, self.frame)
+    p:SetAllPoints(self.frame)
+    p:EnableMouse(false)
+    -- the scrim: the drained table goes dark behind the moment
+    p.scrim = p:CreateTexture(nil, "BACKGROUND", nil, -8)
+    p.scrim:SetAllPoints(); p.scrim:SetColorTexture(0, 0, 0, 1)
+    -- light behind the medal: two ray sprites turning opposite ways, a glow
+    p.rays = p:CreateTexture(nil, "BACKGROUND", nil, 1)
+    p.rays:SetTexture(ART .. "fx-rays.tga"); p.rays:SetBlendMode("ADD")
+    p.rays2 = p:CreateTexture(nil, "BACKGROUND", nil, 2)
+    p.rays2:SetTexture(ART .. "fx-rays.tga"); p.rays2:SetBlendMode("ADD")
+    p.glow = p:CreateTexture(nil, "BACKGROUND", nil, 3)
+    p.glow:SetTexture(ART .. "crest-glow.tga"); p.glow:SetBlendMode("ADD")
+    p.medal = W.RankMedal(p)
+    -- over the medal: a white flash (a rank-up), a flare, a shockwave ring
+    p.fxLayer = CreateFrame("Frame", nil, p)
+    p.fxLayer:SetAllPoints(p); p.fxLayer:EnableMouse(false)
+    p.whiteout = p.fxLayer:CreateTexture(nil, "OVERLAY", nil, 1)
+    p.whiteout:SetTexture(ART .. "crest-glow.tga"); p.whiteout:SetBlendMode("ADD")
+    p.flash = p.fxLayer:CreateTexture(nil, "OVERLAY", nil, 2)
+    p.flash:SetTexture(ART .. "crest-glow.tga"); p.flash:SetBlendMode("ADD")
+    p.ring = p.fxLayer:CreateTexture(nil, "OVERLAY", nil, 3)
+    p.ring:SetTexture(ART .. "fx-ring.tga"); p.ring:SetBlendMode("ADD")
+    p.parts = W.NewParticles(p.fxLayer, { max = 60 })
+    -- the words: rank and name above, the banner, what it meant below
+    p.name = p.fxLayer:CreateFontString(nil, "OVERLAY")
+    W.ApplyStyle(p.name, "heroName", nil, 28)
+    p.name:SetJustifyH("CENTER"); p.name:SetWordWrap(false)
+    p.banner = p.fxLayer:CreateFontString(nil, "OVERLAY")
+    W.ApplyStyle(p.banner, "banner", nil, 46)
+    p.banner:SetJustifyH("CENTER"); p.banner:SetWordWrap(false)
+    p.caption = p.fxLayer:CreateFontString(nil, "OVERLAY")
+    W.ApplyStyle(p.caption, "caption", nil, 21)
+    p.caption:SetJustifyH("CENTER"); p.caption:SetWordWrap(false)
+    self.ladderPanel = p
+  end
+  --[[ Above everything on the table -- the hand overhangs at its own level --
+       and below the buttons, which are raised over it. The table drained to
+       grey at game over; the medal is put back in colour (it is new, but a
+       later DrainTable must skip it too). ]]
+  p:SetFrameLevel(480); p.medal:SetFrameLevel(482); p.fxLayer:SetFrameLevel(486)
+  if self.postGame then
+    self.postGame:SetFrameLevel(495)
+    for _, btn in ipairs({ self.postGame.primary, self.postGame.secondary }) do btn:SetFrameLevel(500) end
+  end
+  local function undrain(fr)
+    for _, r in ipairs({ fr:GetRegions() }) do
+      if r:GetObjectType() == "Texture" and r:IsDesaturated() then r:SetDesaturated(false) end
+    end
+    for _, c in ipairs({ fr:GetChildren() }) do undrain(c) end
+  end
+  pcall(undrain, p)
+  if self.result then self.result:Hide() end
+
+  local w, h = self.frame:GetWidth(), self.frame:GetHeight()
+  local size = math.floor(math.min(h * 0.36, w * 0.26))
+  local cx, cy = 0, h * 0.08
+  p.medal:Layout(size, { stars = true })
+  local function centre(region, sw, sh, dx, dy)
+    region:ClearAllPoints(); region:SetPoint("CENTER", p, "CENTER", cx + (dx or 0), cy + (dy or 0))
+    if sw then region:SetSize(sw, sh or sw) end
+  end
+  centre(p.medal)
+  centre(p.rays, size * 2.6); centre(p.rays2, size * 2.2); centre(p.glow, size * 2.0)
+  centre(p.whiteout, size * 1.5); p.whiteout:SetAlpha(0)
+  p.flash:Hide(); p.ring:Hide()
+  p.name:ClearAllPoints(); p.name:SetPoint("BOTTOM", p.medal, "TOP", 0, size * 0.10)
+  p.name:SetSize(size * 3, 40)
+  p.banner:ClearAllPoints(); p.banner:SetPoint("BOTTOM", p.name, "TOP", 0, 2)
+  p.banner:SetSize(size * 3.2, 60); p.banner:SetText(""); p.banner:SetAlpha(0)
+  p.caption:ClearAllPoints(); p.caption:SetPoint("TOP", p.medal, "BOTTOM", 0, -size * 0.06)
+  p.caption:SetSize(size * 3, 30); p.caption:SetText("")
+  p.scrim:SetAlpha(0)
+  p.rays:SetVertexColor(1, .81, .42); p.rays2:SetVertexColor(1, .9, .6)
+  p.glow:SetVertexColor(1, .8, .4)
+
+  local b = change.before
+  local function title(rank, legend)
+    return ns.Ladder.Label(rank, legend) .. (rank > 0 and ("  -  " .. ns.Ladder.Name(rank)) or "")
+  end
+  p.medal:Set(b.rank, b.stars, b.legend)
+  p.name:SetText(title(b.rank, b.legend))
+  p:Show()
+
+  local steps = ns.Ladder.Steps(change)
+  -- when each step starts: a rank-up needs its pulse, flash and swap
+  local at, tcur = {}, Board.LADDER_START
+  for i, s in ipairs(steps) do
+    at[i] = tcur
+    tcur = tcur + ((s.kind == "rankup" or s.kind == "legend" or s.kind == "rankdown") and Board.LADDER_RANKUP or Board.LADDER_STEP)
+  end
+  local finish = tcur
+  local done, t = 0, 0
+  local flare, ringAt, whiteAt, swapAt, bannerAt, shudderAt, starPop
+  local spin, spinSpeed, thumped = 0, 1, false
+  local function play(sound) if ns.Sounds then ns.Sounds.Play(sound) end end
+  local function burst(region, n)
+    local x, y = region:GetCenter()
+    local fx, fy = p:GetLeft() or 0, p:GetBottom() or 0
+    if x and y then W.Burst(p.parts, "burst_gold", x - fx, y - fy, n) end
+  end
+  local function flareAt(region, scale, color)
+    p.flash:ClearAllPoints(); p.flash:SetPoint("CENTER", region, "CENTER", 0, 0)
+    flare = { start = t, size = math.max(region:GetWidth(), region:GetHeight()) * scale }
+    p.flash:SetVertexColor(color[1], color[2], color[3]); p.flash:Show()
+  end
+  local function banner(text, color)
+    p.banner:SetText(text); p.banner:SetTextColor(color[1], color[2], color[3])
+    bannerAt = t
+  end
+
+  p:SetScript("OnUpdate", function(_, dt)
+    t = t + dt
+    -- the scrim and the medal's arrival: from 1.6x, overshooting to rest
+    p.scrim:SetAlpha(math.min(0.74, t / 0.4 * 0.74))
+    local av = math.min(1, t / Board.LADDER_ARRIVE)
+    p.medal:SetAlpha(math.min(1, av * 2))
+    local scale = lerp(1.6, 1.0, outBack(av))
+    -- the stars pop: a bump of the medal as each lands
+    if starPop then
+      local v = (t - starPop) / 0.3
+      if v >= 1 then starPop = nil else scale = scale * (1 + 0.06 * math.sin(v * math.pi)) end
+    end
+    --[[ No idle "breathing" scale: WoW snaps text to whole sizes as a frame
+         scales, so the rank number jittered about (reported). The rays keep
+         the screen alive instead. ]]
+    p.medal:SetScale(scale)
+    if not thumped then thumped = true; play("impact") end
+
+    -- the light: slow turning rays, faster for a rank-up
+    spin = spin + dt * 0.31 * spinSpeed
+    if p.rays.SetRotation then p.rays:SetRotation(spin); p.rays2:SetRotation(-spin * 0.7) end
+    local rayA = math.min(1, t / 0.6)
+    p.rays:SetAlpha(0.35 * rayA * (spinSpeed > 1 and 1.7 or 1)); p.rays2:SetAlpha(0.2 * rayA)
+    p.glow:SetAlpha(0.45 * rayA)
+    if spinSpeed > 1 then spinSpeed = math.max(1, spinSpeed - dt * 1.2) end
+
+    -- the next star moment
+    while done < #steps and t >= at[done + 1] do
+      done = done + 1
+      local s = steps[done]
+      if s.kind == "gain" then
+        p.medal:Set(s.rank, s.stars, s.legend)
+        local star = p.medal.stars[s.star]
+        flareAt(star, 3.4, { 1, .85, .35 }); burst(star, 10); starPop = t
+        play("rarity_rare")
+        if change.bonus and done == 1 then banner("Win Streak!", { 1, .74, .25 }) end
+      elseif s.kind == "rankup" or s.kind == "legend" then
+        -- the stars pulse, the rays race, the medal goes white, and under the
+        -- flash the new medal is set
+        for k = 1, ns.Ladder.Stars(b.rank) do
+          if p.medal.stars[k]:IsShown() then flareAt(p.medal.stars[k], 2.2, { 1, .9, .5 }) end
+        end
+        spinSpeed = 3
+        whiteAt = t
+        swapAt = { t = t + 0.55, step = s }
+        play("rarity_epic")
+      elseif s.kind == "lose" then
+        local star = p.medal.stars[s.star]
+        flareAt(star, 2.8, { 1, .29, .23 })
+        p.medal:Set(s.rank, s.stars, s.legend)
+        shudderAt = t
+        play("rope_end")
+      elseif s.kind == "rankdown" then
+        flareAt(p.medal, 1.3, { .85, .2, .15 })
+        swapAt = { t = t + 0.3, step = s, down = true }
+        shudderAt = t
+        play("rope_end")
+      elseif s.kind == "legendmove" then
+        p.medal:Set(0, 0, s.legend)
+        flareAt(p.medal, 1.3, change.won and { 1, .7, .3 } or { .85, .3, .2 })
+        if change.won then burst(p.medal, 14) end
+        p.name:SetText(title(0, s.legend))
+        play(change.won and "rarity_rare" or "rope_end")
+      end
+    end
+
+    -- the swap, under the white
+    if swapAt and t >= swapAt.t then
+      local s = swapAt.step
+      p.medal:Set(s.rank, s.stars, s.legend)
+      p.name:SetText(title(s.rank, s.legend))
+      if not swapAt.down then
+        ringAt = t; burst(p.medal, 28); starPop = t
+        banner(s.kind == "legend" and "LEGEND!" or "RANK UP!", s.kind == "legend" and { 1, .55, .12 } or { 1, .86, .4 })
+        play("legendary")
+      end
+      swapAt = nil
+    end
+    -- the white flash over the medal
+    if whiteAt then
+      local v = (t - whiteAt) / 0.85
+      if v >= 1 then whiteAt = nil; p.whiteout:SetAlpha(0)
+      else p.whiteout:SetAlpha(v < 0.65 and (v / 0.65) or (1 - (v - 0.65) / 0.35)) end
+    end
+    -- the flare: grows and fades
+    if flare then
+      local v = (t - flare.start) / 0.5
+      if v >= 1 then p.flash:Hide(); flare = nil
+      else
+        p.flash:SetSize(flare.size * (0.5 + 1.7 * v), flare.size * (0.5 + 1.7 * v))
+        p.flash:SetAlpha(1 - v)
+      end
+    end
+    -- the shockwave
+    if ringAt then
+      local v = (t - ringAt) / 0.55
+      if v >= 1 then ringAt = nil; p.ring:Hide()
+      else
+        p.ring:Show(); centre(p.ring, size * lerp(0.5, 3.0, v)); p.ring:SetAlpha(0.8 * (1 - v))
+        p.ring:SetVertexColor(1, .85, .45)
+      end
+    end
+    -- the banner drops in and holds
+    if bannerAt then
+      local v = math.min(1, (t - bannerAt) / 0.3)
+      p.banner:SetAlpha(v)
+      p.banner:ClearAllPoints(); p.banner:SetPoint("BOTTOM", p.name, "TOP", 0, 2 + 30 * (1 - v))
+    end
+    -- a star lost shudders the medal
+    if shudderAt then
+      local v = (t - shudderAt) / 0.4
+      if v >= 1 then shudderAt = nil; centre(p.medal)
+      else centre(p.medal, nil, nil, math.sin(v * 42) * size * 0.035 * (1 - v), 0) end
+    end
+    W.TickParticles(p.parts, dt)
+    -- and when everything has moved, what it meant
+    if t >= finish + 0.2 and p.caption:GetText() == "" then
+      p.caption:SetText(ns.Ladder.Describe(change))
+    end
+  end)
 end
 
 -- ========================================================== spell effects
@@ -1763,6 +2028,8 @@ function Board:ResetMatch()
   self.bannerUntil = nil; self.banner:Hide(); self:HideTooltip()
   self:HideResult(); self.resultStart = nil; self.resultKind = nil
   self.postGameAt = nil; self.postGameNote = nil; self:SetPostGame(nil)
+  self.postGameLadder, self.ladderShown = nil, nil
+  if self.ladderPanel then self.ladderPanel:SetScript("OnUpdate", nil); self.ladderPanel:Hide() end
   self.resultSoundAt, self.resultSound = nil, nil; self:StopResultSound(); self:ClearHeroDeath(); self:ClearSprites()
   self.historyPreview:Hide()
   self.dragging, self.hoverIndex = nil, nil
@@ -4136,6 +4403,9 @@ function Board:SetProfiles(mine, peer)
       W.AutoFit(panel.name,{w=100,h=16,font=ns.Fonts.TITLE,size=13,min=5})
       W.AutoFit(panel.level,{w=100,h=12,font=ns.Fonts.BODY,size=10,min=6})
       W.AutoFit(panel.record,{w=100,h=12,font=ns.Fonts.BODY,size=10,min=6})
+      -- the rank earned on the bot ladder, as a medal at the tag's end (docs/45)
+      panel.medal=W.RankMedal(panel)
+      panel.medal:SetFrameLevel(152)
       self.profiles[side]=panel
     end
     if data then
@@ -4146,6 +4416,12 @@ function Board:SetProfiles(mine, peer)
       elseif data.wins then panel.record:SetText(W.RecordText(data.wins, data.losses))
       else panel.record:SetText("") end
       panel.level:SetText(level)
+      if data.rank ~= nil then
+        panel.medal:Set(data.rank, data.stars or 0, data.legend)
+        panel.medal:Show()
+      else
+        panel.medal:Hide()
+      end
       --[[ THE CHARACTER'S OWN FACE, ONCE SEEN, STAYS. It can only be drawn
            from a unit token (target, party1...), and the opponent stops being
            one the moment you target something else -- so it used to flip back
@@ -4187,6 +4463,10 @@ function Board:LayoutProfiles()
     panel.level:SetSize(tw*.55,ph*.26)
     panel.record:ClearAllPoints(); panel.record:SetPoint("RIGHT",panel,"RIGHT",-8,-ph*.18)
     panel.record:SetSize(tw*.45,ph*.26); panel.record:SetJustifyH("RIGHT")
+    -- the medal hangs just past the tag's end, a little larger than the tag
+    local ms=ph*1.12
+    panel.medal:ClearAllPoints(); panel.medal:SetPoint("LEFT",panel,"RIGHT",-ph*.18,0)
+    panel.medal:Layout(ms,{stars=false})
   end
 end
 

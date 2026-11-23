@@ -154,7 +154,9 @@ H.suite("ai: it finds a combo for lethal", function(ns, H)
   for _ = 1, 3 do H.Put(g, 1, "CS2_231") end
   H.Hero(g, 2).damage = 21                 -- 9 health left
   H.Hand(g, 1, "CS2_011")                  -- Savage Roar
-  ns.AI.TakeTurn(g, 1)
+  -- Legend: this is about what the search can find, not about the slips the
+  -- lower levels make on purpose (docs/45, "Difficulty curve review")
+  ns.AI.TakeTurn(g, 1, nil, { skill = 6 })
   H.ok(g.over, "the game is over")
   H.eq(g.winner, 1, "and the bot won it")
   H.noEngineErrors(g)
@@ -251,7 +253,7 @@ H.suite("ai: a targeted battlecry is aimed, not wasted", function(ns, H)
   g.players[1].heroPowerUsedThisTurn = true
   local wisp = H.Put(g, 2, "CS2_231")
   H.Hand(g, 1, "CS2_141")                  -- Ironforge Rifleman: deal 1
-  ns.AI.TakeTurn(g, 1)
+  ns.AI.TakeTurn(g, 1, nil, { skill = 6 })  -- Legend: never a slip (docs/45)
   H.eq(wisp.zone, ns.ZONE.GRAVEYARD, "the battlecry shot the Wisp")
   H.noEngineErrors(g)
 end)
@@ -305,7 +307,9 @@ H.suite("ai: it cannot see your secrets", function(ns, H)
   H.Mana(g, 1, 0)
   local raptor = H.Put(g, 1, "CS2_172")    -- Bloodfen Raptor 3/2
   H.ok(g:PlaySecret(2, ns.Entity.New(g:Printed("EX1_610"), 2, g.ids)), "Explosive Trap is up")
-  ns.AI.TakeTurn(g, 1)
+  -- Legend: this is about what it can see, not a slip (Master slips now and
+  -- then since the difficulty curve review, docs/45)
+  ns.AI.TakeTurn(g, 1, nil, { skill = 6 })
   H.eq(raptor.zone, ns.ZONE.GRAVEYARD, "it attacked into the trap it could not see")
   H.noEngineErrors(g)
 end)
@@ -338,7 +342,7 @@ H.suite("bot decks: every one is a legal Hearthstone deck", function(ns, H)
   local total = 0
   for _, class in ipairs(ns.CLASSES) do
     local decks = ns.BotDecks.List(class)
-    H.eq(#decks, 7, class .. " has seven decks")
+    H.ok(#decks >= 7, class .. " has its decks")
     local tiers = {}
     for _, d in ipairs(decks) do
       total = total + 1
@@ -361,7 +365,7 @@ H.suite("bot decks: every one is a legal Hearthstone deck", function(ns, H)
       H.ok(tiers[t], class .. " has a deck at tier " .. t)
     end
   end
-  H.eq(total, 63, "sixty-three decks in all")
+  H.ok(total >= 135, "at least three decks per class per tier: " .. total .. " in all (docs/45)")
 end)
 
 H.suite("bot decks: the difficulty picks the deck's tier", function(ns, H)
@@ -580,4 +584,40 @@ H.suite("bot decks: real shuffle varies by seed and draws only from the chosen d
   end
   local count=0; for _ in pairs(orders) do count=count+1 end
   H.ok(count>1,"fresh seeds do not deal the same order")
+end)
+
+--============================================================ difficulty review (docs/45)
+
+H.suite("ai: facing lethal it still plays its best board, not an empty pass",function(ns,H)
+  -- Every turn loses to your reply here (a 6/6 swings at 2 health and the bot
+  -- has no Taunt), so the reply check used to score them all as losses and
+  -- "end the turn" won the tie, stranding the Yeti in hand.
+  for _,skill in ipairs({4,5,6}) do
+    local g=aiGame({class1="WARRIOR",class2="MAGE"})
+    H.Mana(g,1,4)
+    H.Hand(g,1,"CS2_182")                       -- Chillwind Yeti
+    H.Put(g,2,"CS2_186")                        -- War Golem 7/7
+    H.Hero(g,1).damage=28
+    g.players[1].heroPowerUsedThisTurn=true
+    ns.AI.TakeTurn(g,1,nil,{skill=skill})
+    H.ok(not inHand(g,1,"CS2_182"),"the Yeti is played at skill "..skill)
+    H.noEngineErrors(g)
+  end
+end)
+
+H.suite("ai: the reply model goes face for lethal instead of trading",function(ns,H)
+  local function swing(lethalFirst)
+    local g=aiGame({class1="MAGE",class2="WARRIOR"})
+    H.Put(g,1,"CS2_120")                        -- River Crocolisk 2/3, the bait
+    H.Put(g,2,"CS2_182"); H.Put(g,2,"CS2_182")  -- two Chillwind Yetis
+    H.Hero(g,1).damage=23                       -- 7 left, 8 on their board
+    g:EndTurn(); g.bus:Drain()
+    ns.AI.ReplySwings(g,2,lethalFirst)
+    return g
+  end
+  -- the old model: the free trade into the Crocolisk looks worth it
+  H.eq(swing(false).winner,nil,"without it, a Yeti trades and the bot lives")
+  H.eq(swing(true).winner,2,"with lethal first (Expert up), both Yetis go face")
+  H.ok(ns.AI.SkillProfile(4).replyLethal and ns.AI.SkillProfile(6).replyLethal,
+       "Expert, Master and Legend expect it")
 end)

@@ -22,6 +22,12 @@ rm -rf tools/__pycache__
 echo "==> importing printed card data"
 python tools/import_cards.py
 
+echo "==> deck-code DBF ids"
+python tools/import_dbf_ids.py
+
+echo "==> ladder decks (checked by name)"
+python tools/build_bot_decks.py
+
 echo "==> compiling effect scripts"
 python tools/compile_effects.py
 

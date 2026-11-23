@@ -2,8 +2,9 @@
 
 A World of Warcraft addon for **WoW Forever** that recreates Hearthstone's
 Basic, Classic, Naxxramas and Goblins vs Gnomes sets. You collect cards from
-packs earned by playing WoW, build decks, practise against a bot, and duel
-players standing next to you in the world.
+packs earned by playing WoW, build decks (and swap them with Hearthstone deck
+codes), climb a ranked ladder against bots, and duel players standing next to
+you in the world.
 
 ## Install
 

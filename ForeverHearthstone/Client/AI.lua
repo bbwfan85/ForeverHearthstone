@@ -79,30 +79,87 @@ end
      budget   the most simulated moves per decision -- the real cap on cost
      noise    how far a Novice's judgement of each first move can wobble
      lethal   the chance it looks for lethal at all this decision
+     slip     the chance a decision is a new player's: one of the few moves
+              that look best (slipTop of them, ending the turn included) rather
+              than the best -- a worse trade, a card left in hand, a lethal not
+              taken. Never a move that clearly helps you (see AI.Slip)
      reply    how many of its best turns it plays forward through YOUR attacks
               before choosing -- "if I do this, what do they do back?" -- the
               habit that stops a player leaving minions to be traded off
+     replyLethal  whether that reply model knows you go face when your board
+              can kill it (Expert up; before, it assumed you would trade)
+
+     THE MISTAKES MAKE THE CURVE. Measured (docs/45, "Difficulty curve
+     review"), the search settings above Adept barely move a game: Master
+     beat a Master that undervalued your minions by 40% only 49% of the time,
+     and Expert 53%. What separates the levels is how often they slip, how far
+     their judgement wobbles and whether they look for lethal, so those fall
+     steadily all the way to Legend, and even Master slips now and then (it
+     used to play exactly like Legend, so the climb ended in a flat step).
 
      The deck tier is the same number: the slider picks both at once, so a
      Master brings a Master's deck and plays it like one. ]]
 AI.DIFFICULTIES = {
   { name = "Novice",     width = 1, depth = 4,  samples = 1, budget = 80,
-    noise = 4.0, lethal = 0.35, lethalBudget = 40,  reply = 0,
+    noise = 3.5, lethal = 0.45, lethalBudget = 40,  reply = 0, slip = 0.36, slipTop = 4,
     blurb = "Basic decks. Learning the ropes." },
   { name = "Apprentice", width = 2, depth = 5,  samples = 1, budget = 140,
-    noise = 2.0, lethal = 0.7,  lethalBudget = 70,  reply = 0,
+    noise = 2.4, lethal = 0.65, lethalBudget = 70,  reply = 0, slip = 0.26, slipTop = 4,
     blurb = "Budget decks. Makes the odd mistake." },
   { name = "Adept",      width = 3, depth = 6,  samples = 1, budget = 240,
-    noise = 0.7, lethal = 1,    lethalBudget = 100, reply = 4,
+    noise = 1.6, lethal = 0.8,  lethalBudget = 100, reply = 4, slip = 0.20, slipTop = 3,
     blurb = "Solid ladder decks, played soundly." },
   { name = "Expert",     width = 4, depth = 8,  samples = 2, budget = 400,
-    noise = 0,   lethal = 1,    lethalBudget = 150, reply = 8,
+    noise = 0.9, lethal = 0.9,  lethalBudget = 150, reply = 8, slip = 0.13, slipTop = 3,
+    replyLethal = true,
     blurb = "Strong meta decks. Finds its combos." },
   { name = "Master",     width = 6, depth = 10, samples = 3, budget = 700,
-    noise = 0,   lethal = 1,    lethalBudget = 220, reply = 12,
+    -- Master plays its best, every decision (the owner's call, docs/45):
+    -- no beginner slips and no judgement wobble -- only Legend's deeper
+    -- search is above it
+    noise = 0,   lethal = 1,   lethalBudget = 220, reply = 12, slip = 0, slipTop = 1,
+    replyLethal = true,
     blurb = "The best decks of the era, played sharply." },
 }
 AI.DEFAULT_DIFFICULTY = 3
+
+--[[ LEGEND: past Master, reached only on the bot ladder (Client/Ladder.lua).
+     Wider and deeper, and it plays out more of your replies -- but what makes
+     it the stronger player is that it never slips or wobbles. Not a slider
+     notch: the slider's five are the five deck tiers. ]]
+AI.LEGEND = { name = "Legend", width = 8, depth = 12, samples = 3, budget = 1000,
+  noise = 0, lethal = 1, lethalBudget = 300, reply = 16, slip = 0, slipTop = 1,
+  replyLethal = true,
+  blurb = "The very top of the ladder." }
+
+--[[ A ladder bot's thinking at a continuous skill: 1 is Novice, 5 Master, 6
+     Legend, and anything between is the two neighbours blended, so rank 14
+     plays a little better than rank 15 rather than the same until a step.
+     Counts round to the nearest whole; the chances and wobble blend. ]]
+local BLEND_INT = { width = true, depth = true, samples = true, budget = true,
+                    lethalBudget = true, reply = true, slipTop = true }
+function AI.SkillProfile(skill)
+  skill = tonumber(skill) or AI.DEFAULT_DIFFICULTY
+  if skill ~= skill then skill = AI.DEFAULT_DIFFICULTY end
+  local levels = {}
+  for i, d in ipairs(AI.DIFFICULTIES) do levels[i] = d end
+  levels[#levels + 1] = AI.LEGEND
+  skill = math.max(1, math.min(#levels, skill))
+  local lo = math.floor(skill)
+  local hi = math.min(#levels, lo + 1)
+  local t = skill - lo
+  local a, b = levels[lo], levels[hi]
+  local out = {}
+  for k, v in pairs(a) do
+    if type(v) == "number" and type(b[k]) == "number" then
+      local x = v + (b[k] - v) * t
+      out[k] = BLEND_INT[k] and math.floor(x + 0.5) or x
+    else
+      out[k] = (t >= 0.5) and b[k] or v
+    end
+  end
+  return out
+end
 
 --[[ HOW IT WEIGHS THE BOARD, by deck style.
 
@@ -143,13 +200,21 @@ local fingerprint
 --- Everything one decision needs: difficulty, weights, and its own randomness.
 function AI.Profile(opts, game, player)
   opts = opts or {}
-  local d = AI.DIFFICULTIES[clampDifficulty(opts.difficulty)]
+  local d = opts.skill and AI.SkillProfile(opts.skill)
+    or AI.DIFFICULTIES[clampDifficulty(opts.difficulty)]
   local P = {}
   for k, v in pairs(d) do P[k] = v end
   P.style = AI.STYLES[opts.style] and opts.style or "midrange"
   P.W = AI.STYLES[P.style]
+  -- per-level adjustments to the style's weights (P.wmul, e.g. Legend's)
+  local wmul = opts.wmul or d.wmul
+  if wmul then
+    local W2 = {}
+    for k, v in pairs(P.W) do W2[k] = v * (wmul[k] or 1) end
+    P.W = W2
+  end
   for k, v in pairs(opts) do
-    if k ~= "difficulty" and k ~= "style" then P[k] = v end
+    if k ~= "difficulty" and k ~= "style" and k ~= "skill" then P[k] = v end
   end
   -- Planning randomness comes only from what this player can observe;
   -- never from the seed that determines the real shuffle and random outcomes.
@@ -618,15 +683,28 @@ end
      goes face, else hits whatever Taunt is in the way. It does not guess at
      the cards in your hand; it asks only what your board would do to the
      board the bot is about to leave you. ]]
-local function opponentSwings(c, foe)
+local function opponentSwings(c, foe, lethalFirst)
   for _ = 1, 16 do
     if c.over then return end
     local F = c.players[foe]
+    --[[ Lethal first (P.replyLethal): a player who can kill does not stop to
+         trade. Without this the model traded into the bot's minions whenever
+         a trade was worth it, so a turn that left the bot dead on board could
+         look safe. When the face is in reach, every swing goes face -- or into
+         the Taunt in the way, the smallest that clears it. ]]
+    local goFace = lethalFirst
+      and faceDamage(c, F, c.players[c:Opponent(foe)]) >= effectiveHealth(c.players[c:Opponent(foe)])
+    local small = false
+    if goFace then
+      for _, t in ipairs(c.players[c:Opponent(foe)].board) do
+        if t:IsTaunt() then small = true; break end
+      end
+    end
     local attacker, atk
     local function consider(e)
       if c:CanAttack(e) then
         local a = c:AttackValue(e)
-        if not atk or a > atk then attacker, atk = e, a end
+        if not atk or (small and a < atk) or (not small and a > atk) then attacker, atk = e, a end
       end
     end
     for _, e in ipairs(F.board) do consider(e) end
@@ -648,7 +726,7 @@ local function opponentSwings(c, foe)
       end
     end
     local target = face
-    if pick and (pickGain > 0.5 or not face) then target = pick end
+    if pick and (pickGain > 0.5 or not face) and not (goFace and face) then target = pick end
     if not target or not c:IsLegalAttack(attacker, target) then
       attacker.attacksThisTurn = 99          -- this copy only; never ask again
     else
@@ -658,19 +736,100 @@ local function opponentSwings(c, foe)
   end
 end
 
+AI.ReplySwings = opponentSwings     -- exposed for tests/test_ai.lua
+
+--[[ Their hero power, in the reply model (P.replyPower): aimed the way a player
+     would -- damage at the bot's face or its weakest minion it kills, a heal
+     or armour on themselves, a summon as is. Fails quietly on the copy. ]]
+local function opponentPower(c, foe)
+  local F = c.players[foe]
+  if not F.heroPower or F.heroPowerUsedThisTurn then return end
+  local ok = pcall(function()
+    if c:UseHeroPower(foe) then c.bus:Drain(); return end
+    local me = c:Opponent(foe)
+    local best
+    for _, e in ipairs(c.players[me].board) do
+      if e:Health() <= 2 and (not best or minionValue(c, e) > minionValue(c, best)) then best = e end
+    end
+    if not (best and c:UseHeroPower(foe, best)) then
+      if not c:UseHeroPower(foe, c.players[me].hero) then c:UseHeroPower(foe, F.hero) end
+    end
+    c.bus:Drain()
+  end)
+  return ok
+end
+
+local beam   -- below; the reply search runs one from the other seat
+
+--[[ YOUR WHOLE TURN, searched (P.replySearch, Legend). The greedy swing above
+     knows your board and nothing else, so it never sees the Consecration that
+     answers four small minions, the Fireball that finishes a hero at 6, or
+     the Taunt you drop in front of its lethal. This plays your turn the way
+     the bot plays its own -- a small beam over the moves you could make --
+     from the fogged copy: your hand there is the public prior (your class's
+     Basic cards, as many as you hold), never your real hand, and your
+     secrets are gone. A guess at what an ordinary hand of your class does,
+     which is all a player in its seat can know.
+
+     Off by default: measured against Master (docs/45, "Difficulty curve
+     review") it changed too few decisions to show in 224 games, at the cost
+     of a beam per candidate. Kept as a switch for the next attempt. ]]
+local function opponentTurn(c, foe, P, salt)
+  local OP = { samples = 1, noise = 0, reply = 0, salt = salt, rand = P.rand,
+               yield = P.yield, yieldEvery = P.yieldEvery, lastYield = 0,
+               W = AI.STYLES.midrange }
+  local function score(g) return AI.Evaluate(g, foe, OP.W) end
+  local function rank(g) return 0.35 * readyAttack(g, foe) end
+  local best = beam(c, foe, OP, nil, score, rank, P.replyWidth or 2,
+                    P.replyDepth or 6, P.replyBudget or 60)
+  return best.state, best.sims or 0
+end
+
 --[[ The position after the bot ends its turn here and you swing back. End of
      turn is played for real on the copy, so "this turn" buffs fall away, its
      end-of-turn triggers fire and your start-of-turn ones (Doomsayer) too. ]]
-local function afterReply(state, me, W)
-  if state.over then return AI.Evaluate(state, me, W) end
+local function afterReply(state, me, W, P, search, salt)
+  if state.over then return AI.Evaluate(state, me, W), 0 end
   local c = state:Clone()
   local ok = pcall(function()
     c:EndTurn()
     c.bus:Drain()
-    if not c.over and c.activePlayer ~= me then opponentSwings(c, c.activePlayer) end
+    if not c.over and c.activePlayer ~= me then
+      if P and P.replyPower then opponentPower(c, c.activePlayer) end
+      opponentSwings(c, c.activePlayer, P and P.replyLethal)
+    end
   end)
-  if not ok then return AI.Evaluate(state, me, W) end
-  return AI.Evaluate(c, me, W)
+  if not ok then return AI.Evaluate(state, me, W), 0 end
+  local s = AI.Evaluate(c, me, W)
+  local used = 0
+  if search and search > 0 then
+    local c3 = state:Clone()
+    local s3
+    local ok3 = pcall(function()
+      c3:EndTurn(); c3.bus:Drain()
+      if not c3.over and c3.activePlayer ~= me then
+        local after
+        after, used = opponentTurn(c3, c3.activePlayer, P, salt or P.salt)
+        s3 = AI.Evaluate(after, me, W)
+      else
+        s3 = AI.Evaluate(c3, me, W)
+      end
+    end)
+    if ok3 and s3 then s = (1 - search) * s + search * s3 end
+  end
+  --[[ TWO TURNS DEEP (P.lookahead, Legend): after your reply, its own next
+       swing -- the same greedy attacks, from its side -- so a turn that sets
+       up next turn's kill, or keeps the minions that will make it, is seen
+       for what it is. Blended, not replaced: the reply is the surer half. ]]
+  if P and P.lookahead and P.lookahead > 0 and not c.over and c.activePlayer ~= me then
+    local c2 = c:Clone()
+    local ok2 = pcall(function()
+      c2:EndTurn(); c2.bus:Drain()
+      if not c2.over and c2.activePlayer == me then opponentSwings(c2, me, P.replyLethal) end
+    end)
+    if ok2 then s = (1 - P.lookahead) * s + P.lookahead * AI.Evaluate(c2, me, W) end
+  end
+  return s, used
 end
 
 -- ============================================================ searching
@@ -686,7 +845,7 @@ end
      `scorer` judges a position, `ranker` orders partial turns for the cut
      (score plus unspent attack, so combos are not pruned before they pay off).
      Terminal positions are never extended: nothing follows a win. ]]
-local function beam(root, me, P, blocked, scorer, ranker, width, depth, budget)
+beam = function(root, me, P, blocked, scorer, ranker, width, depth, budget)
   local rootScore = scorer(root)
   local best = { state = root, score = rootScore, actions = {}, fps = {}, noise = 0 }
   local frontier = { best }
@@ -760,15 +919,42 @@ local function beam(root, me, P, blocked, scorer, ranker, width, depth, budget)
        its minions out of reach; a turn that leaves you lethal on board loses to
        the one with a Taunt. A win needs no second opinion. ]]
   if replies > 0 and best.score < 1e6 and #top > 1 then
-    local pick, pickScore, rootReply
+    local scored = {}
     for i, k in ipairs(top) do
-      local raw = afterReply(k.state, me, P.W)
-      if i == 1 then rootReply = raw end
-      local s = raw + (k.noise or 0)
+      scored[i] = { k = k, i = i, raw = afterReply(k.state, me, P.W, P) }
       maybeYield(P, sims + i * 3)
-      if not pickScore or (raw > rootReply + 0.05 and s > pickScore + 0.05) then pick, pickScore = k, s end
     end
-    best = pick
+    --[[ The searched reply (P.replySearch) is dearer, so only the root and the
+         few turns the greedy reply liked best are played through it. ]]
+    local search = P.replySearch or 0
+    if search > 0 then
+      local order = {}
+      for i = 2, #scored do order[#order + 1] = scored[i] end
+      table.sort(order, function(a, b)
+        local x, y = a.raw + (a.k.noise or 0), b.raw + (b.k.noise or 0)
+        if x ~= y then return x > y end
+        return a.i < b.i
+      end)
+      local keep = { scored[1] }
+      for i = 1, math.min(#order, (P.replyTop or 4) - 1) do keep[#keep + 1] = order[i] end
+      for i, e in ipairs(keep) do
+        e.raw = afterReply(e.k.state, me, P.W, P, search, P.salt + 4099 + i * 613)
+      end
+      scored = keep
+    end
+    local rootReply = scored[1].raw
+    local pick, pickScore, bestRaw
+    for _, e in ipairs(scored) do
+      local s = e.raw + (e.k.noise or 0)
+      if not bestRaw or e.raw > bestRaw then bestRaw = e.raw end
+      if not pickScore or (e.raw > rootReply + 0.05 and s > pickScore + 0.05) then pick, pickScore = e.k, s end
+    end
+    --[[ When every turn loses to the reply, the reply cannot choose between
+         them -- they all score a loss, and "end the turn" won the tie, which
+         is how a bot at 1 health passed with ten mana and a full hand. Then
+         the board-minded pick stands: the reply may not come (a player can
+         miss it), and the best board is still the best chance. ]]
+    if bestRaw > -5e5 then best = pick end
   end
   best.complete = not truncated and #best.actions < depth
   best.sims = sims
@@ -803,6 +989,39 @@ local function findLethal(game, me, P, blocked)
     return best
   end
   return nil
+end
+
+--[[ A NEW PLAYER'S DECISION (docs/45). The search alone made a Novice play a
+     simple turn exactly as a Master does: a win outscores everything, and a
+     small board needs no depth. What actually separates a rank-25 player is
+     that they often play a move that merely looks fine. So, with chance
+     P.slip, the bot weighs only its next move, as a beginner does, and picks
+     at random among the slipTop that look best -- ending the turn now is one
+     of them, which is how a card gets left in hand.
+
+     The candidates are kept human: an attack may be a poor trade (a little
+     worse than not attacking), but a card is only played if it does not make
+     the bot's own position worse -- a beginner makes bad trades, they do not
+     heal your minions. Returns one action, or false for "end the turn", or
+     nil when there is no slip this time. ]]
+function AI.Slip(game, me, P, blocked)
+  if not P.slip or P.slip <= 0 or P.rand() >= P.slip then return nil end
+  local root = fogged(game, me, P.salt + 77)
+  local W = P.W
+  local base = AI.Evaluate(root, me, W)
+  local cands = { { action = false, score = base } }
+  for i, a in ipairs(enumerate(root, me, blocked)) do
+    local c = applyIn(root, me, a, P.salt + 991 + i, W)
+    if c then
+      local sc = AI.Evaluate(c, me, W)
+      local floor = (a.kind == "ATTACK") and base - 6 or base - 0.5
+      if sc >= floor then cands[#cands + 1] = { action = a, score = sc } end
+    end
+  end
+  table.sort(cands, function(x, y) return x.score > y.score end)
+  local n = math.max(1, math.min(P.slipTop or 2, #cands))
+  local pick = cands[1 + math.floor(P.rand() * n)]
+  return pick.action
 end
 
 local function think(game, me, P, blocked)
@@ -926,6 +1145,13 @@ function AI.NextAction(game, player, blocked, opts)
   end
 
   local fp = fingerprint(game, player)
+  --[[ A beginner's slip replaces this one decision; the plan is dropped, so
+       the next move is thought about afresh from wherever the slip left it. ]]
+  local slip = AI.Slip(game, player, P, blocked)
+  if slip ~= nil then
+    plans[game] = nil
+    return slip or nil
+  end
   local stored = plans[game]
   if stored and stored.player == player then
     for i = stored.pos, #stored.steps do
