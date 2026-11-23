@@ -1820,6 +1820,11 @@ H.suite("ladder ui: Play Bot Ladder opens Ranked on your decks, with your medal"
     H.notOk(hub.stageHero:IsShown(), "where the opponent's hero would")
     H.eq(hub.stageName:GetText(), "Rank 25", "a new player is rank 25")
     H.eq(hub.stageDetail:GetText(), "Angry Chicken")
+    -- a rank survives a new month (no seasons, the owner's call)
+    local kept = Main:Ladder()
+    kept.rank, kept.stars, kept.season = 9, 4, "2020-01"
+    H.eq(Main:Ladder().rank, 9, "the month changing never resets your rank")
+    kept.rank, kept.stars = 25, 0
     H.ok(hub.rankToggle[1]:IsShown() and hub.rankToggle[2]:IsShown(), "Ranked | Casual")
     -- the stage's floor must draw over the window's cabinet art (reported:
     -- at the same level the cabinet showed through)
@@ -1840,7 +1845,7 @@ H.suite("ladder ui: Play Bot Ladder opens Ranked on your decks, with your medal"
     H.eq(st.losses, 1, "one loss on the ladder")
     H.eq(st.rank, 25); H.eq(st.stars, 0)
     H.eq(Main:PracticeRecord().losses, 0, "the casual record is untouched")
-    H.eq(Main.board.postGameNote, "Season record: 0-1", "the season under the result")
+    H.eq(Main.board.postGameNote, "Ladder record: 0-1", "the record under the result")
     H.ok(ns.Ladder.Describe(Main.ladderMatch.change):find("no stars lost"), "and the medal will say what it cost")
     -- Play again finds a new opponent
     Main:Rematch()

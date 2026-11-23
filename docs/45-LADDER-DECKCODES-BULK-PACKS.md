@@ -229,3 +229,7 @@ With two or more packs waiting, the pack room shows an **Open N** plaque beside 
 
 The review gave Master a deliberate slip (0.06, with noise 0.35) to separate it from Expert. The owner chose instead that **Master plays as well as possible**: `slip = 0` and `noise = 0`, the same as Legend. Expert and below keep their slips. The cost of that choice: from Expert up the bots are close in strength again. The review measured clean Master at only 52.7% against Expert on tier-5 decks, and Legend and Master are again within noise of each other. At the top of the ladder the difference comes mainly from the deck tier and from `BotDecks.Personalize`: Legend owns every card, and rank 1 still misses some epics and legendaries.
 
+### Owner's call: no seasons (2026-11-23)
+
+The classic ladder reset everyone each month, to 4 ranks below their best. That reset (`Ladder.BeginSeason`) was removed: "you shouldn't lose your rank". A rank, once earned, is kept, and the win-loss shown on the Play screen, after a ranked game and in `/fh ladder` is the ladder's lifetime record. Milestone floors (20, 15, 10, 5) and Legend are kept permanently. Records saved by 1.2.0 still carry a `season` field, which is ignored. 1.2.0 shipped with the reset, but no player could have been reset, because the first month change after its release was 2026-12-01.
+

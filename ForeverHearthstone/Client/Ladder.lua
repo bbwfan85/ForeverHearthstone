@@ -16,12 +16,11 @@
       rank 1 that win is Legend.
     * A loss takes a star at rank 20 and above. Ranks 25-21 never lose stars.
       A loss at 0 stars drops you a rank, one star short of that rank's full.
-    * Milestones at 20, 15, 10 and 5: once reached this season you never fall
-      below them. Legend is kept for the season.
-    * Seasons are calendar months. A new season puts you exactly 4 ranks below
-      your best standing last season, stars included (rank 1 with 3 stars
-      becomes rank 5 with 3 stars). Anyone who has ever reached rank 15 never
-      resets below rank 20.
+    * Milestones at 20, 15, 10 and 5: once reached you never fall below them.
+      Legend, once reached, is kept.
+    * NO SEASONS. Hearthstone reset everyone each month; here a rank is yours
+      to keep -- the owner's call (2026-11-23): "you shouldn't lose your
+      rank". The record (wins, losses) is the ladder's whole history.
 
   WHO YOU MEET. Opponents are matched near your rank, and a bot's rank sets
   both halves of how good it is: the deck it brings (Client/BotDecks.lua tiers)
@@ -29,7 +28,7 @@
   (a Novice with a Basic deck) and rank 1 to 5.0 (a Master with a top deck);
   Legend climbs past Master towards AI.LEGEND as the legend number falls.
 
-  No WoW API here: the season key and every random roll are passed in, so the
+  No WoW API here: every random roll is passed in, so the
   whole ladder runs headless (tests/test_ladder.lua).
 ]]
 local ADDON, ns = ...
@@ -41,7 +40,6 @@ Ladder.LEGEND = 0
 Ladder.BOTTOM = 25
 Ladder.MILESTONES = { 20, 15, 10, 5 }
 Ladder.STREAK_BONUS_BELOW = 5   -- the bonus star stops at rank 5
-Ladder.RESET_RANKS = 4
 
 --[[ The rank names, and the card whose art each medal shows (the classic
      medals are each a minion's portrait). The Innkeeper is no card; its medal
@@ -119,7 +117,7 @@ function Ladder.Standing(rank, stars)
   return total + (stars or 0)
 end
 
---- The lowest rank this record may fall to this season.
+--- The lowest rank this record may fall to (its best milestone reached).
 function Ladder.Floor(s)
   if s.rank == 0 then return 0 end
   -- the best milestone reached: walk them from the top (5) down
@@ -209,32 +207,6 @@ function Ladder.Record(s, won, roll)
   noteBest(s)
   out.after = { rank = s.rank, stars = s.stars, legend = s.legend }
   return out
-end
-
---[[ A new season. `season` is a key such as "2026-11"; the first time a record
-     sees a new key it is reset from its best standing, and the reset is
-     returned (nil when nothing changed). A record that has never played is
-     just stamped. ]]
-function Ladder.BeginSeason(s, season)
-  Ladder.Normalize(s)
-  if s.season == season then return nil end
-  local old = s.season
-  s.season = season
-  if not old or (s.wins + s.losses) == 0 then
-    s.wins, s.losses = 0, 0
-    return nil
-  end
-  local from = { rank = s.best, stars = s.bestStars, legend = s.bestLegend }
-  local rank = s.best + Ladder.RESET_RANKS
-  local stars = s.best == 0 and 0 or s.bestStars
-  local cap = (s.everBest <= 15) and 20 or Ladder.BOTTOM
-  if rank > cap then rank, stars = cap, 0 end
-  s.rank = rank
-  s.stars = math.min(stars, Ladder.Stars(rank))
-  s.streak, s.legend, s.bestLegend = 0, nil, nil
-  s.best, s.bestStars = s.rank, s.stars
-  s.wins, s.losses = 0, 0
-  return { season = season, previous = old, from = from, to = { rank = s.rank, stars = s.stars } }
 end
 
 -- ============================================================ opponents

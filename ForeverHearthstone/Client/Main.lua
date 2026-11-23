@@ -96,17 +96,12 @@ function Main:SetBotDifficulty(d)
 end
 
 --[[ THE BOT LADDER (Client/Ladder.lua, docs/45). This character's ranked
-     record, saved per character (decks are a character's, so is a rank), and
-     moved into the current season -- a calendar month -- the first time it is
-     read in one. A season reset is kept to be said once on the Play screen. ]]
+     record, saved per character (decks are a character's, so is a rank).
+     There are no seasons: a rank, once earned, is kept. ]]
 function Main:Ladder()
   local ch = rawget(_G, "ForeverHearthstoneCharDB")
   if not ch then ForeverHearthstoneCharDB = {}; ch = ForeverHearthstoneCharDB end
   ch.ladder = ns.Ladder.Normalize(ch.ladder)
-  local dateFn = rawget(_G, "date")
-  local season = dateFn and dateFn("%Y-%m") or "season"
-  local reset = ns.Ladder.BeginSeason(ch.ladder, season)
-  if reset then self.ladderReset = reset end
   return ch.ladder
 end
 
@@ -724,7 +719,7 @@ function Main:AnnounceResult()
     lm.change = ns.Ladder.Record(self:Ladder(), won, math.random)
     if self.board then
       local st = self:Ladder()
-      self.board.postGameNote = ("Season record: %d-%d"):format(st.wins, st.losses)
+      self.board.postGameNote = ("Ladder record: %d-%d"):format(st.wins, st.losses)
       self.board.postGameLadder = lm.change
       if self.board.postGameState == "ready" then self.board:SetPostGame("ready") end
     end
@@ -3314,7 +3309,6 @@ function Main:ShowHub()
       if self:RankedMode() then started=self:StartLadder(f.selectedDeck)
       else started=self:StartPractice(nil, f.selectedClass, f.selectedDeck) end
       if started~=false then
-        self.ladderReset=nil
         f.lastDeck=f.selectedDeck
         f.selectedDeck=false; f.chooseDeck=false; f.botMode=false; f:Hide()
       else f.selectedDeck=false; f:Layout() end
@@ -3585,7 +3579,7 @@ function Main:ShowHub()
       self.diffName:SetWordWrap(true)
       self.diffName:SetSize(inner,select(2,self.diffName:GetFont())*2.5)
       self.diffBlurb:SetShown(self.botMode==true and not picking)
-      -- Ranked: your medal and season where the opponent's hero stands
+      -- Ranked: your medal and record where the opponent's hero stands
       local ranked=self.botMode and not self.duelSession and ns.Main:RankedMode()
       for i,b in ipairs(self.rankToggle) do
         b:SetShown(toggleH>0)
@@ -3616,12 +3610,10 @@ function Main:ShowHub()
         self.medal:Layout(ms,{stars=true}); self.medal:Set(st.rank,st.stars,st.legend)
         self.stageName:SetText(ns.Ladder.Label(st.rank,st.legend))
         self.stageDetail:SetText(ns.Ladder.Name(st.rank))
-        local reset=ns.Main.ladderReset
         local line
-        if reset then line=("A new season! You start at rank %d."):format(reset.to.rank)
-        elseif (st.wins+st.losses)==0 then line="Win games to earn stars and climb."
-        elseif st.streak>=2 and st.rank>5 then line=("Season %d-%d. On a win streak!"):format(st.wins,st.losses)
-        else line=("Season %d-%d"):format(st.wins,st.losses) end
+        if (st.wins+st.losses)==0 then line="Win games to earn stars and climb."
+        elseif st.streak>=2 and st.rank>5 then line=("Record %d-%d. On a win streak!"):format(st.wins,st.losses)
+        else line=("Record %d-%d"):format(st.wins,st.losses) end
         self.diffName:SetText(line)
       end
       do
@@ -3862,9 +3854,9 @@ SlashCmdList["FOREVERHEARTHSTONE"] = function(msg)
     Main.hub.botMode=true; Main.hub.chooseDeck=Main:RankedMode(); Main.hub.selectedDeck=false; Main.hub:Layout()
     if msg == "ladder" or msg == "ranked" then
       local st = Main:Ladder()
-      Main:Print(("bot ladder: %s (%s), %d stars. Season %s: %d-%d."):format(
+      Main:Print(("bot ladder: %s (%s), %d stars. Record %d-%d."):format(
         ns.Ladder.Label(st.rank, st.legend), ns.Ladder.Name(st.rank), st.stars,
-        tostring(st.season), st.wins, st.losses))
+        st.wins, st.losses))
     end
 
   elseif msg:match("^difficulty") then

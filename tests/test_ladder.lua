@@ -115,22 +115,16 @@ H.suite("ladder: rank 1 full plus a win is Legend, which is kept", function(ns, 
   H.eq(L.Label(14), "Rank 14")
 end)
 
-H.suite("ladder: a new season is 4 ranks below your best, stars included", function(ns, H)
+H.suite("ladder: there are no seasons -- a rank is kept", function(ns, H)
+  -- the owner's call (2026-11-23): "you shouldn't lose your rank"
   local L = ns.Ladder
-  local s = at(ns, 3, 2, { season = "2026-10", wins = 10, losses = 3, best = 1, bestStars = 3 })
-  local r = L.BeginSeason(s, "2026-11")
-  H.ok(r, "a reset happened")
-  H.eq(s.rank, 5, "rank 1 with 3 stars is rank 5..."); H.eq(s.stars, 3, "...with 3 stars")
-  H.eq(s.wins, 0, "season record restarts")
-  H.eq(L.BeginSeason(s, "2026-11"), nil, "once a season")
-  s = at(ns, 0, 0, { season = "2026-10", wins = 1, best = 0, legend = 50 })
-  L.BeginSeason(s, "2026-11"); H.eq(s.rank, 4, "Legend resets to 4"); H.eq(s.stars, 0)
-  s = at(ns, 23, 1, { season = "2026-10", wins = 1, everBest = 12 })
-  L.BeginSeason(s, "2026-11"); H.eq(s.rank, 20, "ever reached 15: never below 20")
-  s = at(ns, 23, 1, { season = "2026-10", wins = 1 })
-  L.BeginSeason(s, "2026-11"); H.eq(s.rank, 25, "otherwise 25 at worst")
-  s = at(ns, 25, 0)
-  H.eq(L.BeginSeason(s, "2026-11"), nil, "a new record is only stamped"); H.eq(s.season, "2026-11")
+  H.eq(L.BeginSeason, nil, "no season reset exists")
+  -- a record saved by 1.2.0, stamped with a season, keeps its rank
+  local s = L.Normalize({ rank = 3, stars = 2, best = 1, bestStars = 3, season = "2026-10",
+                          wins = 10, losses = 3 })
+  H.eq(s.rank, 3); H.eq(s.stars, 2); H.eq(s.wins, 10, "the record is lifetime")
+  s = L.Normalize({ rank = 0, legend = 50, season = "2026-10", wins = 1 })
+  H.eq(s.rank, 0, "Legend is kept"); H.eq(s.legend, 50)
 end)
 
 H.suite("ladder: saved records are repaired, not trusted", function(ns, H)
