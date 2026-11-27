@@ -65,7 +65,12 @@ Social.REPLY_COOLDOWN  = 60     -- one answering beacon per new player per minut
 Social.ECHO_WAIT       = 4      -- our own beacon comes back within this, or did not
 Social.ECHO_MISSES     = 2      -- unheard beacons before trying the next channel
 Social.REPROBE         = 600    -- a refused channel is tried again this often
-Social.CHANNELS        = { "YELL", "SAY" }
+--[[ YELL and SAY reach only players in earshot. CHANNEL is the addon's own
+     chat channel for the zone you are in ("FHN<map>", joined only if the first
+     two are refused -- as they are on Forever, 2026-11-27): everyone in the
+     zone hears it, and each client keeps only those within LIST_RANGE. ]]
+Social.CHANNELS        = { "YELL", "SAY", "CHANNEL" }
+Social.LIST_RANGE      = 300    -- yards: "nearby", for players heard zone-wide
 
 Social.POPUP_RANGE       = 80     -- yards: near enough to be worth saying
 Social.POPUP_GAP         = 120    -- seconds between two pop-ups
@@ -117,7 +122,7 @@ end
 function Social.Card(kind, me, here)
   return Social.Encode(kind, me.guid or "", me.class or "", me.rank or 25, me.legend or "",
     here and math.floor(here.x + 0.5) or "", here and math.floor(here.y + 0.5) or "",
-    here and here.instance or "")
+    here and here.instance or "", me.layer or "")
 end
 
 function Social.GuildLine(me)
@@ -153,6 +158,10 @@ function Social.Decode(raw)
   m.legend = m.rank == 0 and int(f[6], 1, 9999999) or nil
   local x, y, inst = int(f[7], -1e7, 1e7), int(f[8], -1e7, 1e7), int(f[9], -1e7, 1e7)
   if x and y and inst then m.x, m.y, m.instance = x, y, inst end
+  -- which copy ("layer") of the zone they are on, when their client can tell
+  if type(f[10]) == "string" and f[10] ~= "" and #f[10] <= 16 and not f[10]:find("[^%w]") then
+    m.layer = f[10]
+  end
   return m
 end
 
@@ -171,6 +180,7 @@ function Social.New()
   s.asked = {}         -- guid -> when we last glanced at them
   s.knocks = {}        -- key -> when they last knocked / we last knocked
   s.channelIndex = 1
+  s.dead, s.deaf = {}, {}   -- distribution -> when it was found refused / unheard
   s.broadcast = "unknown"   -- unknown | ok | silent | refused
   s.misses = 0
   s.sent, s.heard = 0, 0
@@ -200,9 +210,11 @@ function Social:Hear(now, sender, m, via)
   e.name, e.guid = sender, m.guid
   e.class, e.rank, e.legend = m.class, m.rank, m.legend
   e.x, e.y, e.instance = m.x, m.y, m.instance
+  e.layer = m.layer
   e.heardAt = now
-  -- a glance is never downgraded to less than a beacon once one was heard
-  if via == "beacon" or not e.via then e.via = via end
+  -- "beacon": in earshot. "zone": somewhere in this zone. "glance": you
+  -- looked at them. The latest word on where they are is the one kept.
+  e.via = via
   self.heard = self.heard + 1
   return e, isNew
 end
@@ -229,13 +241,34 @@ function Social:Expire(now)
   return gone
 end
 
---[[ Everyone we know of, nearest first; players with no fix after those with
-     one, most recently met first. `blocked(name)` leaves a player out. ]]
+--[[ LAYERS. A busy zone runs as several copies, and a chat channel spans all
+     of them: a player at your exact coordinates may be on another copy, where
+     you cannot see them. So a player heard on the zone channel is "same" only
+     when both clients could read their layer and the two agree, "other" when
+     they disagree, and "unknown" when either could not tell (a client may hide
+     it). Anyone heard in earshot or looked at is on your layer by definition. ]]
+function Social.Layer(e, mine)
+  if e.via ~= "zone" then return "same" end
+  if e.layer and mine then return e.layer == mine and "same" or "other" end
+  return "unknown"
+end
+
+--- Is this player near, as opposed to merely in the same zone (or on
+--- another layer of it)?
+function Social.IsNear(e, here, mine)
+  if e.via ~= "zone" then return true end        -- in earshot, or on your screen
+  local d = Social.Distance(e, here)
+  return d ~= nil and d <= Social.LIST_RANGE and Social.Layer(e, mine) ~= "other"
+end
+
+--[[ Everyone near, nearest first; players with no fix after those with one,
+     most recently met first. `blocked(name)` leaves a player out. ]]
 function Social:List(here, blocked)
   local out = {}
   for _, e in pairs(self.nearby) do
-    if not (blocked and blocked(e.name)) then
+    if not (blocked and blocked(e.name)) and Social.IsNear(e, here, self.layer) then
       e.distance = Social.Distance(e, here)
+      e.unsure = Social.Layer(e, self.layer) == "unknown"
       out[#out + 1] = e
     end
   end
@@ -248,6 +281,15 @@ function Social:List(here, blocked)
   return out
 end
 
+--- How many players are near (the menu's count), without building the list.
+function Social:CountNear(here, blocked)
+  local n = 0
+  for _, e in pairs(self.nearby) do
+    if Social.IsNear(e, here, self.layer) and not (blocked and blocked(e.name)) then n = n + 1 end
+  end
+  return n
+end
+
 --- Can this player be challenged from here, as far as their card says?
 function Social.InDuelRange(entry, here)
   local d = Social.Distance(entry, here)
@@ -256,13 +298,35 @@ end
 
 -- ================================================================== beacons
 
---- The channel to say a beacon on, or nil while every one is refused.
+--[[ The distribution to say a beacon on, or nil while every one is refused.
+     Tried in order; one the client REFUSES is "dead" and one that accepted
+     the line but never brought it back is "deaf", each for REPROBE seconds.
+     With nothing better left, a deaf one is still used (a client that delivers
+     to others but not to the sender looks the same) and the state is "silent";
+     with every one dead it is "refused". Either turns the glance fallback on. ]]
 function Social:Channel(now)
-  if self.broadcast == "refused" then
-    if now - (self.refusedAt or now) < Social.REPROBE then return nil end
-    self.broadcast, self.channelIndex, self.misses = "unknown", 1, 0
+  local fallback
+  for i, ch in ipairs(Social.CHANNELS) do
+    local dead, deaf = self.dead[ch], self.deaf[ch]
+    if dead and now - dead >= Social.REPROBE then self.dead[ch] = nil; dead = nil end
+    if deaf and now - deaf >= Social.REPROBE then self.deaf[ch] = nil; deaf = nil end
+    if not dead then
+      if not deaf then
+        if self.channelIndex ~= i then
+          self.channelIndex, self.misses, self.echoDue = i, 0, nil
+          self.broadcast = "unknown"
+        end
+        return ch
+      end
+      fallback = fallback or i
+    end
   end
-  return Social.CHANNELS[self.channelIndex]
+  if fallback then
+    self.channelIndex, self.broadcast = fallback, "silent"
+    return Social.CHANNELS[fallback]
+  end
+  self.broadcast = "refused"
+  return nil
 end
 
 --[[ Is it time? `ctx.eligible` is the glue's verdict on everything WoW knows
@@ -305,14 +369,11 @@ function Social:NoteBeacon(now, here, outcome, jitter)
     self.lastBeaconAt = now      -- wait a full floor before asking again
     return
   end
+  local ch = Social.CHANNELS[self.channelIndex]
   if outcome == "failed" then
-    self.misses = 0
-    if self.channelIndex < #Social.CHANNELS then
-      self.channelIndex = self.channelIndex + 1
-      self.lastBeaconAt = nil    -- try the next channel at once
-    else
-      self.broadcast, self.refusedAt = "refused", now
-    end
+    self.dead[ch] = now
+    self.lastBeaconAt = nil      -- the next distribution is tried at once
+    self:Channel(now)
     return
   end
   self.sent = self.sent + 1
@@ -320,16 +381,14 @@ function Social:NoteBeacon(now, here, outcome, jitter)
   if self.broadcast ~= "ok" then self.echoDue = now + Social.ECHO_WAIT end
 end
 
---- Anything heard on the beacon channel -- ours coming back, or anyone's --
---- proves the channel carries.
+--- Anything heard on the beacon distribution -- ours coming back, or anyone's
+--- -- proves it carries.
 function Social:NoteEcho()
   self.broadcast, self.misses, self.echoDue = "ok", 0, nil
+  self.deaf[Social.CHANNELS[self.channelIndex]] = nil
 end
 
---[[ Our beacon never came back. Twice running moves to the next channel;
-     out of channels, the client is treated as not carrying them ("silent")
-     and the glance fallback takes over -- beacons continue, since a client
-     that delivers to others but not to the sender would look the same. ]]
+--- Our beacon never came back. Twice running, and the distribution is deaf.
 function Social:CheckEcho(now)
   if not self.echoDue or now < self.echoDue then return end
   self.echoDue = nil
@@ -337,12 +396,10 @@ function Social:CheckEcho(now)
   self.misses = self.misses + 1
   if self.misses < Social.ECHO_MISSES then return end
   self.misses = 0
-  if self.channelIndex < #Social.CHANNELS and self.broadcast ~= "silent" then
-    self.channelIndex = self.channelIndex + 1
-    self.lastBeaconAt = nil
-  else
-    self.broadcast = "silent"
-  end
+  local was = self.channelIndex
+  self.deaf[Social.CHANNELS[was]] = now
+  self:Channel(now)
+  if self.channelIndex ~= was then self.lastBeaconAt = nil end
 end
 
 --- Mouse-over questions are only asked while beacons are not known to work.
@@ -381,10 +438,10 @@ end
 
 -- =================================================================== pop-up
 
-local function inPopupRange(e, here)
+local function inPopupRange(e, here, mine)
   if e.via == "glance" then return true end      -- you were looking at them
   local d = Social.Distance(e, here)
-  return d ~= nil and d <= Social.POPUP_RANGE
+  return d ~= nil and d <= Social.POPUP_RANGE and Social.Layer(e, mine) ~= "other"
 end
 
 --[[ Who should be announced now, if anyone. `ctx`:
@@ -402,8 +459,9 @@ function Social:PopupDue(now, here, ctx)
     local at = self.announced[key]
     if (not at or now - at >= Social.ANNOUNCE_COOLDOWN)
        and not (ctx.blocked and ctx.blocked(e.name))
-       and inPopupRange(e, here) then
+       and inPopupRange(e, here, self.layer) then
       e.distance = Social.Distance(e, here)
+      e.unsure = Social.Layer(e, self.layer) == "unknown"
       fresh[#fresh + 1] = e
     end
   end

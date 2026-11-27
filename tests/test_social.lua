@@ -98,29 +98,41 @@ end)
 H.suite("social: a client that will not carry beacons is found out", function(ns, H)
   local S = ns.Social
   local here = { x = 0, y = 0, instance = 0 }
-  -- refused outright: YELL, then SAY, then nothing until the re-probe
+  -- refused outright: YELL, then SAY, then the zone channel, then nothing
   local s = S.New()
   H.eq(s:Channel(0), "YELL")
   s:NoteBeacon(0, here, "failed")
-  H.eq(s:Channel(0), "SAY"); H.ok(s:ShouldBeacon(0, here, { eligible = true }), "the next channel is tried at once")
+  H.eq(s:Channel(0), "SAY"); H.ok(s:ShouldBeacon(0, here, { eligible = true }), "the next one is tried at once")
   s:NoteBeacon(0, here, "failed")
-  H.eq(s.broadcast, "refused"); H.eq(s:Channel(1), nil); H.ok(s:GlanceMode())
-  H.notOk(s:ShouldBeacon(100, here, { eligible = true }))
-  H.eq(s:Channel(S.REPROBE), "YELL", "and tried again later, in case the place mattered")
-  -- accepted but never heard back: two misses per channel, then the glance fallback
+  H.eq(s:Channel(0), "CHANNEL", "Forever: say and yell refused, so the zone channel")
+  H.notOk(s:GlanceMode(), "which may yet work")
+  s:NoteBeacon(0, here, "sent"); s:NoteEcho()
+  H.eq(s.broadcast, "ok"); H.eq(s:Channel(100), "CHANNEL")
+  -- ten minutes on the refused ones are tried again, fail again, and it is back on the channel
+  H.eq(s:Channel(S.REPROBE), "YELL", "tried again later, in case the place mattered")
+  s:NoteBeacon(S.REPROBE, here, "failed"); s:NoteBeacon(S.REPROBE, here, "failed")
+  H.eq(s:Channel(S.REPROBE), "CHANNEL")
+  -- and if that is refused too, nothing is left
+  s:NoteBeacon(S.REPROBE, here, "failed")
+  H.eq(s.broadcast, "refused"); H.eq(s:Channel(S.REPROBE + 1), nil); H.ok(s:GlanceMode())
+  H.notOk(s:ShouldBeacon(S.REPROBE + 100, here, { eligible = true }))
+  -- accepted but never heard back: two misses each, then the glance fallback
   s = S.New()
   local t = 0
-  for _ = 1, S.ECHO_MISSES do
-    s:NoteBeacon(t, here, "sent"); s:CheckEcho(t + S.ECHO_WAIT); t = t + 60
+  for _, expect in ipairs({ "SAY", "CHANNEL" }) do
+    for _ = 1, S.ECHO_MISSES do
+      s:NoteBeacon(t, here, "sent"); s:CheckEcho(t + S.ECHO_WAIT); t = t + 60
+    end
+    H.eq(s:Channel(t), expect); H.notOk(s:GlanceMode())
   end
-  H.eq(s:Channel(t), "SAY"); H.notOk(s:GlanceMode())
   for _ = 1, S.ECHO_MISSES do
     s:NoteBeacon(t, here, "sent"); s:CheckEcho(t + S.ECHO_WAIT); t = t + 60
   end
   H.eq(s.broadcast, "silent"); H.ok(s:GlanceMode())
+  H.eq(s:Channel(t), "YELL", "unheard everywhere: the first is kept")
   H.ok(s:ShouldBeacon(t + 200, here, { eligible = true }), "beacons continue: others may still hear them")
   s:NoteEcho()
-  H.eq(s.broadcast, "ok"); H.notOk(s:GlanceMode(), "one line heard on the channel proves it")
+  H.eq(s.broadcast, "ok"); H.notOk(s:GlanceMode(), "one line heard on it proves it")
   -- heard back in time: confirmed, and never doubted again
   s = S.New()
   s:NoteBeacon(0, here, "sent"); s:NoteEcho(); s:CheckEcho(10)
@@ -477,7 +489,8 @@ H.suite("social ui: when beacons are not carried, the player you point at is ask
     H.eq(#sent("FHNEAR"), 0, "no questions while beacons may yet work")
     Stub.Advance(20)
     H.eq(S.state.broadcast, "refused")
-    H.ok(S:Report():find("mouse-over", 1, true), S:Report())
+    H.ok(S:Report():find("refused by this client", 1, true), S:Report())
+    H.ok(S:Report():find("yell refused, say refused, channel refused", 1, true), S:Report())
     local n = #sent("FHNEAR")
     Stub.Fire("UPDATE_MOUSEOVER_UNIT")
     local q = sent("FHNEAR")
@@ -666,4 +679,199 @@ H.suite("social ui: /fh nearby test previews both screens and sends nothing", fu
     H.eq(#sent(), n, "nothing was sent to anyone")
     H.eq(next(ForeverHearthstoneDB.social.guilds), nil, "and nothing was saved")
   end)
+end)
+
+H.suite("social: players heard zone-wide are near only within range", function(ns, H)
+  local S = ns.Social
+  local s = S.New()
+  local here = { x = 0, y = 0, instance = 0 }
+  s:Hear(1, "Close", card(S, "B", "G-C", "MAGE", 5, 100, 0), "zone")
+  s:Hear(2, "AcrossTheZone", card(S, "B", "G-F", "MAGE", 5, S.LIST_RANGE + 500, 0), "zone")
+  s:Hear(3, "NoFix", card(S, "B", "G-N", "MAGE", 5), "zone")
+  s:Hear(4, "Earshot", card(S, "B", "G-E", "MAGE", 5), "beacon")
+  local names = {}
+  for i, e in ipairs(s:List(here)) do names[i] = e.name end
+  H.eq(table.concat(names, ","), "Close,Earshot", "the zone channel is not a list of the whole zone")
+  H.eq(s:CountNear(here), 2); H.eq(s.count, 4, "they are remembered, in case they ride closer")
+  H.eq(s:PopupDue(5, here, { enabled = true }), nil, "100 yards is listed, not announced")
+  s:Hear(6, "AcrossTheZone", card(S, "B", "G-F", "MAGE", 5, 30, 0), "zone")
+  H.eq(s:PopupDue(7, here, { enabled = true }).rows[1].name, "AcrossTheZone", "until they do")
+end)
+
+--- A client like Forever: SAY and YELL refused, custom channels allowed.
+local function foreverClient(joined)
+  C_ChatInfo.SendAddonMessage = function(prefix, msg, channel, target)
+    Stub.R.calls[#Stub.R.calls + 1] = { what = "SendAddonMessage", args = { prefix, msg, channel, target } }
+    if channel == "YELL" or channel == "SAY" then return 4 end
+    return 0
+  end
+  _G.C_Map = { GetBestMapForUnit = function() return Stub.zoneMap or 1429 end }
+  _G.JoinTemporaryChannel = function(name) joined[name] = true; joined[#joined + 1] = name end
+  _G.LeaveChannelByName = function(name) joined[name] = nil; joined[#joined + 1] = "-" .. name end
+  _G.GetChannelName = function(name) return joined[name] and 5 or 0, name end
+  _G.ChatFrame1 = {}
+  _G.ChatFrame_RemoveChannel = function(frame, name) joined.hidden = name end
+end
+local function restoreClient()
+  _G.C_Map, _G.JoinTemporaryChannel, _G.LeaveChannelByName, _G.GetChannelName = nil, nil, nil, nil
+  _G.ChatFrame1, _G.ChatFrame_RemoveChannel, Stub.zoneMap = nil, nil, nil
+end
+
+H.suite("social ui: where say and yell are refused, the zone's own channel carries the beacons", function(ns, H)
+  local joined = {}
+  local ok, err = pcall(withSocial, ns, function(Main, S)
+    foreverClient(joined)
+    Stub.Advance(19)
+    H.eq(#joined, 0, "not joined before the game's own channels are in")
+    Stub.Advance(30)
+    H.eq(joined[1], "FHN1429", "one channel for the zone you are in")
+    H.eq(joined.hidden, "FHN1429", "taken off the chat windows, so it never prints")
+    local line
+    for _, l in ipairs(sent("FHNEAR")) do if l.channel == "CHANNEL" then line = l end end
+    H.ok(line, "the beacon goes out on it"); H.eq(line.target, 5, "addressed by the channel's number")
+    H.eq(ns.Social.Decode(line.msg).kind, "B")
+    -- our own line coming back confirms it, and glancing stops
+    hear(ns, line.msg, "CHANNEL", "Tester")
+    H.eq(S.state.broadcast, "ok"); H.notOk(S.state:GlanceMode())
+    H.ok(S:Report():find("working, zone channel FHN1429", 1, true), S:Report())
+    -- two players in the zone: one close, one a mile off
+    hear(ns, theirCard(ns, "B", "Player-1-BB", "PRIEST", 7, 30, 40), "CHANNEL", "Anduin")
+    hear(ns, theirCard(ns, "B", "Player-1-CC", "ROGUE", 2, 1800, 0), "CHANNEL", "Valeera")
+    H.eq(S:Count(), 1, "only the close one is nearby")
+    Stub.Advance(2)
+    H.ok(S.popup.frame:IsShown()); H.eq(S.popup.rows[1].name:GetText(), "Anduin")
+    H.notOk(S.popup.rows[2].button:IsShown())
+    -- riding into the next zone changes channel
+    Stub.zoneMap = 1453; Stub.Advance(15)
+    H.eq(joined["FHN1429"], nil, "the old zone's channel is left"); H.ok(joined["FHN1453"], "and the new one joined")
+    -- hiding leaves it altogether
+    S:SetVisible(false); Stub.Advance(3)
+    H.eq(joined["FHN1453"], nil, "a hidden player is not in the channel at all")
+  end)
+  restoreClient()
+  if not ok then error(err, 0) end
+end)
+
+H.suite("social ui: with no broadcast at all, anyone you hear or group with is asked", function(ns, H)
+  withSocial(ns, function(Main, S)
+    C_ChatInfo.SendAddonMessage = function(prefix, msg, channel, target)
+      Stub.R.calls[#Stub.R.calls + 1] = { what = "SendAddonMessage", args = { prefix, msg, channel, target } }
+      if channel == "WHISPER" or channel == "GUILD" then return 0 end
+      return 4
+    end
+    Stub.Fire("CHAT_MSG_SAY", "hello there", "Anduin-Realm", "", "", "", "", 0, 0, "", 0, 1, "Player-1-BB")
+    H.eq(#sent("FHNEAR"), 0, "nobody is asked while a broadcast may yet work")
+    Stub.Advance(60)
+    H.eq(S.state.broadcast, "refused")
+    local n = #sent("FHNEAR")
+    Stub.Fire("CHAT_MSG_SAY", "hello there", "Anduin-Realm", "", "", "", "", 0, 0, "", 0, 1, "Player-1-BB")
+    local q = sent("FHNEAR")
+    H.eq(#q, n + 1, "someone who speaks within earshot is asked"); H.eq(q[#q].target, "Anduin-Realm")
+    H.eq(ns.Social.Decode(q[#q].msg).kind, "Q")
+    Stub.Fire("CHAT_MSG_SAY", "again", "Anduin-Realm", "", "", "", "", 0, 0, "", 0, 2, "Player-1-BB")
+    Stub.Fire("CHAT_MSG_TEXT_EMOTE", "You wave.", "Tester", "", "", "", "", 0, 0, "", 0, 3, ME)
+    H.eq(#sent("FHNEAR"), n + 1, "once each, and never yourself")
+    Stub.Advance(5)
+    Stub.Fire("CHAT_MSG_TEXT_EMOTE", "Valeera waves.", "Valeera", "", "", "", "", 0, 0, "", 0, 4, "Player-1-CC")
+    H.eq(sent("FHNEAR")[n + 2].target, "Valeera", "an emote counts too")
+    -- the party, without anyone pointing at anything
+    _G.IsInGroup = function() return true end
+    Stub.units.party1 = { name = "Jaina", class = "MAGE", isPlayer = true, guid = "Player-1-DD" }
+    Stub.Advance(5)
+    _G.IsInGroup = nil
+    local last = sent("FHNEAR"); last = last[#last]
+    H.eq(last.target, "Jaina"); H.eq(last.channel, "WHISPER")
+  end)
+end)
+
+H.suite("social: a player on another layer of the zone is not near", function(ns, H)
+  local S = ns.Social
+  local here = { x = 0, y = 0, instance = 0 }
+  local function zoneCard(guid, layer)
+    return S.Decode(S.Card("B", { guid = guid, class = "MAGE", rank = 5, layer = layer }, { x = 10, y = 0, instance = 0 }))
+  end
+  H.eq(zoneCard("G-1", "4471").layer, "4471", "the layer rides in the card")
+  H.eq(S.Decode("B;1;G-1;MAGE;5;;10;0;0;not a layer!").layer, nil, "junk is no layer")
+  H.eq(S.Decode("B;1;G-1;MAGE;5;;10;0;0").layer, nil, "a beta.1 card has none")
+  local s = S.New(); s.layer = "4471"
+  s:Hear(1, "Same", zoneCard("G-S", "4471"), "zone")
+  s:Hear(2, "Other", zoneCard("G-O", "9002"), "zone")
+  s:Hear(3, "Untold", zoneCard("G-U", nil), "zone")
+  s:Hear(4, "Earshot", zoneCard("G-E", "9002"), "beacon")
+  local names, unsure = {}, {}
+  for i, e in ipairs(s:List(here)) do names[i] = e.name; unsure[e.name] = e.unsure end
+  table.sort(names)
+  H.eq(table.concat(names, ","), "Earshot,Same,Untold", "the other layer's player is left out; one heard in earshot is here whatever their card says")
+  H.notOk(unsure.Same); H.ok(unsure.Untold, "a player whose layer is not known is listed, marked unconfirmed")
+  H.eq(s:CountNear(here), 3)
+  local due = s:PopupDue(5, here, { enabled = true })
+  H.eq(due.total, 3, "and the other layer is never announced")
+  -- a client that cannot read its own layer trusts nobody's, but hides nobody
+  s = S.New()
+  s:Hear(1, "Anyone", zoneCard("G-A", "4471"), "zone")
+  H.eq(S.Layer(s.nearby["G-A"], s.layer), "unknown"); H.eq(s:CountNear(here), 1)
+end)
+
+H.suite("social ui: the layer is read from creatures, sent, and decides who can be duelled untargeted", function(ns, H)
+  local joined = {}
+  local ok, err = pcall(withSocial, ns, function(Main, S)
+    foreverClient(joined)
+    Stub.Advance(50)
+    H.ok(S:Report():find("Layer unknown", 1, true), S:Report())
+    -- a player's pet says nothing; a creature does
+    Stub.units.target = { name = "Imp", guid = "Creature-0-4170-0-9999-416-00001A2B3C", playerControlled = true }
+    Stub.Fire("PLAYER_TARGET_CHANGED")
+    H.eq(S.state.layer, nil, "a summoned pet may be from anywhere")
+    Stub.units.mouseover = { name = "Wolf", guid = "Creature-0-4170-0-4471-299-00001A2B3C" }
+    Stub.Fire("UPDATE_MOUSEOVER_UNIT")
+    H.eq(S.state.layer, "4471")
+    H.ok(S:Report():find("Layer 4471", 1, true), S:Report())
+    Stub.units.mouseover = { name = "Somebody", isPlayer = true, guid = "Player-1-0000FFFF" }
+    Stub.Fire("UPDATE_MOUSEOVER_UNIT")
+    H.eq(S.state.layer, "4471", "a player's GUID is not a layer")
+    S.state.lastBeaconAt = nil; Stub.Advance(2)
+    local line
+    for _, l in ipairs(sent("FHNEAR")) do if l.channel == "CHANNEL" then line = l end end
+    H.eq(ns.Social.Decode(line.msg).layer, "4471", "and it goes out in the beacon")
+    local function zone(guid, name, layer, x)
+      hear(ns, ns.Social.Card("B", { guid = guid, class = "PRIEST", rank = 7, layer = layer }, { x = x, y = 0, instance = 0 }), "CHANNEL", name)
+    end
+    zone("Player-1-BB", "Anduin", "4471", 4)
+    zone("Player-1-CC", "Valeera", "9002", 4)
+    zone("Player-1-DD", "Jaina", nil, 4)
+    H.eq(S:Count(), 2, "same spot, another layer: not here")
+    S:Show()
+    local rows = S.nearCol.rows
+    local byName = {}
+    for i = 1, 2 do byName[rows[i].name:GetText()] = rows[i] end
+    H.ok(byName.Anduin and byName.Jaina)
+    H.ok(byName.Jaina.sub:GetText():find("~", 1, true), "unconfirmed is marked: " .. byName.Jaina.sub:GetText())
+    H.notOk(byName.Anduin.sub:GetText():find("~", 1, true))
+    H.ok(S.nearCol.foot:GetText():find("another layer", 1, true), S.nearCol.foot:GetText())
+    -- Jaina: no layer, no untargeted challenge
+    local n = #sent("FHNEAR")
+    click(byName.Jaina.button)
+    H.eq(#sent("FHNEAR"), n, "nothing is even asked"); H.eq(#sent("FHDUEL"), 0)
+    H.ok(S.nearCol.foot:GetText():find("Can't confirm Jaina is on your layer", 1, true), S.nearCol.foot:GetText())
+    -- Anduin: confirmed, so the question goes out, and the answer beside us is a challenge
+    click(byName.Anduin.button)
+    hear(ns, ns.Social.Card("A", { guid = "Player-1-BB", class = "PRIEST", rank = 7, layer = "4471" }, { x = 3, y = 0, instance = 0 }), "WHISPER", "Anduin")
+    H.eq(#sent("FHDUEL"), 1); H.eq(sent("FHDUEL")[1].target, "Anduin")
+    Main:Decline(); Main.session = nil
+    -- if he has hopped layers by the time he answers, it is said and nothing is sent
+    S:Show(); S:Refresh(true); click(S.nearCol.rows[1].button)
+    local duelLines = #sent("FHDUEL")
+    hear(ns, ns.Social.Card("A", { guid = "Player-1-BB", class = "PRIEST", rank = 7, layer = "9002" }, { x = 3, y = 0, instance = 0 }), "WHISPER", "Anduin")
+    H.eq(#sent("FHDUEL"), duelLines)
+    H.ok(S.status and S.status:find("another layer", 1, true), tostring(S.status))
+    -- riding into the next zone, or joining a group, forgets the layer
+    Stub.zoneMap = 1453; Stub.Advance(2)
+    H.eq(S.state.layer, nil)
+    Stub.Fire("UPDATE_MOUSEOVER_UNIT"); H.eq(S.state.layer, nil, "a player under the pointer does not bring it back")
+    Stub.units.mouseover = { name = "Boar", guid = "Creature-0-4170-0-5120-113-00001A2B3C" }
+    Stub.Fire("UPDATE_MOUSEOVER_UNIT"); H.eq(S.state.layer, "5120")
+    Stub.Fire("GROUP_ROSTER_UPDATE"); H.eq(S.state.layer, nil)
+  end)
+  restoreClient()
+  if not ok then error(err, 0) end
 end)

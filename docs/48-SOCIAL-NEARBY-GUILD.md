@@ -67,27 +67,38 @@ the wire are in `Client/UI/Social.lua`.
   duel record, and again when their rank changes. Kept in
   `ForeverHearthstoneDB.social.guilds`, pruned after 60 days.
 
-## Not verified on Forever
+## What Forever allows (tested 2026-11-27)
 
-**Whether the client carries an addon message on YELL or SAY outdoors.** Retail
-restricts these to instances; Forever has not been tested. The code finds out
-for itself rather than assuming:
+**Forever refuses addon messages on YELL and SAY outdoors**, as retail does
+(`/fh nearby` reported "refused", last result "SAY: failed"). The code finds
+this out for itself on every client and works down a list:
 
-- a refused send moves YELL -> SAY -> "refused" (retried every 10 minutes);
-- a beacon we never hear come back, twice, does the same and ends at "silent";
-- in either state the **glance fallback** turns on: the player you mouse over
-  or target is whispered one quiet question (once per player per half hour,
-  one question every 3 seconds at most, same faction only), and only clients
-  with the addon answer.
+1. `YELL`, then `SAY`: range-limited by the server. Refused on Forever.
+2. **The zone channel.** A chat channel of the addon's own, one per zone
+   (`FHN<map id>`), joined for the session only, taken off every chat window so
+   it prints nothing, and joined 20 seconds after login so General and Trade
+   keep their numbers. Everyone in the zone with the addon hears each beacon;
+   each client lists only players within 300 yards and announces those within
+   80. Left when you hide yourself; swapped when you change zone.
+   Verified on Forever 2026-11-27: the channel carries addon messages. Not yet
+   checked: whether the channel stays out of sight in chat.
+   **Layers.** The channel spans every layer of the zone, so each client reads
+   its layer from a creature GUID (the zone uid field), sends it in its card,
+   and hides players whose layer differs. Unknown on either side: listed with
+   a `~`, and Duel needs a target. Readable on Forever ("Layer 5692473"); not
+   yet confirmed that two players standing together read the same value.
+3. **Asking individuals**, when nothing above works: one quiet whisper to a
+   player you mouse over or target, to your party, and to anyone whose /say,
+   /yell or emote reaches your chat (they are in earshot by definition). Once
+   per player per half hour, one question every 3 seconds at most. Only clients
+   with the addon answer.
 
-`/fh nearby` prints which of these the client turned out to be in. If Forever
-delivers a range message to others but not back to the sender, the state will
-read "not carried" while still working for everyone else; beacons continue in
-that state for exactly this reason.
+A distribution that is refused is retried every 10 minutes. `/fh nearby` prints
+which one is in use and which were refused.
 
-Also untested in a client: how the Social window and the pop-up actually look.
-The tour has two new scenes (`nearby-popup`, `social`) and `/fh nearby test`
-shows both without a second player.
+Also untested in a client: how the Social window looks. The tour has two new
+scenes (`nearby-popup`, `social`) and `/fh nearby test` shows both without a
+second player.
 
 ## Trust and privacy
 

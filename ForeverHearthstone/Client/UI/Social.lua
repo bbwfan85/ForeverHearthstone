@@ -106,8 +106,34 @@ function SocialUI:Me()
   local ladder = main:Ladder()
   local record = main:Record()
   return { guid = opt("UnitGUID", "player"), class = main:PlayerClass(),
+           layer = self.state and self.state.layer,
            rank = ladder.rank, stars = ladder.stars, legend = ladder.legend,
            wins = record.wins, losses = record.losses }
+end
+
+--[[ WHICH LAYER WE ARE ON, read off any creature the client shows us: a
+     creature's GUID is "Creature-0-<server>-<instance>-<zone uid>-<npc>-<spawn>"
+     and the zone uid differs between the copies of a zone. Taken from whatever
+     the player targets, mouses over or has a nameplate for; never from a
+     player's own pet or guardian, which may have been summoned elsewhere.
+     Forgotten on changing zone or group (both can move you between layers).
+     If the client hides it, this stays nil and players heard on the zone
+     channel are shown as unconfirmed rather than trusted. ]]
+function SocialUI:NoteCreature(unit)
+  local guid = opt("UnitGUID", unit)
+  if type(guid) ~= "string" then return end
+  local kind, _, _, _, zoneUid = guid:match("^(%a+)%-(%d+)%-(%d+)%-(%d+)%-(%d+)%-%d+%-%x+$")
+  if kind ~= "Creature" and kind ~= "Vehicle" then return end
+  if opt("UnitPlayerControlled", unit) then return end
+  if self.state.layer ~= zoneUid then
+    self.state.layer = zoneUid
+    self.layerZone = self:ZoneKey()
+    self.dirty = true
+  end
+end
+
+function SocialUI:ForgetLayer()
+  if self.state.layer then self.state.layer = nil; self.dirty = true end
 end
 
 local function send(raw, channel, target)
@@ -144,11 +170,86 @@ function SocialUI:Eligible()
   return true
 end
 
+--[[ THE ZONE CHANNEL, the third way to be heard, used only when the client
+     refuses YELL and SAY (Forever does). A chat channel of the addon's own,
+     one per zone ("FHN<map id>"): joined for this session only
+     (JoinTemporaryChannel, so nothing is added to the character's saved
+     channels), taken off every chat window so it never prints a line, and
+     joined late enough that General and Trade keep their usual numbers.
+     Returns the channel's number, or nil and "wait" / "failed". ]]
+function SocialUI:ZoneKey()
+  local id
+  if C_Map and C_Map.GetBestMapForUnit then
+    local ok, v = pcall(C_Map.GetBestMapForUnit, "player")
+    if ok then id = ns.Plain(v) end
+  end
+  if not id then
+    local here = self:Here()
+    id = here and ("i" .. here.instance) or nil
+  end
+  return id and tostring(id) or nil
+end
+
+local function hideFromChat(name)
+  local remove = rawget(_G, "ChatFrame_RemoveChannel")
+  for i = 1, rawget(_G, "NUM_CHAT_WINDOWS") or 10 do
+    local frame = rawget(_G, "ChatFrame" .. i)
+    if frame then
+      if remove then pcall(remove, frame, name)
+      else pcall(function() frame:RemoveChannel(name) end) end
+    end
+  end
+end
+
+function SocialUI:LeaveZoneChannel()
+  local name = self.zoneChannel
+  if not name then return end
+  self.zoneChannel = nil
+  local leave = rawget(_G, "LeaveChannelByName")
+  if leave then pcall(leave, name) end
+end
+
+function SocialUI:ChannelId()
+  local now = self:Now()
+  if not self:Visible() then self:LeaveZoneChannel(); return nil, "wait" end
+  -- inside an instance the last zone's channel is simply kept
+  local key = not opt("IsInInstance") and self:ZoneKey()
+  local want = key and ("FHN" .. key) or self.zoneChannel
+  if not want then return nil, "wait" end
+  if self.zoneChannel and self.zoneChannel ~= want then self:LeaveZoneChannel() end
+  local id = opt("GetChannelName", want)
+  if type(id) == "number" and id > 0 then
+    if self.zoneChannel ~= want or not self.zoneHidden then hideFromChat(want); self.zoneHidden = true end
+    self.zoneChannel, self.joinTries = want, 0
+    return id
+  end
+  -- not before the game's own channels are in: a channel joined first takes
+  -- number 1 and pushes General and Trade down
+  if now - (self.startedAt or now) < 20 then return nil, "wait" end
+  if now - (self.joinAt or -100) < 10 then return nil, "wait" end
+  local join = rawget(_G, "JoinTemporaryChannel") or rawget(_G, "JoinChannelByName")
+  if not join or (self.joinTries or 0) >= 3 then return nil, "failed" end
+  self.joinAt, self.joinTries, self.zoneHidden = now, (self.joinTries or 0) + 1, nil
+  pcall(join, want)
+  self.zoneChannel = want
+  hideFromChat(want)
+  return nil, "wait"
+end
+
 function SocialUI:Beacon(now, here)
   local s = self.state
   local channel = s:Channel(now)
   if not channel then return end
-  local outcome = send(Social.Card("B", self:Me(), here), channel)
+  local target
+  if channel == "CHANNEL" then
+    local id, why = self:ChannelId()
+    if not id then
+      if why == "failed" then self.lastResult = "CHANNEL: could not join"; s:NoteBeacon(now, here, "failed") end
+      return
+    end
+    target = id
+  end
+  local outcome = send(Social.Card("B", self:Me(), here), channel, target)
   self.lastResult = channel .. ": " .. outcome
   s:NoteBeacon(now, here, outcome, math.random() * 8)
 end
@@ -224,7 +325,7 @@ function SocialUI:OnAddon(text, channel, sender)
   if not m then return end
   local s, now = self.state, self:Now()
   local mine = m.guid ~= nil and m.guid == opt("UnitGUID", "player")
-  local ranged = channel == "YELL" or channel == "SAY"
+  local ranged = channel == "YELL" or channel == "SAY" or channel == "CHANNEL"
 
   if m.kind == "G" or m.kind == "R" then
     if channel ~= "GUILD" then return end
@@ -251,12 +352,13 @@ function SocialUI:OnAddon(text, channel, sender)
   if m.kind == "B" then
     if not ranged then return end
     s:NoteEcho()
-    local e, isNew = s:Hear(now, sender, m, "beacon")
-    if isNew then s:PlanReply(now, e, 0.5 + math.random() * 1.5) end
+    local e, isNew = s:Hear(now, sender, m, channel == "CHANNEL" and "zone" or "beacon")
+    -- a newcomer near us is answered; one across the zone is not
+    if isNew and Social.IsNear(e, self:Here(), s.layer) then s:PlanReply(now, e, 0.5 + math.random() * 1.5) end
     self.dirty = true
   elseif m.kind == "Q" then
     if channel ~= "WHISPER" then return end
-    s:Hear(now, sender, m, "glance")
+    s:Hear(now, sender, m, self:WhisperVia(sender, m))
     self.dirty = true
     -- answered once per asker every few seconds, and only if we would duel them
     self.answered = self.answered or {}
@@ -267,7 +369,7 @@ function SocialUI:OnAddon(text, channel, sender)
     end
   elseif m.kind == "A" then
     if channel ~= "WHISPER" then return end
-    local e = s:Hear(now, sender, m, "glance")
+    local e = s:Hear(now, sender, m, self:WhisperVia(sender, m))
     self.dirty = true
     local p = self.pending
     if p and (p.key == e.key or ns.Transport.SameName(p.name, sender)) then
@@ -284,6 +386,19 @@ function SocialUI:OnAddon(text, channel, sender)
   end
 end
 
+--[[ A whispered question or answer usually comes from someone who was looking
+     at you, which puts them on your layer. Not when it is the Duel button of a
+     player who only knows you from the zone channel: they stay "zone" unless
+     we have seen them, and a card naming another layer is never a sighting. ]]
+function SocialUI:WhisperVia(sender, m)
+  local s = self.state
+  local key = m.guid or ("name:" .. tostring(sender):lower())
+  local known = s.nearby[key]
+  if known then return known.via end       -- a whisper is no new sighting
+  if m.layer and s.layer and m.layer ~= s.layer then return "zone" end
+  return "glance"
+end
+
 --[[ THE GLANCE FALLBACK: when beacons are not carried, the one player you
      point at is asked, quietly, whether they play. A client without the addon
      never registered the prefix and sees nothing. ]]
@@ -291,18 +406,30 @@ function SocialUI:Glance(unit)
   local s = self.state
   if not s:GlanceMode() or not self:Visible() then return end
   if not opt("UnitExists", unit) or not opt("UnitIsPlayer", unit) then return end
-  if opt("UnitIsUnit", unit, "player") or opt("IsInInstance") then return end
+  if opt("UnitIsUnit", unit, "player") then return end
   local mine, theirs = opt("UnitFactionGroup", "player"), opt("UnitFactionGroup", unit)
   if mine and theirs and mine ~= theirs then return end
-  local guid = opt("UnitGUID", unit)
-  if not s:MayGlance(self:Now(), guid) then return end
   local fn = rawget(_G, "UnitName")
   local ok, name, realm = pcall(fn, unit)
   if not ok then return end
   name, realm = ns.Plain(name), ns.Plain(realm)
   if not name then return end
   if realm and realm ~= "" then name = name .. "-" .. realm end
+  self:Ask(name, opt("UnitGUID", unit))
+end
+
+--[[ Ask one player, by name, whether they play. Also used for anyone whose
+     /say, /yell or emote reaches your chat -- they are within earshot by
+     definition -- and for your party. Same limits whoever it is: once per
+     player per half hour, one question every few seconds. ]]
+function SocialUI:Ask(name, guid)
+  local s = self.state
+  if not s:GlanceMode() or not self:Visible() or opt("IsInInstance") then return false end
+  if type(name) ~= "string" or name == "" or type(guid) ~= "string" then return false end
+  if guid == opt("UnitGUID", "player") or self.main:IsBlocked(name) then return false end
+  if not s:MayGlance(self:Now(), guid) then return false end
   self:Whisper(Social.Card("Q", self:Me(), self:Here()), name)
+  return true
 end
 
 -- =================================================================== duels
@@ -329,6 +456,13 @@ function SocialUI:Duel(entry)
     self:Say(("%s is only a preview. Real players nearby appear here the same way."):format(shown(entry.name)))
     return false
   end
+  --[[ Without a unit, only their coordinates say they are beside you -- and
+       coordinates are the same on every layer. So an untargeted challenge
+       needs both clients to agree on the layer. ]]
+  if Social.Layer(entry, self.state.layer) ~= "same" then
+    self:Say(("Can't confirm %s is on your layer. If you can see them, target them and press Duel."):format(shown(entry.name)))
+    return false
+  end
   if not self:Here() then
     self:Say(("Target %s and press Duel a Player."):format(shown(entry.name)))
     return false
@@ -342,7 +476,9 @@ end
 function SocialUI:FinishDuel(entry)
   local main = self.main
   local d = Social.Distance(entry, self:Here())
-  if not d then
+  if Social.Layer(entry, self.state.layer) ~= "same" then
+    self:Say(("%s is on another layer of this zone, so you can't see each other. Grouping up puts you on the same one."):format(shown(entry.name)))
+  elseif not d then
     self:Say(("Can't tell how far away %s is. Target them and press Duel a Player."):format(shown(entry.name)))
   elseif d > Social.DUEL_RANGE then
     self:Say(("%s is %d yards away. Walk over to them, then press Duel."):format(shown(entry.name), math.floor(d + 0.5)))
@@ -405,6 +541,20 @@ function SocialUI:Tick()
   if s:Expire(now) > 0 then self.dirty = true end
   s:CheckEcho(now)
   if s:ShouldBeacon(now, here, self.beaconCtx) then self:Beacon(now, here) end
+  -- on the zone channel: follow the player from zone to zone, and listen even
+  -- while not speaking (combat, a duel)
+  if s.layer and self.layerZone ~= self:ZoneKey() then self:ForgetLayer() end
+  if Social.CHANNELS[s.channelIndex] == "CHANNEL" and s.broadcast ~= "refused" then
+    self:ChannelId()
+  elseif s.broadcast == "refused" then
+    self:LeaveZoneChannel()
+  end
+  -- your party, asked one at a time, when beacons are not doing it for us
+  if s:GlanceMode() and opt("IsInGroup") then
+    for i = 1, 4 do self:Glance("party" .. i) end
+  end
+  local near = s:CountNear(here, self.blockedFn)
+  if near ~= self.nearCount then self.nearCount = near; self.dirty = true end
   if self.answered and now - (self.answeredSwept or 0) > 300 then
     self.answered, self.answeredSwept = {}, now
   end
@@ -443,6 +593,8 @@ end
 local function rowLine(entry, here)
   local d = Social.Distance(entry, here)
   local where = d and (d < 15 and "beside you" or ("%d yd"):format(math.floor(d / 5 + 0.5) * 5)) or "nearby"
+  -- "~": heard on the zone channel and not confirmed to be on your layer
+  if entry.unsure then where = "~" .. (d and ("%d yd"):format(math.floor(d / 5 + 0.5) * 5) or "nearby") end
   return ("%s  -  %s  -  %s"):format(titleCase(entry.class), ns.Ladder.Label(entry.rank, entry.legend), where)
 end
 
@@ -455,10 +607,8 @@ function SocialUI:BuildPopup()
   f:SetScript("OnClick", function() self:HidePopup(true); self:Show() end)
   p.bg = f:CreateTexture(nil, "BACKGROUND")
   p.bg:SetAllPoints(); p.bg:SetTexture(ART .. "menu-leather.tga"); p.bg:SetVertexColor(.36, .22, .14, .97)
-  p.glow = f:CreateTexture(nil, "BACKGROUND", nil, 1)
-  p.glow:SetTexture(ART .. "fx-aura.tga"); p.glow:SetBlendMode("ADD")
-  p.glow:SetPoint("CENTER", f, "TOPLEFT", 34, -24); p.glow:SetSize(170, 170)
-  p.glow:SetVertexColor(1, .78, .3, .45)
+  -- no glow behind the title: drawn over the leather it showed as a bright
+  -- square in the corner (the drop toast's glow sits BEHIND its panel)
   p.rim = W.GoldFrame(f, 8, "BORDER")
   p.title = W.StyledText(f, "header")
   p.title:SetPoint("TOPLEFT", f, "TOPLEFT", 16, -10); p.title:SetSize(POP_W - 32, 20)
@@ -684,7 +834,8 @@ end
 
 --- How many players are near, for the menu's plaque.
 function SocialUI:Count()
-  return self.state and self.state.count or 0
+  if not self.state then return 0 end
+  return self.state:CountNear(self:Here(), self.blockedFn)
 end
 
 --[[ Redraw whatever is on screen. Called once a second while Social is open
@@ -779,13 +930,18 @@ function SocialUI:RefreshNearby(now, here)
     n.empty:SetText(not self:Visible()
       and "You are hidden from nearby players, so they are hidden from you too.\n\nTurn on \"Visible to nearby players\" below to find games."
       or (s:GlanceMode()
-        and "Nobody yet.\n\nMouse over or target other players as you travel: anyone with Forever Hearthstone appears here."
+        and "Nobody yet.\n\nPlayers with Forever Hearthstone appear here when you point at them, group with them, or hear them speak or emote nearby."
         or "Nobody nearby is playing right now.\n\nPlayers with Forever Hearthstone appear here as you pass them in the world."))
   end
   local foot = ""
   if self.status and now - (self.statusAt or 0) < 12 then foot = self.status
   elseif #near > NEAR_ROWS then foot = ("and %d more nearby"):format(#near - NEAR_ROWS)
-  elseif #near > 0 then foot = "Duel challenges a player beside you. Knock invites one further off to come over." end
+  elseif #near > 0 then
+    local unsure = false
+    for _, e in ipairs(near) do unsure = unsure or e.unsure end
+    foot = unsure and "~ means they may be on another layer of this zone. If you can't see them, that is why."
+      or "Duel challenges a player beside you. Knock invites one further off to come over."
+  end
   n.foot:SetText(foot)
 end
 
@@ -823,12 +979,21 @@ function SocialUI:Report()
   local how = ({
     unknown = "not confirmed yet",
     ok = "working",
-    silent = "not carried by this client - using mouse-over instead",
-    refused = "refused by this client - using mouse-over instead",
+    silent = "not carried by this client - asking players you point at, hear or group with instead",
+    refused = "refused by this client - asking players you point at, hear or group with instead",
   })[s.broadcast] or s.broadcast
-  return ("nearby: broadcast %s (%s; last %s). %d sent, %d heard, %d player%s known. Pop-up %s, visible %s.")
-    :format(how, tostring(Social.CHANNELS[s.channelIndex]), tostring(self.lastResult or "none"),
-            s.sent, s.heard, s.count, s.count == 1 and "" or "s",
+  local ch = Social.CHANNELS[s.channelIndex]
+  local via = ({ YELL = "in earshot (yell)", SAY = "in earshot (say)",
+                 CHANNEL = "zone channel " .. tostring(self.zoneChannel or "not joined") })[ch] or tostring(ch)
+  local off = {}
+  for _, name in ipairs(Social.CHANNELS) do
+    if s.dead[name] then off[#off + 1] = name:lower() .. " refused"
+    elseif s.deaf[name] then off[#off + 1] = name:lower() .. " unheard" end
+  end
+  return ("nearby: broadcast %s, %s%s (last %s). Layer %s. %d sent, %d heard, %d player%s near. Pop-up %s, visible %s.")
+    :format(how, via, #off > 0 and ("; " .. table.concat(off, ", ")) or "", tostring(self.lastResult or "none"),
+            s.layer and tostring(s.layer) or "unknown (target or mouse over any creature)",
+            s.sent, s.heard, self:Count(), self:Count() == 1 and "" or "s",
             self:PopupEnabled() and "on" or "off", self:Visible() and "on" or "off")
 end
 
@@ -851,13 +1016,36 @@ function SocialUI:Start(main)
   f:RegisterEvent("CHAT_MSG_ADDON")
   f:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
   f:RegisterEvent("PLAYER_TARGET_CHANGED")
-  f:SetScript("OnEvent", function(_, event, prefix, text, channel, sender)
+  -- anyone you can hear is near: their name is all these are read for
+  for _, e in ipairs({ "CHAT_MSG_SAY", "CHAT_MSG_YELL", "CHAT_MSG_EMOTE", "CHAT_MSG_TEXT_EMOTE" }) do
+    pcall(f.RegisterEvent, f, e)
+  end
+  -- creatures the client shows us say which layer we are on (NoteCreature)
+  pcall(f.RegisterEvent, f, "NAME_PLATE_UNIT_ADDED")
+  pcall(f.RegisterEvent, f, "GROUP_ROSTER_UPDATE")
+  self.startedAt = self:Now()
+  self.blockedFn = function(name) return main:IsBlocked(name) end
+  f:SetScript("OnEvent", function(_, event, prefix, text, channel, sender, ...)
     if event == "CHAT_MSG_ADDON" then
       if prefix ~= Social.PREFIX then return end
       local ok, err = pcall(self.OnAddon, self, text, channel, sender)
       if not ok and not self.faulted then self.faulted = true; main:Debug("social: " .. tostring(err)) end
-    elseif self.state:GlanceMode() then
-      pcall(self.Glance, self, event == "UPDATE_MOUSEOVER_UNIT" and "mouseover" or "target")
+      return
+    elseif event == "GROUP_ROSTER_UPDATE" then
+      self:ForgetLayer(); return      -- joining a group can move you to its layer
+    elseif event == "NAME_PLATE_UNIT_ADDED" then
+      pcall(self.NoteCreature, self, prefix); return
+    end
+    local unit = event == "UPDATE_MOUSEOVER_UNIT" and "mouseover" or (event == "PLAYER_TARGET_CHANGED" and "target") or nil
+    if unit then pcall(self.NoteCreature, self, unit) end
+    if not self.state:GlanceMode() then
+      return
+    elseif unit then
+      pcall(self.Glance, self, unit)
+    else
+      -- a chat line: (text, playerName, ..., guid in twelfth place)
+      local guid = select(8, ...)
+      pcall(self.Ask, self, ns.Plain(text), ns.Plain(guid))
     end
   end)
   -- the first beacon and the guild roll-call wait for the world to settle
