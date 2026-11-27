@@ -253,11 +253,7 @@ end
 C.PayloadHasDeathrattle = function(game, ctx)
   local e = ctx.payload and (ctx.payload.entity or ctx.payload.card)
   if not e then return false end
-  if e.deathrattles and #e.deathrattles > 0 then return true end
-  for _, t in ipairs(e.printed.scriptTags or {}) do
-    if t == "DEATHRATTLE" then return true end
-  end
-  return false
+  return game:HasDeathrattle(e)
 end
 
 C.PayloadIsSecret = function(game, ctx)

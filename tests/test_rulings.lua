@@ -130,6 +130,76 @@ H.suite("rulings: a copy of a popped Divine Shield has no shield at all", functi
   H.noEngineErrors(g)
 end)
 
+--[[ Granted effects are enchantments, and "When Copying living minions, this
+     includes Copying all damage and enchantments" (hearthstone.wiki.gg/wiki/Copy).
+     Player report: a copy of a minion given a deathrattle by another card came
+     out without it. Fixtures: CS2_038 Ancestral Spirit, EX1_158 Soul of the
+     Forest (EX1_158t Treant), EX1_316 Power Overwhelming, FP1_003 Echoing Ooze,
+     CS2_203 Ironbeak Owl. ]]
+H.suite("rulings: Faceless copies a GRANTED deathrattle", function(ns, H)
+  local g = H.NewGame({ class1 = "SHAMAN" })
+  H.SetActive(g, 1); H.Mana(g, 1, 10)
+  local yeti = H.Put(g, 1, "CS2_182")
+  H.ok(play(g, 1, "CS2_038", yeti), "Ancestral Spirit on my Yeti")
+  H.ok(play(g, 1, "EX1_564", yeti), "Faceless copies it")
+  local copy = g.players[1].board[2]
+  H.eq(copy.cardId, "CS2_182", "a Yeti")
+  H.eq(#copy.deathrattles, 1, "carrying the granted deathrattle")
+  g.bus:Block(function() g:DealDamage(copy, 99, nil, false) end)
+  H.board(g, 1, { "CS2_182 4/5", "CS2_182 4/5" }, "the copy came back, as Ancestral Spirit does")
+  H.noEngineErrors(g)
+end)
+
+H.suite("rulings: a copy keeps printed AND granted deathrattles, neither doubled", function(ns, H)
+  local g = H.NewGame({ class1 = "DRUID" })
+  H.SetActive(g, 1); H.Mana(g, 1, 10)
+  local hoarder = H.Put(g, 1, "EX1_096")
+  H.ok(play(g, 1, "EX1_158", nil), "Soul of the Forest on a Loot Hoarder")
+  H.ok(play(g, 1, "EX1_564", hoarder), "Faceless copies it")
+  local copy = g.players[1].board[2]
+  H.eq(#copy.deathrattles, 2, "draw a card + summon a Treant, once each")
+  local hand = #g.players[1].hand
+  g.bus:Block(function() g:DealDamage(copy, 99, nil, false) end)
+  H.eq(#g.players[1].hand, hand + 1, "drew one card")
+  H.board(g, 1, { "EX1_096 2/1", "EX1_158t 2/2" }, "and summoned one Treant")
+  H.noEngineErrors(g)
+end)
+
+H.suite("rulings: a copy of a silenced minion gets no granted deathrattle", function(ns, H)
+  local g = H.NewGame({ class1 = "SHAMAN" })
+  H.SetActive(g, 1); H.Mana(g, 1, 10)
+  local yeti = H.Put(g, 1, "CS2_182")
+  H.ok(play(g, 1, "CS2_038", yeti), "Ancestral Spirit")
+  H.ok(play(g, 1, "CS2_203", yeti), "then Ironbeak Owl silences it")
+  H.ok(play(g, 1, "EX1_564", yeti), "Faceless copies it")
+  H.eq(#g.players[1].board[3].deathrattles, 0, "nothing to copy")
+  H.noEngineErrors(g)
+end)
+
+H.suite("rulings: Echoing Ooze's copy keeps a granted deathrattle", function(ns, H)
+  local g = H.NewGame({ class1 = "SHAMAN" })
+  H.SetActive(g, 1); H.Mana(g, 1, 10)
+  H.ok(play(g, 1, "FP1_003", nil), "Echoing Ooze")
+  local ooze = g.players[1].board[1]
+  H.ok(play(g, 1, "CS2_038", ooze), "Ancestral Spirit on it")
+  g:EndTurn(); g.bus:Drain()
+  H.eq(#g.players[1].board, 2, "the end-of-turn copy arrived")
+  H.eq(#g.players[1].board[2].deathrattles, 1, "with the granted deathrattle")
+  H.noEngineErrors(g)
+end)
+
+H.suite("rulings: a copy of a Power Overwhelmed minion dies at end of turn too", function(ns, H)
+  local g = H.NewGame({ class1 = "WARLOCK" })
+  H.SetActive(g, 1); H.Mana(g, 1, 10)
+  local yeti = H.Put(g, 1, "CS2_182")
+  H.ok(play(g, 1, "EX1_316", yeti), "Power Overwhelming")
+  H.ok(play(g, 1, "EX1_564", yeti), "Faceless copies the 8/9")
+  H.board(g, 1, { "CS2_182 8/9", "CS2_182 8/9" }, "two 8/9s")
+  g:EndTurn(); g.bus:Drain()
+  H.board(g, 1, {}, "both die at end of turn")
+  H.noEngineErrors(g)
+end)
+
 -- ------------------------------------------------- wiki: Mana cost
 
 H.suite("rulings: cost floors at zero only after every modifier", function(ns, H)

@@ -88,9 +88,12 @@ local SUITES = {
   "tests.test_review",
   "tests.test_release013",
   "tests.test_rulings",
+  "tests.test_statecarry",
+  "tests.test_liveproperties",
   "tests.test_readiness",
   "tests.test_tour",
   "tests.test_ladder",
+  "tests.test_social",
 }
 
 for _, mod in ipairs(SUITES) do

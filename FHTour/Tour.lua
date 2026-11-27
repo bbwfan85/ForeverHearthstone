@@ -357,6 +357,17 @@ function Tour:Scenes()
     if ui.inspect then ui.inspect.frame:Hide() end
     ui:Hide()
   end, 0.2)
+  -- players nearby and the guild ladder (docs/48), with made-up players
+  if ns.SocialUI and ns.SocialUI.state then
+    local soc = ns.SocialUI
+    add("nearby-popup", function() soc:Preview() end, 1.2)
+    add("social", function() soc:HidePopup(true); soc:Show() end, 1.0)
+    add(nil, function()
+      if soc.window then soc.window:Hide() end
+      soc.previewGuild = nil
+      for key, e in pairs(soc.state.nearby) do if e.preview then soc.state:Forget(key) end end
+    end, 0.2)
+  end
   add("settings-track", function() M:Settings("track") end, 1.0)
   add("settings-odds", function() M:Settings("odds") end, 0.8)
   add("settings-general", function() M:Settings("general") end, 0.8)

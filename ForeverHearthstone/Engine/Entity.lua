@@ -324,6 +324,10 @@ function Entity:Silence()
   self.spellDamageBonus = nil
   self.ench       = { atk = 0, hp = 0, cost = 0 }
   self.enchKeywords = {}
+  --[[ The provenance list goes with the enchantments it describes. Kept, it
+       was copied onto a Faceless of this minion and re-surfaced by any later
+       enchantment, describing buffs the minion no longer has. ]]
+  self.enchantmentSources = {}
   -- timed buffs are enchantments too, so silence removes them as well
   self.timedEnch  = {}
   self.timed      = { atk = 0, hp = 0, cost = 0 }

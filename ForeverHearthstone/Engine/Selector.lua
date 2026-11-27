@@ -222,17 +222,9 @@ function Selector.Resolve(game, sel, ctx)
       if sel.isSecret and not game:IsSecret(e.printed) then break end
       --[[ Deathrattle is asked of the LIVE entity, so a granted one counts --
            Scarlet Purifier hits a minion that was given a deathrattle by
-           Ancestral Spirit. A card sitting in hand or deck has no scripts
-           attached yet, so fall back to the printed tag there. ]]
-      if sel.hasDeathrattle then
-        local has = (e.deathrattles and #e.deathrattles > 0)
-        if not has then
-          for _, t in ipairs(e.printed.scriptTags or {}) do
-            if t == "DEATHRATTLE" then has = true break end
-          end
-        end
-        if not has then break end
-      end
+           Ancestral Spirit, and a SILENCED one does not (see
+           Game:HasDeathrattle). ]]
+      if sel.hasDeathrattle and not game:HasDeathrattle(e) then break end
       --[[ Battlecry is a property of the PRINTED card, never granted, and
            Nerub'ar Weblord taxes them in hand where nothing is attached. ]]
       if sel.hasBattlecry then

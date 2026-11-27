@@ -1050,38 +1050,38 @@ end)
 H.suite("proximity: a first-and-last name that differs from the sender still duels",function(ns,H)
   withAddon(ns,function(Main)
     Main:SetChallengePolicy("anyone")
-    Stub.units.target={name="Pagpag Halohalo",class="PRIEST",isPlayer=true,guid="Player-Pagpag"}
+    Stub.units.target={name="Varian Wrynn",class="PRIEST",isPlayer=true,guid="Player-Varian"}
     arrive(ns.Protocol.Encode(1,ns.Protocol.KIND.HELLO,ns.Protocol.VERSION,
-      ns.Protocol.ADDON_VERSION,"PRIEST","Pagpag Halohalo",30,"Player-Pagpag",1,0,0,"c"),"Pagpag-Realm")
+      ns.Protocol.ADDON_VERSION,"PRIEST","Varian Wrynn",30,"Player-Varian",1,0,0,"c"),"Varian-Realm")
     H.eq(Main.session.state,ns.Session.STATE.INVITED,"we were challenged")
-    H.ok(Main:NearEnough("Pagpag-Realm"),"the targeted challenger is found by GUID")
+    H.ok(Main:NearEnough("Varian-Realm"),"the targeted challenger is found by GUID")
     H.ok(Main:Accept(),"so Accept goes ahead")
     H.eq(Main.session.state,ns.Session.STATE.SYNC)
   end)
 end)
 
 --[[ Forever's UnitName gives (first, last), so the challenge goes to
-     "Femboy-President" while the answer comes from their real address. The
+     "Jaina-Proudmoore" while the answer comes from their real address. The
      challenger recognises it by GUID and talks to that address from then on;
      before, every reply was dropped and the challenge timed out as "no addon". ]]
 H.suite("proximity: the answer from another address than the challenge's is recognised",function(ns,H)
   withAddon(ns,function(Main)
     local saved=UnitName
-    _G.UnitName=function(u) if u=="target" then return "Femboy","President" end return saved(u) end
-    Stub.units.target.guid="Player-Femboy"
+    _G.UnitName=function(u) if u=="target" then return "Jaina","Proudmoore" end return saved(u) end
+    Stub.units.target.guid="Player-Jaina"
     H.ok(Main:Challenge())
-    H.eq(Main.transport.peer,"Femboy-President","the challenge went to first-last")
+    H.eq(Main.transport.peer,"Jaina-Proudmoore","the challenge went to first-last")
     local function answer(guid,from)
       arrive(ns.Protocol.Encode(1,ns.Protocol.KIND.HELLO,ns.Protocol.VERSION,
-        ns.Protocol.ADDON_VERSION,"PRIEST","Femboy",30,guid,1,0,0,"a","","","","",
+        ns.Protocol.ADDON_VERSION,"PRIEST","Jaina",30,guid,1,0,0,"a","","","","",
         Main.session.challengeId),from)
     end
-    answer("Player-Stranger","Femboy-Realm")
+    answer("Player-Stranger","Jaina-Realm")
     H.eq(Main.session.state,ns.Session.STATE.OFFERED,"a HELLO with another GUID is not their answer")
-    answer("Player-Femboy","Femboy-Realm")
+    answer("Player-Jaina","Jaina-Realm")
     H.eq(Main.session.state,ns.Session.STATE.SYNC,"theirs moves us on to choosing a deck")
-    H.eq(Main.transport.peer,"Femboy-Realm","and we talk to the address they answered from")
-    H.eq(Main.session.peer.name,"Femboy-Realm")
+    H.eq(Main.transport.peer,"Jaina-Realm","and we talk to the address they answered from")
+    H.eq(Main.session.peer.name,"Jaina-Realm")
     _G.UnitName=saved
   end)
 end)
@@ -1089,9 +1089,9 @@ end)
 H.suite("proximity: Forever's first-last reading of UnitName finds the player beside you",function(ns,H)
   withAddon(ns,function(Main)
     local saved=UnitName
-    _G.UnitName=function(u) if u=="target" then return "Femboy","President" end return saved(u) end
-    H.eq(Main:FindPlayerUnit("Femboy-President"),"target","as first-last")
-    H.eq(Main:FindPlayerUnit("Femboy"),"target","and as the plain name a reply comes from")
+    _G.UnitName=function(u) if u=="target" then return "Jaina","Proudmoore" end return saved(u) end
+    H.eq(Main:FindPlayerUnit("Jaina-Proudmoore"),"target","as first-last")
+    H.eq(Main:FindPlayerUnit("Jaina"),"target","and as the plain name a reply comes from")
     H.eq(Main:FindPlayerUnit("Someone"),nil)
     _G.UnitName=saved
   end)
@@ -1100,10 +1100,10 @@ end)
 H.suite("proximity: a far challenger is turned away by GUID even when names differ",function(ns,H)
   withAddon(ns,function(Main)
     Main:SetChallengePolicy("anyone")
-    Stub.units.target={name="Pagpag Halohalo",class="PRIEST",isPlayer=true,guid="Player-Pagpag"}
+    Stub.units.target={name="Varian Wrynn",class="PRIEST",isPlayer=true,guid="Player-Varian"}
     Stub.interactDistance=false
     arrive(ns.Protocol.Encode(1,ns.Protocol.KIND.HELLO,ns.Protocol.VERSION,
-      ns.Protocol.ADDON_VERSION,"PRIEST","Pagpag",30,"Player-Pagpag",1,0,0,"c"),"Pagpag-Realm")
+      ns.Protocol.ADDON_VERSION,"PRIEST","Varian",30,"Player-Varian",1,0,0,"c"),"Varian-Realm")
     H.eq(Main.session,nil,"seen standing far off, so no challenge pops up")
   end)
 end)
@@ -1122,13 +1122,13 @@ end)
 
 H.suite("proximity: a portrait's menu challenges the unit it was opened on",function(ns,H)
   withAddon(ns,function(Main)
-    Stub.units.target={name="Pagpag Halohalo",class="PRIEST",isPlayer=true,guid="Player-Pagpag"}
+    Stub.units.target={name="Varian Wrynn",class="PRIEST",isPlayer=true,guid="Player-Varian"}
     local made={}
     local root={CreateButton=function(_,label,fn) made[#made+1]={label=label,fn=fn} end}
-    Stub.menuMods["MENU_UNIT_PLAYER"](nil,root,{name="Pagpag",unit="target"})
+    Stub.menuMods["MENU_UNIT_PLAYER"](nil,root,{name="Varian",unit="target"})
     made[1].fn()
     H.eq(Main.session and Main.session.state,ns.Session.STATE.OFFERED,"the menu's name did not have to match")
-    H.eq(Main.session.peer.name,"Pagpag Halohalo","and the challenge goes to the name the game shows")
+    H.eq(Main.session.peer.name,"Varian Wrynn","and the challenge goes to the name the game shows")
     Main.session=nil
     made={}
     Stub.menuMods["MENU_UNIT_PLAYER"](nil,root,{name="Someone Else"})
@@ -1366,8 +1366,8 @@ end)
 H.suite("review: /fh duel Name challenges the named player, first-last too",function(ns,H)
   withAddon(ns,function(Main)
     local saved=UnitName
-    _G.UnitName=function(u) if u=="target" then return "Pagpag","Halohalo" end return saved(u) end
-    SlashCmdList["FOREVERHEARTHSTONE"]("duel Pagpag Halohalo")
+    _G.UnitName=function(u) if u=="target" then return "Varian","Wrynn" end return saved(u) end
+    SlashCmdList["FOREVERHEARTHSTONE"]("duel Varian Wrynn")
     H.eq(Main.session and Main.session.state,ns.Session.STATE.OFFERED)
     _G.UnitName=saved
   end)

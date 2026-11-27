@@ -831,14 +831,15 @@ H.ShuffleCardIn = function(game, ctx, op)
 end
 
 --[[ Copy a card INTO HAND rather than onto the board. Duplicate, Echo of
-     Medivh, Thoughtsteal and Gallywix all do this. The copy is made from
-     PRINTED data, so a buffed minion copies as its printed self -- which is
-     what Echo of Medivh does in Hearthstone. ]]
+     Medivh, Thoughtsteal and Gallywix all do this. Game:CopyCardToHand
+     decides what the copy keeps: from play it is the printed card (Echo of
+     Medivh's buffed Yeti comes back a 4/5), from a hand or deck it keeps its
+     enchantments (hearthstone.wiki.gg/wiki/Copy). ]]
 H.CopyToHand = function(game, ctx, op)
   local side = op.side == "ENEMY" and game:Opponent(ctx.controller) or ctx.controller
   for _, e in ipairs(sel(game, op, ctx)) do
     for _ = 1, (op.count or 1) do
-      game:AddToHand(side, e.cardId)
+      game:CopyCardToHand(e, side)
     end
   end
 end
@@ -870,7 +871,10 @@ H.SwapWithHand = function(game, ctx, op)
   local ph = game.players[me.controller]
   ph.hand[#ph.hand + 1] = me
 
-  game:ResetToPrinted(other)
+  --[[ The card coming IN is not reset: it is already a plain hand card, and
+       whatever enchantments it picked up in hand travel with it, as they do
+       when it is played (tests/test_statecarry.lua, "arrive"). Resetting it
+       here wiped them. ]]
   other.zone = ns.ZONE.PLAY
   other.controller = p == game.players[1] and 1 or 2
   other.summonedTurn = game.turn
@@ -1089,7 +1093,7 @@ H.CopyOpponentHandCard = function(game, ctx, op)
   local foe  = game:Opponent(ctx.controller)
   local hand = game.players[foe].hand
   if #hand > 0 then
-    game:AddToHand(ctx.controller, hand[game:Random(#hand)].cardId)
+    game:CopyCardToHand(hand[game:Random(#hand)], ctx.controller)
   end
 end
 

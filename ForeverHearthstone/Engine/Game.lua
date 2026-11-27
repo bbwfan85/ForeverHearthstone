@@ -407,7 +407,6 @@ function Game:EndTurnInner()
                  and e.summonedTurn == self.turn and not e:Has(KW.CHARGE)
     if not sick and (e.attacksThisTurn or 0) < self:AttacksAllowed(e) then
       e.frozen = false
-      e.thawAtEndOfTurn = nil
     end
   end
   for _, e in ipairs(p.board) do thaw(e) end
@@ -735,6 +734,24 @@ function Game:AddToHand(player, cardId)
   return e
 end
 
+--[[ Put a COPY of an existing card into `player`'s hand. "If a card is copied
+     from play to a hand, the copy does not retain enchantments", but copies
+     from a hand or a deck do (hearthstone.wiki.gg/wiki/Copy): Mind Vision on a
+     card the opponent had discounted by (3) keeps the discount, while Echo of
+     Medivh's buffed Yeti comes back a printed 4/5. Mind Vision used to add a
+     fresh card by id, which dropped the discount. ]]
+function Game:CopyCardToHand(src, player)
+  local e = self:AddToHand(player, src.cardId)
+  if not e then return nil end
+  if src.zone == ZONE.HAND or src.zone == ZONE.DECK then
+    e:CopyEnchantmentSources(src)
+    e.ench = { atk = src.ench.atk, hp = src.ench.hp, cost = src.ench.cost }
+    for k, v in pairs(src.enchKeywords or {}) do e.enchKeywords[k] = v end
+    self:RecalcAuras()
+  end
+  return e
+end
+
 function Game:DiscardRandom(player)
   local p = self.players[player]
   if #p.hand == 0 then return end
@@ -800,9 +817,9 @@ function Game:ResetToPrinted(e)
   e.damage = 0
   e.silenced = false
   e.frozen = false
-  e.thawAtEndOfTurn = nil
   e.pendingDestroy = false
   e.spellDamageBonus = nil     -- an Ancient Mage's gift does not survive a bounce
+  e.attackIsHealth = nil       -- a script property; re-read when it re-enters play
   e.enchGen = (e.enchGen or 0) + 1
   e.attacksThisTurn = 0
   e.summonedTurn = nil
@@ -871,6 +888,24 @@ function Game:ResolvePosition(player, position, source)
   return #b + 1   -- RIGHTMOST
 end
 
+--[[ Does this entity carry a Deathrattle RIGHT NOW? One answer for Scarlet
+     Purifier, Lil' Exorcist, Undertaker and anything else that asks.
+
+     A card that has been in play (on the board, or dead in the graveyard)
+     answers from its LIVE list: a granted deathrattle counts, and a silenced
+     Loot Hoarder has none -- the printed tag used to be consulted as a
+     fallback, so Scarlet Purifier hit silenced minions and Lil' Exorcist
+     counted them. Only a card in hand or deck, which has no script attached
+     yet, answers from its printed tag. ]]
+function Game:HasDeathrattle(e)
+  if e.deathrattles and #e.deathrattles > 0 then return true end
+  if e.zone ~= ZONE.HAND and e.zone ~= ZONE.DECK then return false end
+  for _, t in ipairs(e.printed.scriptTags or {}) do
+    if t == "DEATHRATTLE" then return true end
+  end
+  return false
+end
+
 --- Attach the hand-authored script's triggers/deathrattle to a live entity.
 function Game:AttachScript(e)
   local s = self:ScriptFor(e.cardId)
@@ -933,7 +968,8 @@ end
 
 --[[ What a copy of a live minion takes with it (Faceless Manipulator, Echoing
      Ooze): its enchantments, this-turn buffs, DAMAGE, whether its Divine
-     Shield is still up, Silence, and any granted Spell Damage. "When Copying
+     Shield is still up, Silence, granted deathrattles and triggers, and any
+     granted Spell Damage. "When Copying
      living minions, this includes Copying all damage and enchantments"
      (hearthstone.wiki.gg/wiki/Copy): a Yeti at 4/2 copies as a 4/2. A popped
      Argent Squire copies without a shield -- the keyword too, not only the
@@ -955,6 +991,26 @@ function Game:CopyState(src, e)
     e.silenced = true
     e.baseKeywords = {}
     e.triggers, e.deathrattles = {}, {}
+  else
+    --[[ GRANTED effects are enchantments too and copy with the minion: an
+         Ancestral Spirit or Soul of the Forest deathrattle, Power
+         Overwhelming's "dies at end of turn", Blessing of Wisdom's draw. The
+         copy is always the same card as the original (Summon and Transform
+         both attached that card's script already), so the original's lists ARE
+         the printed effects plus every grant, in order -- taking them whole
+         keeps the printed one from doubling. A trigger entry is copied rather
+         than shared so the two minions never alias one table; its ops list is
+         static data and may be shared. A granted trigger keeps its `owner`
+         (Blessing of Wisdom still draws for whoever cast it). ]]
+    e.triggers = {}
+    for _, t in ipairs(src.triggers or {}) do
+      local c = {}; for k, v in pairs(t) do c[k] = v end
+      e.triggers[#e.triggers + 1] = c
+    end
+    e.deathrattles = {}
+    for _, ops in ipairs(src.deathrattles or {}) do
+      e.deathrattles[#e.deathrattles + 1] = ops
+    end
   end
   e.divineShieldUp = src.divineShieldUp and e:Has(KW.DIVINE_SHIELD) or false
   if not e.divineShieldUp then
@@ -987,7 +1043,7 @@ function Game:Transform(e, cardId)
   e.silenced = false
   --[[ A transformed minion is a new minion: no longer Frozen, no longer
        marked for death, no Ancient Mage bonus, and no Corruption waiting. ]]
-  e.frozen, e.thawAtEndOfTurn, e.pendingDestroy = false, nil, false
+  e.frozen, e.pendingDestroy = false, false
   e.spellDamageBonus = nil
   e.enchGen = (e.enchGen or 0) + 1
   e.triggers = {}

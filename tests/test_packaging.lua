@@ -83,6 +83,7 @@ H.suite("packaging: the .toc load order MATCHES the tested load order", function
     ["Client/UI/Widgets.lua"] = true,
     ["Client/UI/Collection.lua"] = true,
     ["Client/UI/Board.lua"] = true,
+    ["Client/UI/Social.lua"] = true,
     ["Client/Main.lua"] = true,
   }
 

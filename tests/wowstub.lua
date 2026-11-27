@@ -443,6 +443,8 @@ for _, e in ipairs({
   "ADDON_LOADED", "PLAYER_LOGIN", "PLAYER_LOGOUT", "PLAYER_ENTERING_WORLD",
   "PLAYER_TARGET_CHANGED", "UNIT_PORTRAIT_UPDATE", "UNIT_LEVEL", "GROUP_ROSTER_UPDATE",
   "VARIABLES_LOADED",
+  -- the pointer crossing a unit (Client/UI/Social.lua's glance fallback)
+  "UPDATE_MOUSEOVER_UNIT",
   -- kill / drop detection (Mainline: see docs/07)
   "UNIT_DIED", "PLAYER_TARGET_DIED", "PARTY_KILL",
   "ENCOUNTER_STATE_CHANGED", "ENCOUNTER_END", "ENCOUNTER_START", "BOSS_KILL",

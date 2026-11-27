@@ -67,6 +67,7 @@ local LOAD_ORDER = {
   "ForeverHearthstone/Client/AI.lua",
   "ForeverHearthstone/Client/Ladder.lua",
   "ForeverHearthstone/Client/BotNames.lua",
+  "ForeverHearthstone/Client/Social.lua",
   "ForeverHearthstone/Client/Net/DevTest.lua",
 }
 

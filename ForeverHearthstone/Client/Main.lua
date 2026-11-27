@@ -1025,7 +1025,7 @@ end
      The transport exists for the whole session, not just during a duel,
      because a challenge has to be able to ARRIVE. An addon that only listens
      while it is already duelling can never be challenged. ]]
--- "Femboy-President", "Femboy President", "Femboy-Realm": the same first name
+-- "Jaina-Proudmoore", "Jaina Proudmoore", "Jaina-Realm": the same first name
 local function sameFirstName(a, b)
   local function first(n) return tostring(n or ""):lower():match("^[^%s%-]+") end
   return first(a) ~= nil and first(a) == first(b)
@@ -1342,6 +1342,11 @@ function Main:NearEnough(name, guid)
   if not guid and s and ns.Transport.SameName(s.peer.name, name) then guid = s.peer.guid end
   local unit = self:FindPlayerUnit(name, guid)
   if not unit then
+    --[[ Social's Duel button (Client/UI/Social.lua) has just asked this player
+         where they stand and found them beside us: that answer stands in for
+         the unit a player with no nameplates up does not have. ]]
+    local v = self.vouched
+    if v and GetTime() <= v.untilAt and ns.Transport.SameName(v.name, name) then return true end
     local here = self:WorldPosition()
     local there = s and ns.Transport.SameName(s.peer.name,name) and s.peer.position
     if s and s.state == ns.Session.STATE.INVITED and here and there
@@ -2865,17 +2870,30 @@ function Main:Settings(view)
     d.debug=W.MenuButton(d.panel,"",function()
       ForeverHearthstoneDB.debugMessages=not ForeverHearthstoneDB.debugMessages; self:Settings("general") end)
     d.debug:SetSize(380,32); d.debug:SetPoint("TOP",d.panel,"TOP",0,-170)
-    d.blockTitle=W.StyledText(d.panel,"pageText"); d.blockTitle:SetSize(600,26); d.blockTitle:SetPoint("TOP",d.panel,"TOP",0,-222)
+    -- the "player nearby" pop-up and being seen by nearby players (also on Social)
+    d.social={}
+    if ns.SocialUI then
+      d.social[1]=W.MenuButton(d.panel,"",function()
+        ns.SocialUI:SetPopup(not ns.SocialUI:PopupEnabled()); self:Settings("general") end)
+      d.social[2]=W.MenuButton(d.panel,"",function()
+        ns.SocialUI:SetVisible(not ns.SocialUI:Visible()); self:Settings("general") end)
+      for i,b in ipairs(d.social) do
+        b:SetSize(380,32); b:SetPoint("TOP",d.panel,"TOP",0,-170-i*40)
+        b:SetFrameLevel(d.panel:GetFrameLevel()+10)
+      end
+    end
+    d.socialDrop=#d.social*40
+    d.blockTitle=W.StyledText(d.panel,"pageText"); d.blockTitle:SetSize(600,26); d.blockTitle:SetPoint("TOP",d.panel,"TOP",0,-222-d.socialDrop)
     d.rows={}
     for i=1,4 do
       local row=W.MenuButton(d.panel,"",function()
         local name=d.names[(d.page-1)*4+i]; if name then self:Unblock(name); self:Settings("general") end end)
-      row:SetSize(380,32); row:SetPoint("TOP",d.panel,"TOP",0,-260-(i-1)*40); d.rows[i]=row
+      row:SetSize(380,32); row:SetPoint("TOP",d.panel,"TOP",0,-260-d.socialDrop-(i-1)*40); d.rows[i]=row
     end
     d.prev=W.MenuButton(d.panel,"Previous",function() d.page=d.page-1; self:Settings("general") end)
     d.next=W.MenuButton(d.panel,"Next",function() d.page=d.page+1; self:Settings("general") end)
-    d.prev:SetSize(150,32); d.prev:SetPoint("TOP",d.panel,"TOP",-100,-440)
-    d.next:SetSize(150,32); d.next:SetPoint("TOP",d.panel,"TOP",100,-440)
+    d.prev:SetSize(150,32); d.prev:SetPoint("TOP",d.panel,"TOP",-100,-440-d.socialDrop)
+    d.next:SetSize(150,32); d.next:SetPoint("TOP",d.panel,"TOP",100,-440-d.socialDrop)
     for _,tab in pairs(d.tabs) do tab:SetFrameLevel(d.panel:GetFrameLevel()+10) end
     for _,button in ipairs({d.trackPrev,d.trackNext,d.current,d.debug,d.prev,d.next,unpack(d.rows)}) do button:SetFrameLevel(d.panel:GetFrameLevel()+10) end
   end
@@ -2899,9 +2917,14 @@ function Main:Settings(view)
   d.trackPrev:SetShown(track); d.trackNext:SetShown(track); d.current:SetShown(track)
   d.previewDrop:SetShown(odds)
   d.debug:SetShown(general); d.blockTitle:SetShown(general)
+  for i,b in ipairs(d.social) do
+    b:SetShown(general)
+    if i==1 then b.text:SetText("Nearby player pop-up: "..(ns.SocialUI:PopupEnabled() and "On" or "Off"))
+    else b.text:SetText("Visible to nearby players: "..(ns.SocialUI:Visible() and "On" or "Off")) end
+  end
   if not track and d.track.inspect then d.track.inspect.frame:Hide() end
   d.subtitle:SetText(track and ("Level %d / 60 - All Basic cards are available from the start. The track shows new class cards and packs. Right-click cards to inspect."):format(self.collection.character.level or 1)
-    or (odds and "Pack contents and kill rewards - chance-based drops" or "Chat preferences and blocked players"))
+    or (odds and "Pack contents and kill rewards - chance-based drops" or "Chat, nearby players and blocked players"))
   local lines={}
   if odds then
     lines[#lines+1]="Classic, GvG + Naxxramas: 5 neutral cards per pack. At least one Rare or better. Class cards come from guaranteed level rewards."
@@ -2933,7 +2956,7 @@ function Main:Settings(view)
        was an 860x800 slab of empty red (the in-client tour, docs/39). It is
        sized to what it holds: the list, its pager, then Close. ]]
   if general then
-    d.panel:SetSize(660, #names==0 and 340 or (#names<=4 and 480 or 540))
+    d.panel:SetSize(660, (#names==0 and 340 or (#names<=4 and 480 or 540))+d.socialDrop)
   else
     d.panel:SetSize(860, 800)
   end
@@ -3063,6 +3086,12 @@ f:SetScript("OnEvent", function(_, event, arg1)
          until PLAYER_LOGIN -- ADDON_LOADED fires before the player exists. ]]
     Main:LoadCollection()
     Main:StartRewards()
+    -- who is near, and the guild's ladder (Client/UI/Social.lua); a fault
+    -- there must never cost anyone their login
+    if ns.SocialUI then
+      local ok, err = pcall(ns.SocialUI.Start, ns.SocialUI, Main)
+      if not ok then Main:Debug("social did not start: " .. tostring(err)) end
+    end
     -- the developer screenshot tour (FHTour/, never packaged), when installed
     local tour = rawget(_G, "FHTour_Attach")
     if tour then pcall(tour, ns, Main) end
@@ -3350,6 +3379,13 @@ function Main:ShowHub()
     f.settings = W.MenuButton(f,"Settings",function() self:Settings("general") end)
     f.settings:SetSize(190,30); f.settings:SetPoint("TOPLEFT",f.progression,"BOTTOMLEFT",0,-6)
     f.settings:SetFrameLevel(f:GetFrameLevel()+20)
+    --[[ SOCIAL, in the bottom-left corner where Hearthstone keeps its friends
+         button: the guild's ladder and the players near you. Its label counts
+         who is near ("Social (2 nearby)", kept current by SocialUI:Refresh). ]]
+    if ns.SocialUI then
+      f.social = W.MenuButton(f,"Social",function() ns.SocialUI:Show() end)
+      f.social:SetFrameLevel(f:GetFrameLevel()+20)
+    end
     local function place(region,x,top,w,h)
       region:ClearAllPoints(); region:SetSize(math.max(1,w),math.max(1,h))
       region:SetPoint("TOPLEFT",f,"TOPLEFT",x,-top)
@@ -3636,6 +3672,15 @@ function Main:ShowHub()
       self.play:SetShown(self.botMode == true)
       self.progression:SetShown(not self.botMode)
       self.settings:SetShown(not self.botMode)
+      local social=rawget(self,"social")
+      if social then
+        social:SetShown(not self.botMode)
+        social:ClearAllPoints(); social:SetSize(math.max(190,math.min(250,w*.18)),math.max(32,math.min(40,h*.052)))
+        social:SetPoint("BOTTOMLEFT",self,"BOTTOMLEFT",14,14)
+        W.ApplyStyle(social.text,"button",h)
+        local near=ns.SocialUI:Count()
+        social.text:SetText(near>0 and ("Social (%d nearby)"):format(near) or "Social")
+      end
       if self.botMode then caption:Show(); self.welcome:Hide(); self.record:Hide(); self.privacy:Hide()
       else
         --[[ The tagline sits on the cloth under the cabinet. In a wide, short
@@ -4042,6 +4087,22 @@ SlashCmdList["FOREVERHEARTHSTONE"] = function(msg)
     Main:Print(("sound: %d of %d keys resolve on this client%s")
       :format(have, total, have == 0 and " -- the game will be silent" or ""))
 
+  elseif msg == "social" or msg == "guild" then
+    if ns.SocialUI then ns.SocialUI:Show() end
+
+  elseif msg:match("^nearby") then
+    -- /fh nearby [on | off | quiet | hide | show]: the "player nearby" pop-up,
+    -- whether others can see you, and what this client allows
+    local arg = msg:match("^nearby%s+(%S+)")
+    local S = ns.SocialUI
+    if not (S and S.state) then Main:Print("nearby players are not available.")
+    elseif arg == "on" then S:SetPopup(true); S:SetVisible(true); Main:Print("nearby players: pop-up on, and others can see you.")
+    elseif arg == "quiet" then S:SetPopup(false); Main:Print("nearby players: no pop-up. They are still listed under Social.")
+    elseif arg == "off" or arg == "hide" then S:SetVisible(false); Main:Print("nearby players: you are hidden, and so are they. /fh nearby on to undo.")
+    elseif arg == "show" then S:SetVisible(true); Main:Print("nearby players: others can see you.")
+    elseif arg == "test" or arg == "preview" then S:Preview(); Main:Print("nearby preview - these players are made up, and nothing was sent.")
+    else Main:Print(S:Report()); Main:Print("/fh nearby on | quiet | off | test") end
+
   elseif msg == "rewards" then
     Main:RewardHelp()   -- the Progression window: what each level and kill gives
 
@@ -4054,6 +4115,7 @@ SlashCmdList["FOREVERHEARTHSTONE"] = function(msg)
     Main:Print("  decks: /fh deck | deck new <name> | deck <n> | deck use <n>")
     Main:Print("  duels: /fh duel [name] | accept | decline | concede | claim | resume")
     Main:Print("  who may challenge you: /fh challenges anyone|friends|off | block <name> | unblock <name> | blocked")
+    Main:Print("  other players: /fh social (guild ladder, players nearby) | nearby on|quiet|off")
     Main:Print("  window: /fh show | hide | settings | music | mute | minimap   (/fh help dev for diagnostics)")
   end
 end
