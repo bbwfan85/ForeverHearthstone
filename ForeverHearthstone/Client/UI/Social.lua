@@ -111,28 +111,51 @@ function SocialUI:Me()
            wins = record.wins, losses = record.losses }
 end
 
---[[ WHICH LAYER WE ARE ON, read off any creature the client shows us: a
-     creature's GUID is "Creature-0-<server>-<instance>-<zone uid>-<npc>-<spawn>"
-     and the zone uid differs between the copies of a zone. Taken from whatever
-     the player targets, mouses over or has a nameplate for; never from a
-     player's own pet or guardian, which may have been summoned elsewhere.
-     Forgotten on changing zone or group (both can move you between layers).
-     If the client hides it, this stays nil and players heard on the zone
-     channel are shown as unconfirmed rather than trusted. ]]
+--[[ WHICH LAYER WE ARE ON, as far as it can be told: the "zone uid" in the
+     GUID of any creature the client shows us
+     ("Creature-0-<server>-<instance>-<zone uid>-<npc>-<spawn>"), from whatever
+     the player targets, mouses over or has a nameplate for; never a player's
+     own pet or guardian, which may have been summoned elsewhere. The number is
+     not the same for every creature in a place, so the last few are kept and
+     sent together (Social.Layer matches on any one in common). Forgotten on
+     changing zone or group, both of which can move you between layers, and
+     after ten minutes. ]]
+local LAYER_KEEP, LAYER_AGE = 4, 600
+
+function SocialUI:LayerString(now)
+  local list = self.layers
+  if not list then return nil end
+  for i = #list, 1, -1 do
+    if now - list[i].at > LAYER_AGE then table.remove(list, i) end
+  end
+  if #list == 0 then return nil end
+  local parts = {}
+  for i = 1, #list do parts[i] = list[i].uid end
+  return table.concat(parts, ".")
+end
+
 function SocialUI:NoteCreature(unit)
   local guid = opt("UnitGUID", unit)
   if type(guid) ~= "string" then return end
   local kind, _, _, _, zoneUid = guid:match("^(%a+)%-(%d+)%-(%d+)%-(%d+)%-(%d+)%-%d+%-%x+$")
   if kind ~= "Creature" and kind ~= "Vehicle" then return end
   if opt("UnitPlayerControlled", unit) then return end
-  if self.state.layer ~= zoneUid then
-    self.state.layer = zoneUid
-    self.layerZone = self:ZoneKey()
-    self.dirty = true
+  local now = self:Now()
+  local list = self.layers or {}
+  self.layers = list
+  for i = #list, 1, -1 do
+    if list[i].uid == zoneUid then table.remove(list, i) end
   end
+  table.insert(list, 1, { uid = zoneUid, at = now })
+  while #list > LAYER_KEEP do table.remove(list) end
+  local was = self.state.layer
+  self.state.layer = self:LayerString(now)
+  self.layerZone = self:ZoneKey()
+  if was ~= self.state.layer then self.dirty = true end
 end
 
 function SocialUI:ForgetLayer()
+  self.layers = nil
   if self.state.layer then self.state.layer = nil; self.dirty = true end
 end
 
@@ -395,7 +418,6 @@ function SocialUI:WhisperVia(sender, m)
   local key = m.guid or ("name:" .. tostring(sender):lower())
   local known = s.nearby[key]
   if known then return known.via end       -- a whisper is no new sighting
-  if m.layer and s.layer and m.layer ~= s.layer then return "zone" end
   return "glance"
 end
 
@@ -456,13 +478,12 @@ function SocialUI:Duel(entry)
     self:Say(("%s is only a preview. Real players nearby appear here the same way."):format(shown(entry.name)))
     return false
   end
-  --[[ Without a unit, only their coordinates say they are beside you -- and
-       coordinates are the same on every layer. So an untargeted challenge
-       needs both clients to agree on the layer. ]]
-  if Social.Layer(entry, self.state.layer) ~= "same" then
-    self:Say(("Can't confirm %s is on your layer. If you can see them, target them and press Duel."):format(shown(entry.name)))
-    return false
-  end
+  --[[ NOT GATED ON THE LAYER (the owner's call, 2026-11-27: "let them duel
+       across layers still until better testing happens"). Without a unit only
+       coordinates say they are beside you, and coordinates are the same on
+       every layer -- but the layer marks are not yet known to agree between
+       two players standing together, and refusing on them would refuse real
+       duels. The "~" on the row is the only caution for now. ]]
   if not self:Here() then
     self:Say(("Target %s and press Duel a Player."):format(shown(entry.name)))
     return false
@@ -476,9 +497,7 @@ end
 function SocialUI:FinishDuel(entry)
   local main = self.main
   local d = Social.Distance(entry, self:Here())
-  if Social.Layer(entry, self.state.layer) ~= "same" then
-    self:Say(("%s is on another layer of this zone, so you can't see each other. Grouping up puts you on the same one."):format(shown(entry.name)))
-  elseif not d then
+  if not d then
     self:Say(("Can't tell how far away %s is. Target them and press Duel a Player."):format(shown(entry.name)))
   elseif d > Social.DUEL_RANGE then
     self:Say(("%s is %d yards away. Walk over to them, then press Duel."):format(shown(entry.name), math.floor(d + 0.5)))
@@ -543,7 +562,10 @@ function SocialUI:Tick()
   if s:ShouldBeacon(now, here, self.beaconCtx) then self:Beacon(now, here) end
   -- on the zone channel: follow the player from zone to zone, and listen even
   -- while not speaking (combat, a duel)
-  if s.layer and self.layerZone ~= self:ZoneKey() then self:ForgetLayer() end
+  if s.layer then
+    if self.layerZone ~= self:ZoneKey() then self:ForgetLayer()
+    else s.layer = self:LayerString(now) end
+  end
   if Social.CHANNELS[s.channelIndex] == "CHANNEL" and s.broadcast ~= "refused" then
     self:ChannelId()
   elseif s.broadcast == "refused" then
@@ -939,7 +961,7 @@ function SocialUI:RefreshNearby(now, here)
   elseif #near > 0 then
     local unsure = false
     for _, e in ipairs(near) do unsure = unsure or e.unsure end
-    foot = unsure and "~ means they may be on another layer of this zone. If you can't see them, that is why."
+    foot = unsure and "~ means not confirmed on your layer. If you can't see them, they may be on another one."
       or "Duel challenges a player beside you. Knock invites one further off to come over."
   end
   n.foot:SetText(foot)
@@ -992,7 +1014,7 @@ function SocialUI:Report()
   end
   return ("nearby: broadcast %s, %s%s (last %s). Layer %s. %d sent, %d heard, %d player%s near. Pop-up %s, visible %s.")
     :format(how, via, #off > 0 and ("; " .. table.concat(off, ", ")) or "", tostring(self.lastResult or "none"),
-            s.layer and tostring(s.layer) or "unknown (target or mouse over any creature)",
+            s.layer and ("marks " .. tostring(s.layer):gsub("%.", ", ")) or "unknown (target or mouse over any creature)",
             s.sent, s.heard, self:Count(), self:Count() == 1 and "" or "s",
             self:PopupEnabled() and "on" or "off", self:Visible() and "on" or "off")
 end

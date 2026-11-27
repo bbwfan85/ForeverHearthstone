@@ -159,7 +159,7 @@ function Social.Decode(raw)
   local x, y, inst = int(f[7], -1e7, 1e7), int(f[8], -1e7, 1e7), int(f[9], -1e7, 1e7)
   if x and y and inst then m.x, m.y, m.instance = x, y, inst end
   -- which copy ("layer") of the zone they are on, when their client can tell
-  if type(f[10]) == "string" and f[10] ~= "" and #f[10] <= 16 and not f[10]:find("[^%w]") then
+  if type(f[10]) == "string" and f[10] ~= "" and #f[10] <= 48 and not f[10]:find("[^%w%.]") then
     m.layer = f[10]
   end
   return m
@@ -243,13 +243,27 @@ end
 
 --[[ LAYERS. A busy zone runs as several copies, and a chat channel spans all
      of them: a player at your exact coordinates may be on another copy, where
-     you cannot see them. So a player heard on the zone channel is "same" only
-     when both clients could read their layer and the two agree, "other" when
-     they disagree, and "unknown" when either could not tell (a client may hide
-     it). Anyone heard in earshot or looked at is on your layer by definition. ]]
+     you cannot see them.
+
+     Each client reads "zone uids" off the creatures it is shown and sends its
+     last few ("8717222.7962612"). They are EVIDENCE, NOT AN ID: on Forever the
+     number differs from creature to creature in one place (seen 2026-11-27:
+     three values in a few minutes, standing in one zone), so two players side
+     by side can hold different ones. Hence:
+       "same"     the two lists share a value -- both saw a creature of the same
+                  copy of the zone -- or the player was heard in earshot or
+                  looked at, which puts them on your layer by definition;
+       "unknown"  anything else. Never "other": differing numbers prove nothing,
+                  and hiding a player on them hid players standing together. ]]
 function Social.Layer(e, mine)
   if e.via ~= "zone" then return "same" end
-  if e.layer and mine then return e.layer == mine and "same" or "other" end
+  if e.layer and mine then
+    for a in tostring(e.layer):gmatch("[^%.]+") do
+      for b in tostring(mine):gmatch("[^%.]+") do
+        if a == b then return "same" end
+      end
+    end
+  end
   return "unknown"
 end
 

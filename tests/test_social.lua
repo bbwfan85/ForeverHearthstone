@@ -801,11 +801,18 @@ H.suite("social: a player on another layer of the zone is not near", function(ns
   local names, unsure = {}, {}
   for i, e in ipairs(s:List(here)) do names[i] = e.name; unsure[e.name] = e.unsure end
   table.sort(names)
-  H.eq(table.concat(names, ","), "Earshot,Same,Untold", "the other layer's player is left out; one heard in earshot is here whatever their card says")
-  H.notOk(unsure.Same); H.ok(unsure.Untold, "a player whose layer is not known is listed, marked unconfirmed")
-  H.eq(s:CountNear(here), 3)
+  H.eq(table.concat(names, ","), "Earshot,Other,Same,Untold", "nobody is hidden on a number: it differs between creatures in one place")
+  H.notOk(unsure.Same); H.notOk(unsure.Earshot, "heard in earshot is here, whatever their card says")
+  H.ok(unsure.Untold and unsure.Other, "no value in common: listed, marked unconfirmed")
+  H.eq(s:CountNear(here), 4)
   local due = s:PopupDue(5, here, { enabled = true })
-  H.eq(due.total, 3, "and the other layer is never announced")
+  H.eq(due.total, 4)
+  -- several marks each: one in common is enough
+  s = S.New(); s.layer = "111.222.333"
+  s:Hear(1, "Shares", zoneCard("G-1", "999.222"), "zone")
+  s:Hear(2, "SharesNot", zoneCard("G-2", "999.888"), "zone")
+  H.eq(S.Layer(s.nearby["G-1"], s.layer), "same"); H.eq(S.Layer(s.nearby["G-2"], s.layer), "unknown")
+  H.eq(S.Decode(S.Card("B", { guid = "G", class = "MAGE", rank = 5, layer = "111.222.333" })).layer, "111.222.333")
   -- a client that cannot read its own layer trusts nobody's, but hides nobody
   s = S.New()
   s:Hear(1, "Anyone", zoneCard("G-A", "4471"), "zone")
@@ -825,7 +832,7 @@ H.suite("social ui: the layer is read from creatures, sent, and decides who can 
     Stub.units.mouseover = { name = "Wolf", guid = "Creature-0-4170-0-4471-299-00001A2B3C" }
     Stub.Fire("UPDATE_MOUSEOVER_UNIT")
     H.eq(S.state.layer, "4471")
-    H.ok(S:Report():find("Layer 4471", 1, true), S:Report())
+    H.ok(S:Report():find("Layer marks 4471", 1, true), S:Report())
     Stub.units.mouseover = { name = "Somebody", isPlayer = true, guid = "Player-1-0000FFFF" }
     Stub.Fire("UPDATE_MOUSEOVER_UNIT")
     H.eq(S.state.layer, "4471", "a player's GUID is not a layer")
@@ -839,34 +846,45 @@ H.suite("social ui: the layer is read from creatures, sent, and decides who can 
     zone("Player-1-BB", "Anduin", "4471", 4)
     zone("Player-1-CC", "Valeera", "9002", 4)
     zone("Player-1-DD", "Jaina", nil, 4)
-    H.eq(S:Count(), 2, "same spot, another layer: not here")
+    H.eq(S:Count(), 3, "nobody is hidden for holding a different number")
     S:Show()
     local rows = S.nearCol.rows
     local byName = {}
-    for i = 1, 2 do byName[rows[i].name:GetText()] = rows[i] end
-    H.ok(byName.Anduin and byName.Jaina)
+    for i = 1, 3 do byName[rows[i].name:GetText()] = rows[i] end
+    H.ok(byName.Anduin and byName.Jaina and byName.Valeera)
     H.ok(byName.Jaina.sub:GetText():find("~", 1, true), "unconfirmed is marked: " .. byName.Jaina.sub:GetText())
+    H.ok(byName.Valeera.sub:GetText():find("~", 1, true), "and so is a different number")
     H.notOk(byName.Anduin.sub:GetText():find("~", 1, true))
-    H.ok(S.nearCol.foot:GetText():find("another layer", 1, true), S.nearCol.foot:GetText())
-    -- Jaina: no layer, no untargeted challenge
+    H.ok(S.nearCol.foot:GetText():find("not confirmed on your layer", 1, true), S.nearCol.foot:GetText())
+    -- a second creature with another number: both are kept, and both are sent
+    Stub.units.mouseover = { name = "Bear", guid = "Creature-0-4170-0-7007-822-00001A2B3C" }
+    Stub.Fire("UPDATE_MOUSEOVER_UNIT")
+    H.eq(S.state.layer, "7007.4471", "the number changes from creature to creature; the last few are all ours")
+    hear(ns, ns.Social.Card("B", { guid = "Player-1-EE", class = "DRUID", rank = 3, layer = "1.7007" }, { x = 9, y = 0, instance = 0 }), "CHANNEL", "Malfurion")
+    H.eq(ns.Social.Layer(S.state.nearby["Player-1-EE"], S.state.layer), "same", "one in common confirms it")
+    S.state:Forget("Player-1-EE"); S:Refresh(true)
+    -- Jaina: unconfirmed, but Duel is not held back on that for now -- she is
+    -- asked where she stands like anyone else
     local n = #sent("FHNEAR")
     click(byName.Jaina.button)
-    H.eq(#sent("FHNEAR"), n, "nothing is even asked"); H.eq(#sent("FHDUEL"), 0)
-    H.ok(S.nearCol.foot:GetText():find("Can't confirm Jaina is on your layer", 1, true), S.nearCol.foot:GetText())
-    -- Anduin: confirmed, so the question goes out, and the answer beside us is a challenge
+    H.eq(#sent("FHNEAR"), n + 1, "the layer does not gate a challenge"); H.eq(sent("FHNEAR")[n + 1].target, "Jaina")
+    H.eq(#sent("FHDUEL"), 0, "her position still does")
+    S.pending = nil
+    -- Anduin: the question goes out, and the answer beside us is a challenge
     click(byName.Anduin.button)
     hear(ns, ns.Social.Card("A", { guid = "Player-1-BB", class = "PRIEST", rank = 7, layer = "4471" }, { x = 3, y = 0, instance = 0 }), "WHISPER", "Anduin")
     H.eq(#sent("FHDUEL"), 1); H.eq(sent("FHDUEL")[1].target, "Anduin")
     Main:Decline(); Main.session = nil
-    -- if he has hopped layers by the time he answers, it is said and nothing is sent
+    -- an answer carrying other marks is still a challenge, while that is the owner's call
     S:Show(); S:Refresh(true); click(S.nearCol.rows[1].button)
     local duelLines = #sent("FHDUEL")
     hear(ns, ns.Social.Card("A", { guid = "Player-1-BB", class = "PRIEST", rank = 7, layer = "9002" }, { x = 3, y = 0, instance = 0 }), "WHISPER", "Anduin")
-    H.eq(#sent("FHDUEL"), duelLines)
-    H.ok(S.status and S.status:find("another layer", 1, true), tostring(S.status))
+    H.eq(#sent("FHDUEL"), duelLines + 1)
+    Main:Decline(); Main.session = nil
     -- riding into the next zone, or joining a group, forgets the layer
     Stub.zoneMap = 1453; Stub.Advance(2)
     H.eq(S.state.layer, nil)
+    Stub.units.mouseover = { name = "Somebody", isPlayer = true, guid = "Player-1-0000FFFF" }
     Stub.Fire("UPDATE_MOUSEOVER_UNIT"); H.eq(S.state.layer, nil, "a player under the pointer does not bring it back")
     Stub.units.mouseover = { name = "Boar", guid = "Creature-0-4170-0-5120-113-00001A2B3C" }
     Stub.Fire("UPDATE_MOUSEOVER_UNIT"); H.eq(S.state.layer, "5120")

@@ -1,6 +1,6 @@
 # 48 - Social: players nearby and the guild ladder
 
-First shipped in the test build 1.3.0-beta.1 (docs/49).
+Shipped in 1.3.0 (docs/52), after three test builds.
 
 ## What it is for
 
@@ -82,11 +82,16 @@ this out for itself on every client and works down a list:
    80. Left when you hide yourself; swapped when you change zone.
    Verified on Forever 2026-11-27: the channel carries addon messages. Not yet
    checked: whether the channel stays out of sight in chat.
-   **Layers.** The channel spans every layer of the zone, so each client reads
-   its layer from a creature GUID (the zone uid field), sends it in its card,
-   and hides players whose layer differs. Unknown on either side: listed with
-   a `~`, and Duel needs a target. Readable on Forever ("Layer 5692473"); not
-   yet confirmed that two players standing together read the same value.
+   **Layers.** The channel spans every layer of the zone. Each client reads
+   the zone uid from creature GUIDs it is shown and sends its last few. On
+   Forever that number is NOT one per layer: it changed three times in a few
+   minutes in one zone (2026-11-27), so it is evidence only. Two players with
+   a value in common are confirmed on the same layer; otherwise the player is
+   listed with a `~`. Nobody is hidden on a mismatch (beta.2 did, wrongly),
+   and Duel is NOT gated on it: the owner's call (2026-11-27), until the check
+   has been tested between two players. So a duel across layers is possible
+   for now. Not yet
+   seen: whether two players standing together ever share a value.
 3. **Asking individuals**, when nothing above works: one quiet whisper to a
    player you mouse over or target, to your party, and to anyone whose /say,
    /yell or emote reaches your chat (they are in earshot by definition). Once
